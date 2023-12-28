@@ -1,0 +1,41 @@
+---
+import Button from "./Button.astro";
+import HeaderLink from "./HeaderLink.astro";
+import TextLogo from "./TextLogo.astro";
+
+import type {} from "astro/types";
+---
+
+<header class="fixed z-50 top-0 right-0 left-0 transition-transform">
+  <nav class="bg-white p-4">
+    <div class="container max-w-4xl mx-auto flex justify-between items-center">
+      <a href="/">
+        <TextLogo class="h-6 md:h-8 text-[#b0b1b3]" />
+      </a>
+      <div class="hidden md:flex items-center gap-6">
+        <HeaderLink href="/diensten">Diensten</HeaderLink>
+        <HeaderLink href="/about">Voorraad</HeaderLink>
+        <HeaderLink href="/about">Over</HeaderLink>
+        <Button variant="tertiary">Contact</Button>
+      </div>
+    </div>
+  </nav>
+</header>
+<script>
+  let prevScrollPos = window.scrollY;
+  const header = document.querySelector("header");
+  if (header) {
+    window.addEventListener("scroll", () => {
+      const currentScrollPos = window.scrollY;
+      if (prevScrollPos > currentScrollPos || currentScrollPos <= 0) {
+        // Scrolling up
+        header.style.transform = "translateY(0)";
+      } else {
+        // Scrolling down
+        header.style.transform = "translateY(-100%)";
+      }
+
+      prevScrollPos = currentScrollPos;
+    });
+  }
+</script>

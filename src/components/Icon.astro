@@ -1,0 +1,29 @@
+---
+import type { HTMLAttributes } from "astro/types";
+const icons = {
+  "circle-arrow-right": `
+      <path d="M7.5 12L16.5 12" stroke="currentColor" stroke-linecap="round"/>
+      <path d="M13.5 15L16.5 12L13.5 9" stroke="currentColor" stroke-linecap="round"/>
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12Z" stroke="currentColor"/>
+  `,
+  "circle-arrow-down": `
+      <path d="M12 7.5L12 16.5" stroke="currentColor" stroke-linecap="round"/>
+      <path d="M9 13.5L12 16.5L15 13.5" stroke="currentColor" stroke-linecap="round"/>
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2Z" stroke="currentColor"/>
+  `,
+};
+
+interface Props extends HTMLAttributes<"svg"> {
+  name: keyof typeof icons;
+}
+
+const { name, ...props } = Astro.props;
+---
+
+<svg
+  viewBox="0 0 24 24"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+  {...props}
+  set:html={icons[name]}
+/>
