@@ -1,0 +1,33 @@
+---
+import { twMerge } from "tailwind-merge";
+
+const { props, class: _class, open } = Astro.props;
+---
+
+<div
+  {...props}
+  x-data="{ id: $id('accordion') }"
+  x-init={open && "setActiveAccordion(id)"}
+  class={twMerge("group cursor-pointer", _class)}
+>
+  <button
+    @click="setActiveAccordion(id)"
+    class="flex w-full select-none items-center justify-between p-4 text-left group-hover:underline"
+  >
+    <slot name="title" />
+    <svg
+      class="h-4 w-4 duration-200 ease-out"
+      :class="{ 'rotate-180': activeAccordion==id }"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg
+    >
+  </button>
+  <div class="px-8 pb-8" x-show="activeAccordion==id" x-collapse x-cloak>
+    <slot />
+  </div>
+</div>

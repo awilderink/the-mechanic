@@ -1,117 +1,219 @@
 ---
-import BaseHead from "../components/BaseHead.astro";
-import Header from "../components/Header.astro";
-import Footer from "../components/Footer.astro";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
 import Title from "../components/Title.astro";
 import Button from "../components/Button.astro";
+import { Image } from "astro:assets";
+import BaseLayout from "../layouts/BaseLayout.astro";
 import Card from "../components/Card.astro";
 import Icon from "../components/Icon.astro";
+import HighlightedSlider from "../components/HighlightedSlider.astro";
+import { supabase } from "../supabase";
+
+const { data: voorraad } = await supabase
+  .from("voorraad")
+  .select("*")
+  .order("datum_binnenkomst")
+  .limit(3);
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-  </head>
-  <body>
-    <Header title={SITE_TITLE} />
-    <main class="z-0">
-      <div class="h-[100dvh] relative flex flex-col justify-center text-white">
-        <video
-          autoplay
-          playsinline
-          muted
-          loop
-          class="absolute top-0 z-0 left-0 bottom-0 right-0 w-full h-full object-cover"
-        >
-          <source src="/banner.mp4" type="video/mp4" />
-        </video>
-        <div
-          class="bg-gradient-to-b from-black/0 to-black/50 top-0 left-0 bottom-0 right-0 absolute"
-        >
-        </div>
-        <div class="container relative p-4 flex max-w-4xl mx-auto">
-          <div class="space-y-2 md:basis-1/2">
-            <Title variant="tertiary" class="text-xl">
-              <h1>The Mechanic</h1>
-            </Title>
-            <h2 class="text-4xl font-semibold">Passie voor auto's</h2>
-            <p class="leading-7 text-xl block">
-              Meer dan 50 jaar ervaring in het vak, gespecialiseerd in Alfa
-              Romeo, Land Rover en Porsche
-            </p>
-            <div class="flex gap-4 pt-8 flex-col">
-              <Button variant="tertiary">Service & Onderhoud</Button>
-              <Button variant="outline">Bekijk Voorraad</Button>
-            </div>
-          </div>
-        </div>
-        <div class="absolute bottom-4 left-1/2 -translate-x-1/2">
-          <Icon name="circle-arrow-down" class="h-10 bottom-4 animate-bounce" />
+<BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
+  <div class="relative flex h-[100dvh] flex-col justify-center p-4 text-white">
+    <video
+      autoplay
+      playsinline
+      muted
+      loop
+      class="absolute bottom-0 left-0 right-0 top-0 z-0 h-full w-full object-cover"
+    >
+      <source src="/banner.mp4" type="video/mp4" />
+    </video>
+    <div
+      class="absolute bottom-0 left-0 right-0 top-0 bg-gradient-to-b from-black/0 to-black/50"
+    >
+    </div>
+    <div class="container relative mx-auto flex max-w-4xl">
+      <div class="space-y-2 md:basis-1/2">
+        <Title variant="tertiary" class="text-xl">
+          <h1>The Mechanic</h1>
+        </Title>
+        <h2 class="text-4xl font-semibold">Passie voor auto's</h2>
+        <p class="block text-xl leading-7">
+          Meer dan 50 jaar ervaring in het vak, gespecialiseerd in Alfa Romeo,
+          Land Rover en Porsche
+        </p>
+        <div class="flex flex-col gap-4 pt-8">
+          <Button variant="tertiary">Service & Onderhoud</Button>
+          <Button variant="outline">Bekijk Voorraad</Button>
         </div>
       </div>
-      <div class="bg-sand py-16">
-        <div class="container p-4 max-w-4xl mx-auto">
+    </div>
+    <div class="absolute bottom-4 left-1/2 -translate-x-1/2">
+      <Icon name="circle-arrow-down" class="bottom-4 h-10 animate-bounce" />
+    </div>
+  </div>
+  <section class="bg-sand p-4 py-16">
+    <div class="container mx-auto max-w-4xl">
+      <Title variant="tertiary">
+        <span class="text-zinc-500">Onze diensten</span>
+      </Title>
+      <div class="mt-6 flex flex-col gap-4 md:flex-row">
+        <Card class="w-full">
+          <div slot="title">Service & Onderhoud</div>
+          <ul class="mt-3 flex-1 text-sm leading-7 text-neutral-400">
+            <li>APK terwijl je wacht</li>
+            <li>Schadeafhandeling</li>
+            <li>Glasservice</li>
+            <li>Poetsservice</li>
+            <li>Aankoopkeuring</li>
+            <li>Inbouw van accessoires</li>
+            <li>Opslag van zomer- en winterbanden</li>
+          </ul>
+          <a href="/">
+            <Icon
+              class="ml-auto mt-4 h-10 transition-transform hover:translate-x-1"
+              name="circle-arrow-right"
+            />
+          </a>
+        </Card>
+        <Card class="w-full">
+          <div slot="title">Inkoop en verkoop</div>
+          <ul class="mt-3 flex-1 text-sm leading-7 text-neutral-400">
+            <li>Aankoop en verkoop (nieuw en gebruikt)</li>
+            <li>Cosignatie</li>
+            <li>RDW vrijwaren en te naam stellen</li>
+            <li>Zoekopdracht</li>
+          </ul>
+          <a href="/">
+            <Icon
+              class="ml-auto mt-4 h-10 transition-transform hover:translate-x-1"
+              name="circle-arrow-right"
+            />
+          </a>
+        </Card>
+        <Card class="w-full">
+          <div slot="title">Restauratie</div>
+          <ul class="mt-3 flex-1 text-sm leading-7 text-neutral-400">
+            <li>APK terwijl je wacht</li>
+            <li>Schadeafhandeling</li>
+            <li>Glasservice</li>
+            <li>Poetsservice</li>
+            <li>Aankoopkeuring</li>
+            <li>Inbouw van accessoires</li>
+            <li>Opslag van zomer- en winterbanden</li>
+          </ul>
+          <a href="/">
+            <Icon
+              class="ml-auto mt-4 h-10 transition-transform hover:translate-x-1"
+              name="circle-arrow-right"
+            />
+          </a>
+        </Card>
+      </div>
+    </div>
+  </section>
+  <section class="bg-white px-4 py-12">
+    <div class="container mx-auto max-w-4xl md:py-24">
+      <Image
+        src="/image1.png"
+        alt="image1"
+        height="500"
+        width="900"
+        class="w-full rounded-lg"
+      />
+      <div class="mt-8 flex flex-col gap-2 md:mt-12 md:flex-row md:gap-12">
+        <div class="basis-3/5">
           <Title variant="tertiary">
-            <span class="text-zinc-500">Onze diensten</span>
+            <span class="text-zinc-500">Over ons</span>
           </Title>
-          <div class="flex mt-6 flex-col md:flex-row gap-4">
-            <Card class="w-full">
-              <div slot="title">Service & Onderhoud</div>
-              <ul class="mt-3 leading-7 text-neutral-400 text-sm flex-1">
-                <li>APK terwijl je wacht</li>
-                <li>Schadeafhandeling</li>
-                <li>Glasservice</li>
-                <li>Poetsservice</li>
-                <li>Aankoopkeuring</li>
-                <li>Inbouw van accessoires</li>
-                <li>Opslag van zomer- en winterbanden</li>
-              </ul>
-              <a href="/">
-                <Icon
-                  class="h-10 mt-4 ml-auto hover:translate-x-1 transition-transform"
-                  name="circle-arrow-right"
-                />
-              </a>
-            </Card>
-            <Card class="w-full">
-              <div slot="title">Inkoop en verkoop</div>
-              <ul class="mt-3 leading-7 text-neutral-400 text-sm flex-1">
-                <li>Aankoop en verkoop (nieuw en gebruikt)</li>
-                <li>Cosignatie</li>
-                <li>RDW vrijwaren en te naam stellen</li>
-                <li>Zoekopdracht</li>
-              </ul>
-              <a href="/">
-                <Icon
-                  class="h-10 mt-4 ml-auto hover:translate-x-1 transition-transform"
-                  name="circle-arrow-right"
-                />
-              </a>
-            </Card>
-            <Card class="w-full">
-              <div slot="title">Restauratie</div>
-              <ul class="mt-3 leading-7 text-neutral-400 text-sm flex-1">
-                <li>APK terwijl je wacht</li>
-                <li>Schadeafhandeling</li>
-                <li>Glasservice</li>
-                <li>Poetsservice</li>
-                <li>Aankoopkeuring</li>
-                <li>Inbouw van accessoires</li>
-                <li>Opslag van zomer- en winterbanden</li>
-              </ul>
-              <a href="/">
-                <Icon
-                  class="h-10 mt-4 ml-auto hover:translate-x-1 transition-transform"
-                  name="circle-arrow-right"
-                />
-              </a>
-            </Card>
+          <div class="mt-2 text-xl text-primary md:text-4xl md:leading-normal">
+            The Mechanic is een garage dat is ontstaan door liefde voor auto's
+            en de overtuiging dat het anders kan.
           </div>
         </div>
+        <div class="basis-2/5 self-end">
+          <p class="font-light">
+            We zijn gespecialiseerd in Alfa Romeo, Porsche en Landrover. Maar
+            ook alle andere automerken zijn bij ons in goede handen. Van
+            klassiek tot modern, van Alfa tot Zastava en alles daar tussen. Onze
+            kennis is altijd up to date en we beschikken over alle apparatuur om
+            jouw auto uit te lezen. Daarnaast hebben we ook een aparte
+            motorrevisie ruimte.
+          </p>
+        </div>
       </div>
-      <Footer />
-    </main>
-  </body>
-</html>
+    </div>
+  </section>
+  <section class="bg-sand px-4 py-14">
+    <div class="container mx-auto max-w-4xl">
+      <div class="flex flex-col items-center gap-8 md:flex-row md:gap-12">
+        <Card class="p-2 md:p-12">
+          <div class="-space-x-1">
+            <Icon class="inline h-4" name="star" />
+            <Icon class="inline h-4" name="star" />
+            <Icon class="inline h-4" name="star" />
+            <Icon class="inline h-4" name="star" />
+            <Icon class="inline h-4" name="star" />
+          </div>
+          <div class="mt-4 text-lg font-light">
+            Rolf en zijn team hebben liefde voor auto's én voor hun klanten! Top
+            garage, we komen er graag met onze auto's, zowel zakelijk als privé.
+          </div>
+          <div class="mt-9">Jurriën, K</div>
+        </Card>
+        <Card class="bg-primary p-2 text-white md:scale-75 md:p-12">
+          <div class="-space-x-1">
+            <Icon class="inline h-4" name="star" />
+            <Icon class="inline h-4" name="star" />
+            <Icon class="inline h-4" name="star" />
+            <Icon class="inline h-4" name="star" />
+            <Icon class="inline h-4" name="star" />
+          </div>
+          <div class="mt-4 text-lg font-light">
+            Uitstekende garage met nog echte monteurs. Deze kunnen sleutelen.
+            Vriendelijk en altijd bereid om je te helpen.
+          </div>
+          <div class="mt-9">Wilbur, S</div>
+        </Card>
+      </div>
+      <div class="mt-24">
+        <HighlightedSlider>
+          {
+            voorraad?.map((item) => (
+              <a
+                class="keen-slider__slide md:basis-1/3"
+                href={`/voorraad/${item.voertuignr_hexon}`}
+              >
+                <Card>
+                  <Image
+                    slot="image"
+                    transition:name={item.afbeeldingen?.split(",")[0] || ""}
+                    src={item.afbeeldingen?.split(",")[0] || ""}
+                    alt="image1"
+                    width="400"
+                    height="100"
+                    class="w-full"
+                  />
+                  <slot name="title">{item.merk}</slot>
+                  <div class="text-neutral-400">{item.type}</div>
+                  <div class="mt-8 flex items-center justify-between text-sm">
+                    <span>
+                      {Intl.NumberFormat("nl-NL", {
+                        style: "currency",
+                        currency: "EUR",
+                      }).format(Number(item.verkoopprijs_particulier_bedrag))}
+                    </span>
+                    <Icon
+                      class="h-10 transition-transform hover:translate-x-1"
+                      name="circle-arrow-right"
+                    />
+                  </div>
+                </Card>
+              </a>
+            ))
+          }
+        </HighlightedSlider>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+<script></script>

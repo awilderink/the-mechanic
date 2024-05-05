@@ -1,0 +1,21 @@
+---
+import { twMerge } from "tailwind-merge";
+
+const { props, class: _class } = Astro.props;
+---
+
+<div
+  {...props}
+  class={twMerge(
+    "relative mx-auto w-full divide-y divide-gray-200 overflow-hidden border-b border-t border-gray-200 bg-white text-sm font-normal",
+    _class,
+  )}
+  x-data=`{ 
+      activeAccordion: '', 
+      setActiveAccordion(id) { 
+        this.activeAccordion = (this.activeAccordion == id) ? '' : id 
+      } 
+    }`
+>
+  <slot />
+</div>

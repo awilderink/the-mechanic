@@ -7,17 +7,29 @@
     "start": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "gen:types": "supabase gen types typescript --project-id yfqolmckjxtqycmsotum > database.types.ts"
   },
   "dependencies": {
-    "@astrojs/check": "^0.3.4",
-    "@astrojs/tailwind": "^5.0.4",
-    "@astrojs/vercel": "^6.1.1",
-    "@fontsource/poppins": "^5.0.8",
-    "astro": "^4.0.7",
+    "@astrojs/alpinejs": "^0.4.0",
+    "@astrojs/check": "^0.5.10",
+    "@astrojs/tailwind": "^5.1.0",
+    "@astrojs/vercel": "^7.5.4",
+    "@fontsource/poppins": "^5.0.14",
+    "@supabase/supabase-js": "^2.43.1",
+    "@types/alpinejs": "^3.13.10",
+    "alpinejs": "^3.13.10",
+    "astro": "^4.7.1",
     "class-variance-authority": "^0.7.0",
-    "tailwind-merge": "^2.2.0",
-    "tailwindcss": "^3.4.0",
-    "typescript": "^5.3.3"
+    "keen-slider": "^6.8.6",
+    "tailwind-merge": "^2.3.0",
+    "tailwindcss": "^3.4.3",
+    "typescript": "^5.4.5"
+  },
+  "devDependencies": {
+    "prettier": "^3.2.5",
+    "prettier-plugin-astro": "^0.13.0",
+    "prettier-plugin-tailwindcss": "^0.5.14",
+    "supabase": "^1.165.0"
   }
 }

@@ -1,12 +1,16 @@
-import { defineConfig } from "astro/config";
 import tailwind from "@astrojs/tailwind";
-
 import vercel from "@astrojs/vercel/serverless";
+import { defineConfig } from "astro/config";
+
+import alpinejs from "@astrojs/alpinejs";
 
 // https://astro.build/config
 export default defineConfig({
   site: "https://themechanic.nl",
-  integrations: [tailwind()],
+  image: {
+    domains: ["doorlinkenvoorraad.nl"]
+  },
+  integrations: [tailwind(), alpinejs()],
   output: "server",
-  adapter: vercel(),
+  adapter: vercel()
 });

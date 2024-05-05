@@ -1,0 +1,289 @@
+---
+import type { GetStaticPaths } from "astro";
+import { supabase } from "../../supabase";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { Image } from "astro:assets";
+
+import "keen-slider/keen-slider.min.css";
+import Title from "../../components/Title.astro";
+import Icon from "../../components/Icon.astro";
+import Button from "../../components/Button.astro";
+import Accordion from "../../components/Accordion.astro";
+import AccordionItem from "../../components/AccordionItem.astro";
+import HighlightedSlider from "../../components/HighlightedSlider.astro";
+import Card from "../../components/Card.astro";
+
+const { voertuignr_hexon } = Astro.params;
+
+const { data } = await supabase.from("voorraad").select("*");
+const index = data!.findIndex(
+  (car) => car.voertuignr_hexon === voertuignr_hexon,
+);
+const car = data?.splice(index, 1)[0]!;
+const voorraad = data?.splice(0, 3);
+export const getStaticPaths: GetStaticPaths = () =>
+  data!.map((car) => ({ params: { _voertuignrHexon_: car.voertuignr_hexon } }));
+---
+
+<style>
+  .car-grid {
+    grid-template-areas:
+      "images"
+      "thumbnails"
+      "details"
+      "info";
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 768px) {
+    .car-grid {
+      grid-template-areas:
+        "images thumbnails"
+        "images details"
+        "info void";
+      grid-template-columns: 6fr 4fr;
+    }
+  }
+</style>
+<BaseLayout>
+  <section class="p-4">
+    <div
+      class="car-grid container mx-auto grid max-w-6xl gap-4 pt-24 md:flex-row md:gap-10"
+    >
+      <div
+        id="keen-slider"
+        transition:name={car.afbeeldingen?.split(",")[0]}
+        class="relative flex basis-3/5 overflow-hidden rounded-xl [grid-area:images]"
+      >
+        {
+          car.afbeeldingen
+            ?.split(",")
+            .map((image) => (
+              <Image
+                class="keen-slider__slide"
+                alt=""
+                height={606}
+                width={887}
+                src={image}
+              />
+            ))
+        }
+        <div class="absolute bottom-6 right-6 flex gap-2 text-primary">
+          <button id="prev-slide" aria-label="Vorige">
+            <Icon name="circle-arrow-left" class="h-10 w-10" />
+          </button>
+          <button id="next-slide" aria-label="Volgende">
+            <Icon name="circle-arrow-right" class="h-10 w-10" />
+          </button>
+        </div>
+      </div>
+      <div class="min-w-0 [grid-area:thumbnails]">
+        <h1 class="text-2xl text-primary md:text-4xl">{car.titel}</h1>
+        <div id="thumbnails" class="keen-slider mt-2 flex overflow-hidden">
+          {
+            car.afbeeldingen?.split(",").map((image) => (
+              <div class="keen-slider__slide group relative overflow-hidden rounded-md">
+                <div class="absolute inset-0 bg-neutral-200 bg-opacity-50 transition-colors duration-75 hover:bg-opacity-0 group-[.active]:bg-opacity-0" />
+                <Image alt="" height={42} width={200} src={image} />
+              </div>
+            ))
+          }
+        </div>
+      </div>
+      <div class="mt-2 flex flex-col justify-between [grid-area:details]">
+        {
+          car.highlights && (
+            <Title variant="tertiary" class="mb-2">
+              {car.highlights}
+            </Title>
+          )
+        }
+        <div>
+          <dl
+            class="grid grid-cols-2 gap-6 font-light md:grid-cols-3 [&_dd]:text-primary [&_dt]:text-neutral-500"
+          >
+            <div>
+              <dt>Bouwjaar</dt>
+              <dd>{car.bouwjaar}</dd>
+            </div>
+            <div>
+              <dt>Km stand</dt>
+              <dd>
+                {Intl.NumberFormat("nl-NL").format(Number(car.tellerstand))} km
+              </dd>
+            </div>
+            <div>
+              <dt>Prijs</dt>
+              <dd>
+                {
+                  Intl.NumberFormat("nl-NL", {
+                    currency: "EUR",
+                    style: "currency",
+                  }).format(Number(car.verkoopprijs_particulier_bedrag))
+                }
+              </dd>
+            </div>
+            <div>
+              <dt>Brandstof</dt>
+              <dd>
+                {
+                  car.brandstof === "D"
+                    ? "Diesel"
+                    : car.brandstof === "B"
+                      ? "Benzine"
+                      : car.brandstof
+                }
+              </dd>
+            </div>
+            <div>
+              <dt>Motorinhoud</dt>
+              <dd>{car.cilinderinhoud} CC</dd>
+            </div>
+            <div>
+              <dt>Kleur</dt>
+              <dd>{car.kleur}</dd>
+            </div>
+          </dl>
+        </div>
+        <div class="mt-4 flex flex-col gap-2">
+          <Button class="flex items-center justify-center gap-2 font-thin">
+            <Icon class="mr-2 h-4 w-4" name="phone" />
+            <span>070 8209890</span>
+          </Button>
+          <Button
+            class="flex items-center justify-center gap-2 font-thin"
+            variant="secondary"
+          >
+            <Icon name="email" class="mr-2 h-4 w-4" />
+            info@themechanic.nl
+          </Button>
+        </div>
+      </div>
+      <div class="mt-10 [grid-area:info]">
+        <div class="flex items-center justify-between">
+          <h1 class="text-4xl">{car.titel}</h1>
+          <div class="flex gap-1">
+            <Icon name="linkedIn" class="h-9 w-9" />
+            <Icon name="facebook" class="h-9 w-9" />
+            <Icon name="instagram" class="h-9 w-9" />
+          </div>
+        </div>
+        <Accordion class="mt-8">
+          <AccordionItem open>
+            <span slot="title">Omschrijving</span>
+            <div set:html={car.opmerkingen} />
+          </AccordionItem>
+          <AccordionItem>
+            <span slot="title">Achtergrond info</span>
+          </AccordionItem>
+          <AccordionItem>
+            <span slot="title">Motor en bak</span>
+          </AccordionItem>
+          <AccordionItem>
+            <span slot="title">Facturen</span>
+          </AccordionItem>
+        </Accordion>
+      </div>
+    </div>
+  </section>
+  <section class="bg-sand px-4 py-14">
+    <div class="container mx-auto max-w-4xl">
+      <HighlightedSlider>
+        {
+          data?.map((item) => (
+            <a
+              class="keen-slider__slide md:basis-1/3"
+              href={`/voorraad/${item.voertuignr_hexon}`}
+            >
+              <Card>
+                <Image
+                  slot="image"
+                  src={item.afbeeldingen?.split(",")[0] || ""}
+                  alt="image1"
+                  width="400"
+                  height="100"
+                  class="w-full"
+                />
+                <slot name="title">{item.merk}</slot>
+                <div class="text-neutral-400">{item.type}</div>
+                <div class="mt-8 flex items-center justify-between text-sm">
+                  <span>
+                    {Intl.NumberFormat("nl-NL", {
+                      style: "currency",
+                      currency: "EUR",
+                    }).format(Number(item.verkoopprijs_particulier_bedrag))}
+                  </span>
+                  <Icon
+                    class="h-10 transition-transform hover:translate-x-1"
+                    name="circle-arrow-right"
+                  />
+                </div>
+              </Card>
+            </a>
+          ))
+        }
+      </HighlightedSlider>
+    </div>
+  </section>
+</BaseLayout>
+<script>
+  import KeenSlider, { type KeenSliderInstance } from "keen-slider";
+
+  document.addEventListener("astro:page-load", () => {
+    const sliderEl = document.querySelector("#keen-slider");
+    const thumbnailsEl = document.querySelector("#thumbnails");
+    console.log(sliderEl, thumbnailsEl);
+    if (!sliderEl || !thumbnailsEl) return;
+
+    const slider = new KeenSlider("#keen-slider");
+    const next = document.querySelector("#next-slide");
+
+    next?.addEventListener("click", () => {
+      slider.next();
+    });
+
+    const prev = document.querySelector("#prev-slide");
+
+    prev?.addEventListener("click", () => {
+      slider.prev();
+    });
+
+    const ThumbnailPlugin =
+      (main: KeenSliderInstance) => (slider: KeenSliderInstance) => {
+        const removeActive = () => {
+          slider.slides.forEach((slide) => {
+            slide.classList.remove("active");
+          });
+        };
+
+        const addActive = (idx: number) => {
+          slider.slides[idx].classList.add("active");
+        };
+
+        const addClickEvents = () => {
+          slider.slides.forEach((slide, idx) => {
+            slide.addEventListener("click", () => {
+              main.moveToIdx(idx);
+            });
+          });
+        };
+
+        slider.on("created", () => {
+          addActive(slider.track.details.rel);
+          addClickEvents();
+          main.on("animationStarted", (main) => {
+            removeActive();
+            const next = main.animator.targetIdx || 0;
+            addActive(main.track.absToRel(next));
+            slider.moveToIdx(Math.min(slider.track.details.maxIdx, next));
+          });
+        });
+      };
+
+    new KeenSlider(
+      "#thumbnails",
+      { initial: 0, slides: { perView: 6, spacing: 8 } },
+      [ThumbnailPlugin(slider)],
+    );
+  });
+</script>

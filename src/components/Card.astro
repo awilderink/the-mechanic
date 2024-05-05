@@ -7,10 +7,13 @@ const { class: _class, ...props } = Astro.props;
 
 <div
   {...props}
-  class={twMerge("bg-white flex flex-col rounded-xl px-6 py-8", _class)}
+  class={twMerge("bg-white flex flex-col rounded-xl overflow-hidden", _class)}
 >
-  <div class="text-md font-semibold">
-    <slot name="title" />
+  <slot name="image" />
+  <div class="px-6 py-8">
+    <div class="text-md font-semibold">
+      <slot name="title" />
+    </div>
+    <slot />
   </div>
-  <slot />
 </div>
