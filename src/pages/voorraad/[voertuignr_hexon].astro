@@ -24,7 +24,7 @@ const car = voorrraad?.splice(index, 1)[0]!;
 const highlighted = voorrraad?.splice(0, 3);
 export const getStaticPaths: GetStaticPaths = () =>
   voorrraad!.map((car) => ({
-    params: { _voertuignrHexon_: car.voertuignr_hexon },
+    params: { voertuignr_hexon: car.voertuignr_hexon },
   }));
 ---
 
