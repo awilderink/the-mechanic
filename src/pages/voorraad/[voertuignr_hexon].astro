@@ -1,9 +1,8 @@
 ---
 import type { GetStaticPaths } from "astro";
-import { supabase } from "../../supabase";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { Image } from "astro:assets";
-
+import { db, Voorraad } from "astro:db";
 import "keen-slider/keen-slider.min.css";
 import Title from "../../components/Title.astro";
 import Icon from "../../components/Icon.astro";
@@ -15,14 +14,16 @@ import Card from "../../components/Card.astro";
 
 const { voertuignr_hexon } = Astro.params;
 
-const { data } = await supabase.from("voorraad").select("*");
-const index = data!.findIndex(
-  (car) => car.voertuignr_hexon === voertuignr_hexon,
+const voorrraad = await db.select().from(Voorraad)
+const index = voorrraad.findIndex(
+  (car) => car.voertuignr_hexon === voertuignr_hexon
 );
-const car = data?.splice(index, 1)[0]!;
-const voorraad = data?.splice(0, 3);
+const car = voorrraad?.splice(index, 1)[0]!;
+const highlighted = voorrraad?.splice(0, 3);
 export const getStaticPaths: GetStaticPaths = () =>
-  data!.map((car) => ({ params: { _voertuignrHexon_: car.voertuignr_hexon } }));
+  voorrraad!.map((car) => ({
+    params: { _voertuignrHexon_: car.voertuignr_hexon },
+  }));
 ---
 
 <style>
@@ -190,7 +191,7 @@ export const getStaticPaths: GetStaticPaths = () =>
     <div class="container mx-auto max-w-4xl">
       <HighlightedSlider>
         {
-          data?.map((item) => (
+          highlighted?.map((item) => (
             <a
               class="keen-slider__slide md:basis-1/3"
               href={`/voorraad/${item.voertuignr_hexon}`}
@@ -283,7 +284,7 @@ export const getStaticPaths: GetStaticPaths = () =>
     new KeenSlider(
       "#thumbnails",
       { initial: 0, slides: { perView: 6, spacing: 8 } },
-      [ThumbnailPlugin(slider)],
+      [ThumbnailPlugin(slider)]
     );
   });
 </script>

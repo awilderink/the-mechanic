@@ -1,6 +1,7 @@
 import type { APIRoute } from "astro";
-import { supabase } from "../../supabase";
 import type { AutoTelexRequestBody } from "./types";
+
+import { Voorraad, db, eq } from "astro:db";
 
 export const POST: APIRoute = async ({ request }) => {
 	try {
@@ -13,19 +14,25 @@ export const POST: APIRoute = async ({ request }) => {
 
 		switch (actie) {
 			case "add":
-			case "change": {
-				const { error } = await supabase.from("voorraad").upsert(telexData);
-				if (error) throw error;
+				await db
+					.insert(Voorraad)
+					.values(telexData)
+					.onConflictDoUpdate({
+						set: telexData,
+						target: [Voorraad.voertuignr_hexon],
+					});
 				break;
-			}
-			case "delete": {
-				const { error } = await supabase
-					.from("voorraad")
-					.update({ verkocht: "j" })
-					.match({ voertuignr_hexon: telexData.voertuignr_hexon });
-				if (error) throw error;
+			case "change":
+				await db
+					.update(Voorraad)
+					.set(telexData)
+					.where(eq(Voorraad.voertuignr_hexon, telexData.voertuignr_hexon));
 				break;
-			}
+			case "delete":
+				db.update(Voorraad)
+					.set({ verkocht: "j" })
+					.where(eq(Voorraad.voertuignr_hexon, telexData.voertuignr_hexon));
+				break;
 		}
 	} catch (error) {
 		console.log(error);

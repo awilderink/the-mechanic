@@ -7,12 +7,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Card from "../components/Card.astro";
 import Icon from "../components/Icon.astro";
 import HighlightedSlider from "../components/HighlightedSlider.astro";
-import { supabase } from "../supabase";
+import { db, Voorraad } from "astro:db";
 
-const { data: voorraad } = await supabase
-  .from("voorraad")
-  .select("*")
-  .order("datum_binnenkomst")
+const voorraad = await db
+  .select()
+  .from(Voorraad)
+  .orderBy(Voorraad.datum_binnenkomst)
   .limit(3);
 ---
 
