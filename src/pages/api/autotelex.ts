@@ -39,5 +39,12 @@ export const POST: APIRoute = async ({ request }) => {
 		return new Response(String(error), { status: 500 });
 	}
 
+	if (import.meta.env.PROD) {
+		fetch(
+			"https://api.vercel.com/v1/integrations/deploy/prj_aezHxaF7AQ195sJqhzuOnsxu5A0m/kKob5zsF4H",
+			{ method: "POST" },
+		);
+	}
+
 	return new Response("1");
 };
