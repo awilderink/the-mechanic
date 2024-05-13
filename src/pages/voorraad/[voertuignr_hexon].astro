@@ -12,9 +12,11 @@ import AccordionItem from "../../components/AccordionItem.astro";
 import HighlightedSlider from "../../components/HighlightedSlider.astro";
 import Card from "../../components/Card.astro";
 
+export const prerender = true;
+
 const { voertuignr_hexon } = Astro.params;
 
-const voorrraad = await db.select().from(Voorraad)
+const voorrraad = await db.select().from(Voorraad);
 const index = voorrraad.findIndex(
   (car) => car.voertuignr_hexon === voertuignr_hexon
 );
