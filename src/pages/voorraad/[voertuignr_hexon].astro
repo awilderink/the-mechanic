@@ -22,10 +22,13 @@ const index = voorrraad.findIndex(
 );
 const car = voorrraad?.splice(index, 1)[0]!;
 const highlighted = voorrraad?.splice(0, 3);
-export const getStaticPaths: GetStaticPaths = () =>
-  voorrraad!.map((car) => ({
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const voorrraad = await db.select().from(Voorraad);
+  return voorrraad.map((car) => ({
     params: { voertuignr_hexon: car.voertuignr_hexon },
   }));
+};
 ---
 
 <style>
