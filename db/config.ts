@@ -1,4 +1,4 @@
-import { column, defineDb, defineTable,  } from "astro:db";
+import { column, defineDb, defineTable } from "astro:db";
 
 export const Voorraad = defineTable({
 	columns: {
