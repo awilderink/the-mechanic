@@ -5,14 +5,18 @@ import "@fontsource/poppins/500.css";
 import "@fontsource/poppins/700.css";
 
 interface Props {
-  title: string;
-  description: string;
+  title?: string;
+  description?: string;
   image?: string;
 }
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
-const { title, description, image = "/blog-placeholder-1.jpg" } = Astro.props;
+const {
+  title = "The Mechanic. Passie voor auto's",
+  description = "The Mechanic is een jong garagebedrijf met meer dan 50 jaar ervaring. Gestart uit liefde voor auto’s en de overtuiging dat het anders kan. Moderner, klantvriendelijker en vooral: met veel meer plezier.",
+  image = "/blog-placeholder-1.jpg",
+} = Astro.props;
 ---
 
 <!-- Global Metadata -->
@@ -43,8 +47,5 @@ const { title, description, image = "/blog-placeholder-1.jpg" } = Astro.props;
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={new URL(image, Astro.url)} />
 
-<!-- Scripts -->
-<script
-  defer
-  src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"
-></script>
+<!-- Scripts  -->
+<script defer src="https://unpkg.com/htmx.org@2.0.4"></script>

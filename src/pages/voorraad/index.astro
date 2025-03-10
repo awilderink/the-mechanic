@@ -1,0 +1,142 @@
+---
+import { readItems } from "@directus/sdk";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import directus from "../../lib/directus";
+import { Image } from "astro:assets";
+import Card from "../../components/Card.astro";
+import { getDirectusAssetUrl } from "../../utils";
+
+const { searchParams } = Astro.url;
+
+const selectedMerk = searchParams.get("merk");
+const selectedVerkocht = searchParams.get("verkocht");
+
+const merken = await directus.request(readItems("merken"));
+
+const voorraadItems = await directus.request(
+  readItems("voorraad", {
+    filter: {
+      ...(selectedMerk && { merk: { _eq: selectedMerk } }),
+      verkocht: { _eq: selectedVerkocht === "true" },
+    },
+    fields: ["*", { merk: ["naam"], fotos: [{ directus_files_id: ["*"] }] }],
+  }),
+);
+---
+
+<BaseLayout
+  title="Voorraad"
+  description="De voorraad van de The Mechanic"
+  transparentHeader
+>
+  <div class="bg-sand min-h-dvh p-4 pt-60">
+    <div class="container mx-auto max-w-4xl">
+      <div class="mb-8 flex flex-col gap-4 md:flex-row">
+        <select
+          name="merk"
+          class="px-12"
+          hx-get="/voorraad"
+          hx-push-url="true"
+          hx-target="#results"
+          hx-select="#results"
+          hx-swap="outerHTML"
+          hx-include="[name=verkocht]"
+        >
+          <option value="">Alle merken</option>
+          {
+            merken.map((merkItem) => (
+              <option
+                value={merkItem.id}
+                selected={selectedMerk == merkItem.id}
+              >
+                {merkItem.naam}
+              </option>
+            ))
+          }
+        </select>
+        <select
+          class="px-12"
+          name="verkocht"
+          hx-get="/voorraad"
+          hx-push-url="true"
+          hx-target="#results"
+          hx-select="#results"
+          hx-swap="outerHTML"
+          hx-include="[name=merk]"
+        >
+          <option value="false" selected={selectedVerkocht === "false"}
+            >Beschikbaar</option
+          >
+          <option value="true" selected={selectedVerkocht === "true"}
+            >Verkocht</option
+          >
+        </select>
+      </div>
+
+      <div
+        id="results"
+        class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
+      >
+        {
+          voorraadItems.length ? (
+            voorraadItems.map((item) => {
+              const merk =
+                typeof item.merk !== "number" ? item.merk.naam : "Onbekend";
+              return (
+                <a href={`/voorraad/${item.slug}`} class="block">
+                  <Card class="flex h-full flex-col">
+                    {item.fotos &&
+                      item.fotos.length > 0 &&
+                      typeof item.fotos[0] !== "number" && (
+                        <div class="aspect-[4/3] overflow-hidden">
+                          <Image
+                            src={getDirectusAssetUrl(
+                              item.fotos[0].directus_files_id,
+                            )}
+                            transition:name={
+                              item.fotos[0]?.directus_files_id.id
+                            }
+                            alt={`${item.merk} ${item.model}`}
+                            width={400}
+                            height={300}
+                            class="h-full w-full object-cover"
+                          />
+                        </div>
+                      )}
+                    <div class="p-4">
+                      <h3 class="text-lg font-medium">{merk}</h3>
+                      <p class="text-neutral-400">{item.model}</p>
+                      <div class="mt-auto flex items-center justify-between pt-4">
+                        <span class="font-medium">
+                          {item.prijs
+                            ? Intl.NumberFormat("nl-NL", {
+                                style: "currency",
+                                currency: "EUR",
+                              }).format(item.prijs)
+                            : "Prijs op aanvraag"}
+                        </span>
+                        {item.verkocht && (
+                          <span class="text-red-500">Verkocht</span>
+                        )}
+                      </div>
+                    </div>
+                  </Card>
+                </a>
+              );
+            })
+          ) : (
+            <div class="w-full py-12 text-center">
+              <p>Geen voertuigen gevonden met de geselecteerde filters.</p>
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+<script>
+  document.addEventListener("astro:page-load", () => {
+    // @ts-ignore
+    htmx.process(document.body);
+  });
+</script>

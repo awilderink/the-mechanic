@@ -1,0 +1,336 @@
+---
+import type { GetStaticPaths } from "astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { Image } from "astro:assets";
+import "keen-slider/keen-slider.min.css";
+import Title from "../../components/Title.astro";
+import Icon from "../../components/Icon.astro";
+import Button from "../../components/Button.astro";
+import Accordion from "../../components/Accordion.astro";
+import AccordionItem from "../../components/AccordionItem.astro";
+import HighlightedSlider from "../../components/HighlightedSlider.astro";
+import Card from "../../components/Card.astro";
+import directus from "../../lib/directus";
+import { readItems } from "@directus/sdk";
+import { getDirectusAssetUrl } from "../../utils";
+
+export const prerender = true;
+
+const { slug } = Astro.params;
+
+const voorraadItems = await directus.request(
+  readItems("voorraad", {
+    limit: 1,
+    fields: ["*", { merk: ["*"], fotos: [{ directus_files_id: ["*"] }] }],
+    filter: {
+      slug: {
+        _eq: slug as string,
+      },
+    },
+  })
+);
+
+const otherItems = await directus.request(
+  readItems("voorraad", {
+    limit: 3,
+    fields: ["*", { merk: ["naam"], fotos: [{ directus_files_id: ["*"] }] }],
+    sort: ["-user_created"],
+    filter: {
+      slug: {
+        _neq: slug as string,
+      },
+    },
+  })
+);
+
+const voorraadItem = voorraadItems[0];
+const fotos = voorraadItem.fotos.filter((image) => typeof image !== "number");
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const voorraad = await directus.request(
+    readItems("voorraad", {
+      fields: ["slug"],
+    })
+  );
+  return voorraad.map((item) => ({
+    params: { slug: item.slug },
+    props: { item },
+  }));
+};
+
+const merk =
+  typeof voorraadItem.merk !== "number" ? voorraadItem.merk.naam : "Onbekend";
+---
+
+<style>
+  .car-grid {
+    grid-template-areas:
+      "images"
+      "thumbnails"
+      "details"
+      "actions"
+      "info";
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 768px) {
+    .car-grid {
+      grid-template-areas:
+        "images thumbnails"
+        "images details"
+        "images details"
+        "info   details";
+      grid-template-columns: 6fr 4fr;
+      grid-template-rows: auto auto 1fr auto;
+    }
+  }
+</style>
+<BaseLayout>
+  <section class="p-4">
+    <div
+      class="car-grid container mx-auto grid max-w-6xl gap-4 pt-24 md:flex-row md:gap-10"
+    >
+      <div
+        id="keen-slider"
+        transition:name={fotos[0]?.directus_files_id.id}
+        class="relative flex basis-3/5 overflow-hidden rounded-xl [grid-area:images]"
+      >
+        {
+          fotos.map((image) => (
+            <Image
+              class="keen-slider__slide h-full w-full object-cover"
+              alt={image.directus_files_id.title}
+              height={606}
+              width={887}
+              src={getDirectusAssetUrl(image.directus_files_id)}
+            />
+          ))
+        }
+        <div class="text-primary absolute right-6 bottom-6 flex gap-2">
+          <button id="prev-slide" aria-label="Vorige">
+            <Icon name="circle-arrow-left" class="h-10 w-10" />
+          </button>
+          <button id="next-slide" aria-label="Volgende">
+            <Icon name="circle-arrow-right" class="h-10 w-10" />
+          </button>
+        </div>
+      </div>
+      <div class="min-w-0 [grid-area:thumbnails]">
+        <h1 class="text-primary text-2xl md:text-4xl">
+          {merk}{" "}
+          {voorraadItem.model}
+        </h1>
+        <div id="thumbnails" class="keen-slider mt-2 flex overflow-hidden">
+          {
+            fotos.map((image) => (
+              <div class="keen-slider__slide group relative aspect-[4/3] overflow-hidden rounded-md">
+                <div class="absolute inset-0 bg-neutral-200/50 transition-colors duration-75 group-[.active]:bg-neutral-200/0 hover:bg-neutral-200/0" />
+                <Image
+                  alt=""
+                  height={42}
+                  width={200}
+                  class="h-full w-full object-cover"
+                  src={getDirectusAssetUrl(image.directus_files_id)}
+                />
+              </div>
+            ))
+          }
+        </div>
+      </div>
+      <div class="relative mt-2 flex flex-col [grid-area:details]">
+        <div class="sticky top-8 z-10">
+          {
+            voorraadItem.highlight && (
+              <Title variant="tertiary" class="text-primary mb-2">
+                {voorraadItem.highlight}
+              </Title>
+            )
+          }
+          <div>
+            <dl
+              class="[&_dd]:text-primary grid grid-cols-2 gap-6 font-light md:grid-cols-3 [&_dt]:text-neutral-500"
+            >
+              <div>
+                <dt>Bouwjaar</dt>
+                <dd>{voorraadItem.bouwjaar}</dd>
+              </div>
+              <div>
+                <dt>Km stand</dt>
+                <dd>
+                  {
+                    Intl.NumberFormat("nl-NL").format(
+                      Number(voorraadItem.km_stand)
+                    )
+                  } km
+                </dd>
+              </div>
+              <div>
+                <dt>Prijs</dt>
+                <dd>
+                  {
+                    Intl.NumberFormat("nl-NL", {
+                      currency: "EUR",
+                      style: "currency",
+                    }).format(Number(voorraadItem.prijs))
+                  }
+                </dd>
+              </div>
+              <div>
+                <dt>Brandstof</dt>
+                <dd class="capitalize">{voorraadItem.brandstof}</dd>
+              </div>
+              <div>
+                <dt>Motorinhoud</dt>
+                <dd>{voorraadItem.motor_inhoud}</dd>
+              </div>
+              <div>
+                <dt>Kleur</dt>
+                <dd>{voorraadItem.kleur}</dd>
+              </div>
+            </dl>
+          </div>
+          <div class="mt-4 flex flex-col gap-2">
+            <Button class="flex items-center justify-center gap-2 font-thin">
+              <Icon class="mr-2 h-4 w-4" name="phone" />
+              <span>070 8209890</span>
+            </Button>
+            <Button
+              class="flex items-center justify-center gap-2 font-thin"
+              variant="secondary"
+            >
+              <Icon name="email" class="mr-2 h-4 w-4" />
+              info@themechanic.nl
+            </Button>
+          </div>
+        </div>
+      </div>
+      <div class="container mx-auto mt-10 max-w-6xl [grid-area:info]">
+        <div class="flex items-center justify-between">
+          <h1 class="text-4xl">{merk}{" "}{voorraadItem.model}</h1>
+          <div class="flex gap-1">
+            <Icon name="linkedIn" class="h-9 w-9" />
+            <Icon name="facebook" class="h-9 w-9" />
+            <Icon name="instagram" class="h-9 w-9" />
+          </div>
+        </div>
+        <Accordion class="mt-8">
+          {
+            voorraadItem.teksten?.map(({ titel, tekst }, i) => (
+              <AccordionItem open={!i}>
+                <span slot="title">{titel}</span>
+                <div set:html={tekst} />
+              </AccordionItem>
+            ))
+          }
+        </Accordion>
+      </div>
+    </div>
+  </section>
+  <section class="bg-sand px-4 py-14">
+    <div class="container mx-auto max-w-4xl">
+      <HighlightedSlider>
+        {
+          otherItems?.map((item) => {
+            const merk = typeof item.merk !== "number" ? item.merk.naam : "Onbekend";
+            const fotos = item.fotos.filter(
+              (image) => typeof image !== "number"
+            );
+            return (
+              <a
+                class="keen-slider__slide md:basis-1/3"
+                href={`/voorraad/${item.slug}`}
+              >
+                <Card>
+                  <Image
+                    slot="image"
+                    transition:name={fotos[0]?.directus_files_id.id}
+                    src={getDirectusAssetUrl(fotos[0]?.directus_files_id)}
+                    alt="image1"
+                    width="400"
+                    height="100"
+                    class="w-full"
+                  />
+                  <slot name="title">{merk}</slot>
+                  <div class="text-neutral-400">{item.model}</div>
+                  <div class="mt-8 flex items-center justify-between text-sm">
+                    <span>
+                      {!!item.prijs &&
+                        Intl.NumberFormat("nl-NL", {
+                          style: "currency",
+                          currency: "EUR",
+                        }).format(Number(item.prijs))}
+                    </span>
+                    <Icon
+                      class="h-10 transition-transform hover:translate-x-1"
+                      name="circle-arrow-right"
+                    />
+                  </div>
+                </Card>
+              </a>
+            );
+          })
+        }
+      </HighlightedSlider>
+    </div>
+  </section>
+</BaseLayout>
+<script>
+  import KeenSlider, { type KeenSliderInstance } from "keen-slider";
+
+  document.addEventListener("astro:page-load", () => {
+    const sliderEl = document.querySelector("#keen-slider");
+    const thumbnailsEl = document.querySelector("#thumbnails");
+    if (!sliderEl || !thumbnailsEl) return;
+
+    const slider = new KeenSlider("#keen-slider");
+    const next = document.querySelector("#next-slide");
+
+    next?.addEventListener("click", () => {
+      slider.next();
+    });
+
+    const prev = document.querySelector("#prev-slide");
+
+    prev?.addEventListener("click", () => {
+      slider.prev();
+    });
+
+    const ThumbnailPlugin =
+      (main: KeenSliderInstance) => (slider: KeenSliderInstance) => {
+        const removeActive = () => {
+          slider.slides.forEach((slide) => {
+            slide.classList.remove("active");
+          });
+        };
+
+        const addActive = (idx: number) => {
+          slider.slides[idx].classList.add("active");
+        };
+
+        const addClickEvents = () => {
+          slider.slides.forEach((slide, idx) => {
+            slide.addEventListener("click", () => {
+              main.moveToIdx(idx);
+            });
+          });
+        };
+
+        slider.on("created", () => {
+          addActive(slider.track.details.rel);
+          addClickEvents();
+          main.on("animationStarted", (main) => {
+            removeActive();
+            const next = main.animator.targetIdx || 0;
+            addActive(main.track.absToRel(next));
+            slider.moveToIdx(Math.min(slider.track.details.maxIdx, next));
+          });
+        });
+      };
+
+    new KeenSlider(
+      "#thumbnails",
+      { initial: 0, slides: { perView: 6, spacing: 8 } },
+      [ThumbnailPlugin(slider)]
+    );
+  });
+</script>

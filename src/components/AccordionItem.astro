@@ -12,7 +12,7 @@ const { props, class: _class, open } = Astro.props;
 >
   <button
     @click="setActiveAccordion(id)"
-    class="flex w-full select-none items-center justify-between p-4 text-left group-hover:underline"
+    class="flex w-full items-center justify-between p-4 text-left select-none group-hover:underline"
   >
     <slot name="title" />
     <svg
@@ -27,7 +27,9 @@ const { props, class: _class, open } = Astro.props;
       stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg
     >
   </button>
-  <div class="px-8 pb-8" x-show="activeAccordion==id" x-collapse x-cloak>
-    <slot />
+  <div x-show="activeAccordion==id" x-collapse x-cloak>
+    <div class="px-8 pb-8">
+      <slot />
+    </div>
   </div>
 </div>

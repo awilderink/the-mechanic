@@ -1,5 +1,4 @@
 ---
-import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
 import Title from "../components/Title.astro";
 import Button from "../components/Button.astro";
 import { Image } from "astro:assets";
@@ -7,31 +6,35 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Card from "../components/Card.astro";
 import Icon from "../components/Icon.astro";
 import HighlightedSlider from "../components/HighlightedSlider.astro";
-import { db, Voorraad } from "astro:db";
+import directus from "../lib/directus";
+import { readSingleton, readItems } from "@directus/sdk";
+import { getDirectusAssetUrl } from "../utils";
 
-const voorraad = await db
-  .select()
-  .from(Voorraad)
-  .orderBy(Voorraad.datum_binnenkomst)
-  .limit(3);
+const global = await directus.request(readSingleton("global"));
+const voorraad = await directus.request(
+  readItems("voorraad", {
+    limit: 3,
+    fields: ["*", { merk: ["naam"], fotos: [{ directus_files_id: ["*"] }] }],
+  }),
+);
 ---
 
-<BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
+<BaseLayout title={global.title} description="">
   <div class="relative flex h-[100dvh] flex-col justify-center p-4 text-white">
     <video
       autoplay
       playsinline
       muted
       loop
-      class="absolute bottom-0 left-0 right-0 top-0 z-0 h-full w-full object-cover"
+      class="absolute top-0 right-0 bottom-0 left-0 z-0 h-full w-full object-cover"
     >
       <source src="/banner.mp4" type="video/mp4" />
     </video>
     <div
-      class="absolute bottom-0 left-0 right-0 top-0 bg-gradient-to-b from-black/0 to-black/50"
+      class="absolute top-0 right-0 bottom-0 left-0 bg-gradient-to-b from-black/0 to-black/50"
     >
     </div>
-    <div class="container relative mx-auto flex max-w-4xl">
+    <div class="relative container mx-auto flex max-w-4xl">
       <div class="space-y-2 md:basis-1/2">
         <Title variant="tertiary" class="text-xl">
           <h1>The Mechanic</h1>
@@ -70,7 +73,7 @@ const voorraad = await db
           </ul>
           <a href="/">
             <Icon
-              class="ml-auto mt-4 h-10 transition-transform hover:translate-x-1"
+              class="mt-4 ml-auto h-10 transition-transform hover:translate-x-1"
               name="circle-arrow-right"
             />
           </a>
@@ -85,7 +88,7 @@ const voorraad = await db
           </ul>
           <a href="/">
             <Icon
-              class="ml-auto mt-4 h-10 transition-transform hover:translate-x-1"
+              class="mt-4 ml-auto h-10 transition-transform hover:translate-x-1"
               name="circle-arrow-right"
             />
           </a>
@@ -103,7 +106,7 @@ const voorraad = await db
           </ul>
           <a href="/">
             <Icon
-              class="ml-auto mt-4 h-10 transition-transform hover:translate-x-1"
+              class="mt-4 ml-auto h-10 transition-transform hover:translate-x-1"
               name="circle-arrow-right"
             />
           </a>
@@ -125,7 +128,7 @@ const voorraad = await db
           <Title variant="tertiary">
             <span class="text-zinc-500">Over ons</span>
           </Title>
-          <div class="mt-2 text-xl text-primary md:text-4xl md:leading-normal">
+          <div class="text-primary mt-2 text-xl md:text-4xl md:leading-normal">
             The Mechanic is een garage dat is ontstaan door liefde voor auto's
             en de overtuiging dat het anders kan.
           </div>
@@ -178,42 +181,51 @@ const voorraad = await db
       <div class="mt-24">
         <HighlightedSlider>
           {
-            voorraad?.map((item) => (
-              <a
-                class="keen-slider__slide md:basis-1/3"
-                href={`/voorraad/${item.voertuignr_hexon}`}
-              >
-                <Card>
-                  <Image
-                    slot="image"
-                    transition:name={item.afbeeldingen?.split(",")[0] || ""}
-                    src={item.afbeeldingen?.split(",")[0] || ""}
-                    alt="image1"
-                    width="400"
-                    height="100"
-                    class="w-full"
-                  />
-                  <slot name="title">{item.merk}</slot>
-                  <div class="text-neutral-400">{item.type}</div>
-                  <div class="mt-8 flex items-center justify-between text-sm">
-                    <span>
-                      {Intl.NumberFormat("nl-NL", {
-                        style: "currency",
-                        currency: "EUR",
-                      }).format(Number(item.verkoopprijs_particulier_bedrag))}
-                    </span>
-                    <Icon
-                      class="h-10 transition-transform hover:translate-x-1"
-                      name="circle-arrow-right"
-                    />
-                  </div>
-                </Card>
-              </a>
-            ))
+            voorraad?.map((item) =>
+              item.fotos.map((foto, i) => {
+                const merk =
+                  typeof item.merk !== "number" ? item.merk.naam : "Onbekend";
+                return (
+                  !i &&
+                  typeof foto !== "number" && (
+                    <a
+                      class="keen-slider__slide h-inherit md:basis-1/3"
+                      href={`/voorraad/${item.slug}`}
+                    >
+                      <Card class="h-full">
+                        <Image
+                          slot="image"
+                          transition:name={foto.directus_files_id.id}
+                          src={getDirectusAssetUrl(foto.directus_files_id)}
+                          alt="image1"
+                          width={400}
+                          height={100}
+                          class="h-full w-full object-cover"
+                        />
+                        <slot name="title">{merk}</slot>
+                        <div class="text-neutral-400">{item.model}</div>
+                        <div class="mt-8 flex items-center justify-between text-sm">
+                          <span>
+                            {!!item.prijs &&
+                              Intl.NumberFormat("nl-NL", {
+                                style: "currency",
+                                currency: "EUR",
+                              }).format(item.prijs!)}
+                          </span>
+                          <Icon
+                            class="h-10 transition-transform hover:translate-x-1"
+                            name="circle-arrow-right"
+                          />
+                        </div>
+                      </Card>
+                    </a>
+                  )
+                );
+              }),
+            )
           }
         </HighlightedSlider>
       </div>
     </div>
   </section>
 </BaseLayout>
-<script></script>

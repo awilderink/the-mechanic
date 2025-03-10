@@ -3,39 +3,51 @@ import Button from "./Button.astro";
 import HeaderLink from "./HeaderLink.astro";
 import TextLogo from "./TextLogo.astro";
 
-import type {} from "astro/types";
+interface Props {
+  transparent?: boolean;
+}
+
+const { transparent } = Astro.props as { transparent?: boolean };
 ---
 
-<header class="fixed z-50 top-0 right-0 left-0 transition-transform">
-  <nav class="bg-white p-4">
-    <div class="container max-w-4xl mx-auto flex justify-between items-center">
+<header
+  class="fixed top-0 right-0 left-0 z-50 transition-transform"
+  id="site-header"
+>
+  <nav class:list={[" p-4", { "bg-transparent": transparent, "bg-white": !transparent }]}>
+    <div class="container mx-auto flex max-w-4xl items-center justify-between">
       <a href="/">
-        <TextLogo class="h-6 md:h-8 text-[#b0b1b3]" />
+        <TextLogo class="h-6 text-[#b0b1b3] md:h-8" />
       </a>
-      <div class="hidden md:flex items-center gap-6">
+      <div class="hidden items-center gap-6 md:flex">
         <HeaderLink href="/diensten">Diensten</HeaderLink>
-        <HeaderLink href="/about">Voorraad</HeaderLink>
+        <HeaderLink href="/voorraad">Voorraad</HeaderLink>
         <HeaderLink href="/about">Over</HeaderLink>
         <Button variant="tertiary">Contact</Button>
       </div>
     </div>
   </nav>
 </header>
-<script>
-  let prevScrollPos = window.scrollY;
-  const header = document.querySelector("header");
-  if (header) {
-    window.addEventListener("scroll", () => {
-      const currentScrollPos = window.scrollY;
-      if (prevScrollPos > currentScrollPos || currentScrollPos <= 0) {
-        // Scrolling up
-        header.style.transform = "translateY(0)";
-      } else {
-        // Scrolling down
-        header.style.transform = "translateY(-100%)";
-      }
 
-      prevScrollPos = currentScrollPos;
-    });
-  }
+<script is:inline>
+  document.addEventListener("astro:page-load", () => {
+    let prevScrollPos = window.scrollY;
+    const header = document.getElementById("site-header");
+
+    if (header) {
+      const handleScroll = () => {
+        const currentScrollPos = window.scrollY;
+        if (prevScrollPos > currentScrollPos || currentScrollPos <= 0) {
+          // Scrolling up
+          header.style.transform = "translateY(0)";
+        } else {
+          // Scrolling down
+          header.style.transform = "translateY(-100%)";
+        }
+        prevScrollPos = currentScrollPos;
+      };
+
+      window.addEventListener("scroll", handleScroll);
+    }
+  });
 </script>
