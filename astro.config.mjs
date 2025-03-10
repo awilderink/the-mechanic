@@ -1,17 +1,29 @@
-import tailwind from "@astrojs/tailwind";
-import vercel from "@astrojs/vercel/serverless";
-import { defineConfig } from "astro/config";
 import alpinejs from "@astrojs/alpinejs";
+import { defineConfig, envField } from "astro/config";
+import tailwindcss from "@tailwindcss/vite";
 
-import db from "@astrojs/db";
+import { loadEnv } from "vite";
+
+const { DIRECTUS_URL } = loadEnv(process.env.NODE_ENV, process.cwd(), "");
 
 // https://astro.build/config
 export default defineConfig({
   site: "https://themechanic.nl",
+
   image: {
-    domains: ["doorlinkenvoorraad.nl"]
+      domains: [DIRECTUS_URL],
+	},
+
+  integrations: [alpinejs({entrypoint: "./src/entrypoint.ts"})],
+  output: "static",
+
+  vite: {
+    plugins: [tailwindcss()],
   },
-  integrations: [tailwind(), alpinejs(), db()],
-  output: "server",
-  adapter: vercel()
+
+  env: {
+    schema: {
+      DIRECTUS_URL: envField.string({ context: 'server', access: 'secret' })
+    }
+   },
 });

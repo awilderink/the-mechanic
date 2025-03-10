@@ -6,7 +6,7 @@ import TextLogo from "./TextLogo.astro";
 import type {} from "astro/types";
 ---
 
-<header class="fixed z-50 top-0 right-0 left-0 transition-transform">
+<header class="fixed z-50 top-0 right-0 left-0 transition-transform" id="site-header">
   <nav class="bg-white p-4">
     <div class="container max-w-4xl mx-auto flex justify-between items-center">
       <a href="/">
@@ -21,21 +21,26 @@ import type {} from "astro/types";
     </div>
   </nav>
 </header>
-<script>
-  let prevScrollPos = window.scrollY;
-  const header = document.querySelector("header");
-  if (header) {
-    window.addEventListener("scroll", () => {
-      const currentScrollPos = window.scrollY;
-      if (prevScrollPos > currentScrollPos || currentScrollPos <= 0) {
-        // Scrolling up
-        header.style.transform = "translateY(0)";
-      } else {
-        // Scrolling down
-        header.style.transform = "translateY(-100%)";
-      }
 
-      prevScrollPos = currentScrollPos;
-    });
-  }
+<script is:inline>
+  document.addEventListener('astro:page-load', () => {
+    let prevScrollPos = window.scrollY;
+    const header = document.getElementById("site-header");
+    
+    if (header) {
+      const handleScroll = () => {
+        const currentScrollPos = window.scrollY;
+        if (prevScrollPos > currentScrollPos || currentScrollPos <= 0) {
+          // Scrolling up
+          header.style.transform = "translateY(0)";
+        } else {
+          // Scrolling down
+          header.style.transform = "translateY(-100%)";
+        }
+        prevScrollPos = currentScrollPos;
+      };
+      
+      window.addEventListener("scroll", handleScroll);
+    }
+  });
 </script>

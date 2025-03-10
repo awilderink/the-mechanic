@@ -1,8 +1,7 @@
 ---
-import { twMerge } from "tailwind-merge";
 import type { HTMLAttributes } from "astro/types";
-
 import { cva, type VariantProps } from "class-variance-authority";
+import { twMerge } from "tailwind-merge";
 
 const title = cva("flex items-center gap-3", {
   variants: {
@@ -19,7 +18,7 @@ interface Props extends HTMLAttributes<"div">, VariantProps<typeof title> {}
 const { variant = "primary", class: _class, ...props } = Astro.props;
 ---
 
-<div {...props} class={title({ variant, class: _class })}>
+<div {...props} class={twMerge(title({ variant, class: _class }), _class)}>
   <svg width="8" height="8" fill="currentColor">
     <circle cx="4" cy="4" r="4"></circle>
   </svg>
