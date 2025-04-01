@@ -1,8 +1,6 @@
 ---
 import type { GetStaticPaths } from "astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { Image } from "astro:assets";
-import "keen-slider/keen-slider.min.css";
 import Title from "../../components/Title.astro";
 import Icon from "../../components/Icon.astro";
 import Button from "../../components/Button.astro";
@@ -12,7 +10,7 @@ import HighlightedSlider from "../../components/HighlightedSlider.astro";
 import Card from "../../components/Card.astro";
 import directus from "../../lib/directus";
 import { readItems } from "@directus/sdk";
-import { getDirectusAssetUrl } from "../../utils";
+import DirectusImage from "../../components/DirectusImage.astro";
 
 export const prerender = true;
 
@@ -27,7 +25,7 @@ const voorraadItems = await directus.request(
         _eq: slug as string,
       },
     },
-  })
+  }),
 );
 
 const otherItems = await directus.request(
@@ -40,7 +38,7 @@ const otherItems = await directus.request(
         _neq: slug as string,
       },
     },
-  })
+  }),
 );
 
 const voorraadItem = voorraadItems[0];
@@ -50,7 +48,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const voorraad = await directus.request(
     readItems("voorraad", {
       fields: ["slug"],
-    })
+    }),
   );
   return voorraad.map((item) => ({
     params: { slug: item.slug },
@@ -96,13 +94,13 @@ const merk =
         class="relative flex basis-3/5 overflow-hidden rounded-xl [grid-area:images]"
       >
         {
-          fotos.map((image) => (
-            <Image
-              class="keen-slider__slide h-full w-full object-cover"
-              alt={image.directus_files_id.title}
+          fotos.map((image, i) => (
+            <DirectusImage
+              class="keen-slider__slide aspect-[887/606] h-full w-full"
               height={606}
               width={887}
-              src={getDirectusAssetUrl(image.directus_files_id)}
+              loading={!i ? "eager" : "lazy"}
+              file={image.directus_files_id}
             />
           ))
         }
@@ -123,14 +121,13 @@ const merk =
         <div id="thumbnails" class="keen-slider mt-2 flex overflow-hidden">
           {
             fotos.map((image) => (
-              <div class="keen-slider__slide group relative aspect-[4/3] overflow-hidden rounded-md">
+              <div class="keen-slider__slide group relative aspect-[61/42] overflow-hidden rounded-md">
                 <div class="absolute inset-0 bg-neutral-200/50 transition-colors duration-75 group-[.active]:bg-neutral-200/0 hover:bg-neutral-200/0" />
-                <Image
-                  alt=""
+                <DirectusImage
                   height={42}
-                  width={200}
+                  width={61}
                   class="h-full w-full object-cover"
-                  src={getDirectusAssetUrl(image.directus_files_id)}
+                  file={image.directus_files_id}
                 />
               </div>
             ))
@@ -159,7 +156,7 @@ const merk =
                 <dd>
                   {
                     Intl.NumberFormat("nl-NL").format(
-                      Number(voorraadItem.km_stand)
+                      Number(voorraadItem.km_stand),
                     )
                   } km
                 </dd>
@@ -231,9 +228,10 @@ const merk =
       <HighlightedSlider>
         {
           otherItems?.map((item) => {
-            const merk = typeof item.merk !== "number" ? item.merk.naam : "Onbekend";
+            const merk =
+              typeof item.merk !== "number" ? item.merk.naam : "Onbekend";
             const fotos = item.fotos.filter(
-              (image) => typeof image !== "number"
+              (image) => typeof image !== "number",
             );
             return (
               <a
@@ -241,13 +239,12 @@ const merk =
                 href={`/voorraad/${item.slug}`}
               >
                 <Card>
-                  <Image
+                  <DirectusImage
                     slot="image"
                     transition:name={fotos[0]?.directus_files_id.id}
-                    src={getDirectusAssetUrl(fotos[0]?.directus_files_id)}
-                    alt="image1"
-                    width="400"
-                    height="100"
+                    file={fotos[0]?.directus_files_id}
+                    width={358}
+                    height={233}
                     class="w-full"
                   />
                   <slot name="title">{merk}</slot>
@@ -330,7 +327,7 @@ const merk =
     new KeenSlider(
       "#thumbnails",
       { initial: 0, slides: { perView: 6, spacing: 8 } },
-      [ThumbnailPlugin(slider)]
+      [ThumbnailPlugin(slider)],
     );
   });
 </script>

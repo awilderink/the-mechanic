@@ -2,9 +2,8 @@
 import { readItems } from "@directus/sdk";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import directus from "../../lib/directus";
-import { Image } from "astro:assets";
-import Card from "../../components/Card.astro";
-import { getDirectusAssetUrl } from "../../utils";
+import DirectusImage from "../../components/DirectusImage.astro";
+import Title from "../../components/Title.astro";
 
 const { searchParams } = Astro.url;
 
@@ -73,10 +72,7 @@ const voorraadItems = await directus.request(
         </select>
       </div>
 
-      <div
-        id="results"
-        class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
-      >
+      <div id="results" class="flex flex-col gap-8">
         {
           voorraadItems.length ? (
             voorraadItems.map((item) => {
@@ -84,19 +80,17 @@ const voorraadItems = await directus.request(
                 typeof item.merk !== "number" ? item.merk.naam : "Onbekend";
               return (
                 <a href={`/voorraad/${item.slug}`} class="block">
-                  <Card class="flex h-full flex-col">
+                  <div class="flex overflow-hidden rounded-2xl bg-white">
                     {item.fotos &&
                       item.fotos.length > 0 &&
                       typeof item.fotos[0] !== "number" && (
-                        <div class="aspect-[4/3] overflow-hidden">
-                          <Image
-                            src={getDirectusAssetUrl(
-                              item.fotos[0].directus_files_id,
-                            )}
+                        <div class="aspect-[4/3] basis-1/2 overflow-hidden">
+                          <DirectusImage
+                            file={item.fotos[0].directus_files_id}
                             transition:name={
                               item.fotos[0]?.directus_files_id.id
                             }
-                            alt={`${item.merk} ${item.model}`}
+                            alt={item.model}
                             width={400}
                             height={300}
                             class="h-full w-full object-cover"
@@ -104,7 +98,7 @@ const voorraadItems = await directus.request(
                         </div>
                       )}
                     <div class="p-4">
-                      <h3 class="text-lg font-medium">{merk}</h3>
+                      <Title variant="tertiary">{merk}</Title>
                       <p class="text-neutral-400">{item.model}</p>
                       <div class="mt-auto flex items-center justify-between pt-4">
                         <span class="font-medium">
@@ -120,7 +114,7 @@ const voorraadItems = await directus.request(
                         )}
                       </div>
                     </div>
-                  </Card>
+                  </div>
                 </a>
               );
             })

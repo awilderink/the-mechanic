@@ -14,7 +14,12 @@ const { transparent } = Astro.props as { transparent?: boolean };
   class="fixed top-0 right-0 left-0 z-50 transition-transform"
   id="site-header"
 >
-  <nav class:list={[" p-4", { "bg-transparent": transparent, "bg-white": !transparent }]}>
+  <nav
+    class:list={[
+      "p-4",
+      { "bg-transparent": transparent, "bg-white": !transparent },
+    ]}
+  >
     <div class="container mx-auto flex max-w-4xl items-center justify-between">
       <a href="/">
         <TextLogo class="h-6 text-[#b0b1b3] md:h-8" />

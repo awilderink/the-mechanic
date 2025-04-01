@@ -8,7 +8,7 @@ import Icon from "../components/Icon.astro";
 import HighlightedSlider from "../components/HighlightedSlider.astro";
 import directus from "../lib/directus";
 import { readSingleton, readItems } from "@directus/sdk";
-import { getDirectusAssetUrl } from "../utils";
+import DirectusImage from "../components/DirectusImage.astro";
 
 const global = await directus.request(readSingleton("global"));
 const voorraad = await directus.request(
@@ -193,13 +193,13 @@ const voorraad = await directus.request(
                       href={`/voorraad/${item.slug}`}
                     >
                       <Card class="h-full">
-                        <Image
+                        <DirectusImage
                           slot="image"
                           transition:name={foto.directus_files_id.id}
-                          src={getDirectusAssetUrl(foto.directus_files_id)}
+                          file={foto.directus_files_id}
                           alt="image1"
-                          width={400}
-                          height={100}
+                          width={358}
+                          height={233}
                           class="h-full w-full object-cover"
                         />
                         <slot name="title">{merk}</slot>
