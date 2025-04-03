@@ -11,17 +11,17 @@ interface Global {
   description: string;
 }
 
-interface Merk {
+export interface Merk {
   id: string;
   naam: string;
 }
 
-interface Foto {
+export interface Foto {
   id: number;
   directus_files_id: DirectusFile;
 }
 
-interface Voorraad {
+export interface Voorraad {
   id: string;
   status: string;
   slug: string;

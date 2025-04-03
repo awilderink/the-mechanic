@@ -22,7 +22,7 @@
     "alpinejs": "^3.14.8",
     "astro": "^5.5.4",
     "class-variance-authority": "^0.7.1",
-    "keen-slider": "^6.8.6",
+    "embla-carousel": "^8.5.2",
     "tailwind-merge": "^3.0.2",
     "tailwindcss": "^4.0.12",
     "typescript": "^5.8.2"
