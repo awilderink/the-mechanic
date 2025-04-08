@@ -11,6 +11,11 @@ interface Global {
   description: string;
 }
 
+export interface Home {
+  id: string;
+  banner: DirectusFile;
+}
+
 export interface Merk {
   id: string;
   naam: string;
@@ -43,8 +48,10 @@ export interface Voorraad {
 
 interface Schema {
   global: Global;
+  home: Home;
   voorraad: Voorraad[];
   merken: Merk[];
+  directus_files: DirectusFile[];
 }
 
 const directus = createDirectus<Schema>(DIRECTUS_URL)

@@ -1,7 +1,7 @@
 ---
 import { Image, type RemoteImageProps } from "astro:assets";
-import { DIRECTUS_URL } from "astro:env/server";
 import type { DirectusFile } from "@directus/sdk";
+import { getDirectusUrl } from "../utils";
 
 export type Props = Omit<RemoteImageProps, "src" | "alt"> & {
   file: DirectusFile;
@@ -23,7 +23,7 @@ const {
   ...props
 } = Astro.props;
 
-const src = new URL(`${DIRECTUS_URL}/assets/${file.filename_disk}`);
+const src = new URL(getDirectusUrl(file));
 
 src.searchParams.set("width", width.toString());
 src.searchParams.set("height", height.toString());

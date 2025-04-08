@@ -27,19 +27,6 @@ const voorraadItems = await directus.request(
   }),
 );
 
-const otherItems = await directus.request(
-  readItems("voorraad", {
-    limit: 3,
-    fields: ["*", { merk: ["naam"], fotos: [{ directus_files_id: ["*"] }] }],
-    sort: ["-user_created"],
-    filter: {
-      slug: {
-        _neq: slug as string,
-      },
-    },
-  }),
-);
-
 const voorraadItem = voorraadItems[0];
 const fotos = voorraadItem.fotos.filter((image) => typeof image !== "number");
 

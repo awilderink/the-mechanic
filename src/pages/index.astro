@@ -6,29 +6,47 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Card from "../components/Card.astro";
 import Icon from "../components/Icon.astro";
 import directus from "../lib/directus";
-import { readSingleton, readItems } from "@directus/sdk";
+import { readSingleton } from "@directus/sdk";
 import HighlightedVoorraad from "../components/HighlightedVoorraad.astro";
+import { getDirectusUrl } from "../utils";
+import DirectusPicture from "../components/DirectusPicture.astro";
 
 const global = await directus.request(readSingleton("global"));
-const voorraad = await directus.request(
-  readItems("voorraad", {
-    limit: 3,
-    fields: ["*", { merk: ["naam"], fotos: [{ directus_files_id: ["*"] }] }],
-  }),
+const home = await directus.request(
+  readSingleton("home", { fields: ["*.*" as "*"] }),
 );
 ---
 
 <BaseLayout title={global.title} description="">
   <div class="relative flex h-[100dvh] flex-col justify-center p-4 text-white">
-    <video
-      autoplay
-      playsinline
-      muted
-      loop
-      class="absolute top-0 right-0 bottom-0 left-0 z-0 h-full w-full object-cover"
-    >
-      <source src="/banner.mp4" type="video/mp4" />
-    </video>
+    {
+      home.banner.type?.includes("video") && (
+        <video
+          autoplay
+          playsinline
+          muted
+          loop
+          class="absolute top-0 right-0 bottom-0 left-0 z-0 h-full w-full object-cover"
+        >
+          <source src={getDirectusUrl(home.banner)} type={home.banner.type} />
+        </video>
+      )
+    }
+    {
+      home.banner.type?.includes("image") && (
+        <DirectusPicture
+          file={home.banner}
+          sizes={[
+            { width: 320, height: 240 },
+            { width: 640, height: 480 },
+            { width: 1024, height: 768 },
+            { width: 1920, height: 1440 },
+          ]}
+          formats={["avif", "webp"]}
+          class="absolute top-0 right-0 bottom-0 left-0 z-0 h-full w-full object-cover"
+        />
+      )
+    }
     <div
       class="absolute top-0 right-0 bottom-0 left-0 bg-gradient-to-b from-black/0 to-black/50"
     >

@@ -9,7 +9,6 @@ const { searchParams } = Astro.url;
 
 const selectedMerk = searchParams.get("merk");
 const selectedVerkocht = searchParams.get("verkocht");
-
 const merken = await directus.request(readItems("merken"));
 
 const voorraadItems = await directus.request(
