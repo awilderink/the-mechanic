@@ -42,7 +42,8 @@ const home = await directus.request(
             { width: 1024, height: 768 },
             { width: 1920, height: 1440 },
           ]}
-          formats={["avif", "webp"]}
+          formats={["webp"]}
+          fit="cover"
           class="absolute top-0 right-0 bottom-0 left-0 z-0 h-full w-full object-cover"
         />
       )
@@ -58,12 +59,19 @@ const home = await directus.request(
         </Title>
         <h2 class="text-4xl font-semibold">Passie voor auto's</h2>
         <p class="block text-xl leading-7">
-          Meer dan 50 jaar ervaring in het vak, gespecialiseerd in Alfa Romeo,
-          Land Rover en Porsche
+          {home.banner_tekst}
         </p>
         <div class="flex flex-col gap-4 pt-8">
-          <Button variant="tertiary">Service & Onderhoud</Button>
-          <Button variant="outline">Bekijk Voorraad</Button>
+          <a href={home.cta_1_url}>
+            <Button class="w-full cursor-pointer" variant="tertiary"
+              >{home.cta_1_tekst}</Button
+            >
+          </a>
+          <a href={home.cta_2_url}>
+            <Button class="w-full cursor-pointer" variant="outline"
+              >{home.cta_2_tekst}</Button
+            >
+          </a>
         </div>
       </div>
     </div>

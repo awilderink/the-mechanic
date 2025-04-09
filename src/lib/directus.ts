@@ -14,6 +14,11 @@ interface Global {
 export interface Home {
   id: string;
   banner: DirectusFile;
+  banner_tekst: string;
+  cta_1_url: string;
+  cta_1_tekst: string;
+  cta_2_url: string;
+  cta_2_tekst: string;
 }
 
 export interface Merk {

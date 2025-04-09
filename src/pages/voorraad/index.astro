@@ -4,6 +4,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import directus from "../../lib/directus";
 import DirectusImage from "../../components/DirectusImage.astro";
 import Title from "../../components/Title.astro";
+import Button from "../../components/Button.astro";
 
 const { searchParams } = Astro.url;
 
@@ -78,8 +79,8 @@ const voorraadItems = await directus.request(
               const merk =
                 typeof item.merk !== "number" ? item.merk.naam : "Onbekend";
               return (
-                <a href={`/voorraad/${item.slug}`} class="block">
-                  <div class="flex overflow-hidden rounded-2xl bg-white">
+                <a href={`/voorraad/${item.slug}`}>
+                  <div class="flex flex-col overflow-hidden rounded-2xl bg-white md:flex-row">
                     {item.fotos &&
                       item.fotos.length > 0 &&
                       typeof item.fotos[0] !== "number" && (
@@ -96,22 +97,43 @@ const voorraadItems = await directus.request(
                           />
                         </div>
                       )}
-                    <div class="p-4">
-                      <Title variant="tertiary">{merk}</Title>
-                      <p class="text-neutral-400">{item.model}</p>
-                      <div class="mt-auto flex items-center justify-between pt-4">
-                        <span class="font-medium">
-                          {item.prijs
-                            ? Intl.NumberFormat("nl-NL", {
-                                style: "currency",
-                                currency: "EUR",
-                              }).format(item.prijs)
-                            : "Prijs op aanvraag"}
-                        </span>
-                        {item.verkocht && (
-                          <span class="text-red-500">Verkocht</span>
-                        )}
+                    <div class="space-y-6 px-8 py-12">
+                      <Title class="text-primary text-2xl" variant="tertiary">
+                        {merk}&nbsp;{item.model}
+                      </Title>
+                      <p class="text-sm font-light text-pretty">
+                        {item.highlight}
+                      </p>
+                      <div class="mt-2 grid grid-cols-3">
+                        <div class="space-y-1">
+                          <dt class="text-neutral-400">Bouwjaar</dt>
+                          <dd class="font-light">{item.bouwjaar}</dd>
+                        </div>
+                        <div class="space-y-1">
+                          <dt class="text-neutral-400">Km stand</dt>
+                          <dd class="font-light">
+                            {Intl.NumberFormat("nl-NL").format(item.km_stand)}
+                          </dd>
+                        </div>
+                        <div class="space-y-1">
+                          <dt class="text-neutral-400">Prijs</dt>
+                          <dd class="font-light">
+                            {item.prijs
+                              ? Intl.NumberFormat("nl-NL", {
+                                  style: "currency",
+                                  currency: "EUR",
+                                }).format(item.prijs)
+                              : "Op aanvraag"}
+                          </dd>
+                        </div>
                       </div>
+                      <Button
+                        size="sm"
+                        class="w-full cursor-pointer md:w-auto"
+                        variant="primary"
+                      >
+                        Bekijk model
+                      </Button>
                     </div>
                   </div>
                 </a>
