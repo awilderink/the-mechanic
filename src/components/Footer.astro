@@ -4,7 +4,7 @@ import Button from "../components/Button.astro";
 import Icon from "./Icon.astro";
 ---
 
-<footer class="bg-primary px-4 py-10 text-white md:py-16">
+<footer class="bg-neutral-600 px-4 py-10 text-white md:py-16">
   <div
     class="container mx-auto flex max-w-4xl flex-col justify-between gap-10 md:flex-row"
   >
@@ -32,13 +32,13 @@ import Icon from "./Icon.astro";
       </div>
       <div class="mt-12 flex flex-col gap-2">
         <a href="tel:0708209890">
-          <Button variant="secondary" size="sm">
+          <Button variant="outline" size="sm">
             <Icon name="phone" class="mr-2 inline-block h-5" />
             070 8209890
           </Button>
         </a>
         <a href="mailto:The Mechanic<info@themechanic.nl>">
-          <Button variant="secondary" size="sm">
+          <Button variant="outline" size="sm">
             <Icon name="email" class="mr-2 inline-block h-5" />
             info@themechanic.nl
           </Button>
@@ -85,6 +85,16 @@ import Icon from "./Icon.astro";
           <td>Gesloten</td>
         </tr>
       </table>
+    </div>
+    <div class="mt-auto space-y-4">
+      <img src="/rdw.svg" alt="RDW" height="1" width="100" class="grayscale" />
+      <img
+        src="/bovag.svg"
+        alt="Bovag"
+        height="1"
+        width="100"
+        class="grayscale"
+      />
     </div>
   </div>
 </footer>
