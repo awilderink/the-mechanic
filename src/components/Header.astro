@@ -30,6 +30,62 @@ const { transparent } = Astro.props as { transparent?: boolean };
         <HeaderLink href="/about">Over</HeaderLink>
         <Button variant="tertiary">Contact</Button>
       </div>
+      <div
+        class="md:hidden"
+        x-data="{ open: false }"
+        x-effect="open ? document.body.classList.add('overflow-hidden'): document.body.classList.remove('overflow-hidden')"
+      >
+        <div
+          @click="open = !open"
+          class="bg-tertiary relative z-20 flex size-12 cursor-pointer items-center justify-center rounded-full text-white"
+        >
+          <button class="cursor-pointer">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="size-8 transition-transform"
+              :class="{ 'rotate-45': open }"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1"
+                d="M4 9h16M4 15h16"
+                x-show="!open"></path>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1"
+                d="M12 4v16M4 12h16"
+                x-cloak
+                x-show="open"></path>
+            </svg>
+          </button>
+        </div>
+        <div
+          x-show="open"
+          x-collapse
+          x-cloak
+          class="bg-tertiary absolute top-0 right-0 z-10 w-full"
+        >
+          <div
+            class="flex h-dvh flex-col space-y-8 p-10 pt-32 text-4xl text-white [&_a]:block"
+          >
+            <a href="/diensten">Diensten</a>
+            <div class="space-y-6 pl-6 text-2xl text-white/90">
+              <a>Onderhoud</a>
+              <a>Restauratie</a>
+              <a>Inkoop Verkoop</a>
+            </div>
+            <a href="/voorraad">Voorraad</a>
+            <a href="/over-ons">Over ons</a>
+            <a href="/contact">Contact</a>
+            <div class="mt-auto text-2xl text-white/50">Passie voor auto's</div>
+          </div>
+        </div>
+      </div>
     </div>
   </nav>
 </header>
