@@ -10,6 +10,9 @@
     "astro": "astro"
   },
   "packageManager": "pnpm@9.15.0",
+  "engines": {
+    "node": "20"
+  },
   "dependencies": {
     "@alpinejs/collapse": "^3.14.9",
     "@astrojs/alpinejs": "^0.4.8",
