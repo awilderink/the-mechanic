@@ -33,7 +33,7 @@ const { transparent } = Astro.props as { transparent?: boolean };
       <div
         class="md:hidden"
         x-data="{ open: false }"
-        x-effect="open ? document.body.classList.add('overflow-hidden'): document.body.classList.remove('overflow-hidden')"
+        x-effect="open ? document.documentElement.classList.add('overflow-hidden') : document.documentElement.classList.remove('overflow-hidden')"
       >
         <div
           @click="open = !open"
