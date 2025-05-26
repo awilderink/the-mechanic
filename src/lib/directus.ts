@@ -51,12 +51,29 @@ export interface Voorraad {
   fotos: number[] | Foto[];
 }
 
+export interface Review {
+  id: string;
+  naam: string;
+  body: string;
+  waardering: number;
+}
+
+export interface Dienst {
+  id: string;
+  titel: string;
+  opsomming: { punt: string }[];
+  slug: string;
+  icoon: string & DirectusFile;
+}
+
 interface Schema {
   global: Global;
   home: Home;
   voorraad: Voorraad[];
   merken: Merk[];
+  diensten: Dienst[];
   directus_files: DirectusFile[];
+  reviews: Review[];
 }
 
 const directus = createDirectus<Schema>(DIRECTUS_URL)
