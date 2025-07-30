@@ -2,6 +2,7 @@
 import BaseHead from "../components/BaseHead.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import CookieBanner from "../components/CookieBanner.astro";
 import { ClientRouter } from "astro:transitions";
 import "../styles/global.css";
 
@@ -26,5 +27,6 @@ const { title, description, transparentHeader } = Astro.props;
       <slot />
     </main>
     <Footer />
+    <CookieBanner />
   </body>
 </html>
