@@ -5,16 +5,16 @@
  * Learn more: https://www.sanity.io/docs/cli
  */
 
-import { defineCliConfig } from "sanity/cli";
+import { defineCliConfig } from 'sanity/cli';
 
-const projectId = process.env.SANITY_STUDIO_PROJECT_ID || "bwy8myjl";
-const dataset = process.env.SANITY_STUDIO_DATASET || "production";
+const projectId = process.env.SANITY_STUDIO_PROJECT_ID || 'bwy8myjl';
+const dataset = process.env.SANITY_STUDIO_DATASET || 'production';
 
 export default defineCliConfig({
-  api: {
-    projectId,
-    dataset,
-  },
-  studioHost: process.env.SANITY_STUDIO_STUDIO_HOST || "themechanic",
-  autoUpdates: true,
+	api: {
+		projectId,
+		dataset,
+	},
+	studioHost: process.env.SANITY_STUDIO_STUDIO_HOST || 'themechanic',
+	autoUpdates: true,
 });

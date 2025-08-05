@@ -1,14 +1,13 @@
 ---
-import Title from "../components/Title.astro";
-import Button from "../components/Button.astro";
-import { Image } from "astro:assets";
-import BaseLayout from "../layouts/BaseLayout.astro";
-import Card from "../components/Card.astro";
-import Icon from "../components/Icon.astro";
-
-import HighlightedVoorraad from "../components/HighlightedVoorraad.astro";
-import { getDiensten, getGlobal, getHome, getReviews } from "../lib/sanity";
-import SanityImage from "../components/SanityImage.astro";
+import { Image } from 'astro:assets';
+import Button from '../components/Button.astro';
+import Card from '../components/Card.astro';
+import HighlightedVoorraad from '../components/HighlightedVoorraad.astro';
+import Icon from '../components/Icon.astro';
+import SanityImage from '../components/SanityImage.astro';
+import Title from '../components/Title.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getDiensten, getGlobal, getHome, getReviews } from '../lib/sanity';
 
 const global = await getGlobal();
 const home = await getHome();

@@ -1,32 +1,39 @@
 ---
-import { urlFor } from '../lib/sanity'
+import { urlFor } from '../lib/sanity';
 
 interface Props {
-  image: any
-  alt?: string
-  width?: number
-  height?: number
-  class?: string
-  loading?: 'lazy' | 'eager'
+	image: any;
+	alt?: string;
+	width?: number;
+	height?: number;
+	class?: string;
+	loading?: 'lazy' | 'eager';
 }
 
-const { image, alt = '', width, height, class: className, loading = 'lazy' } = Astro.props
+const {
+	image,
+	alt = '',
+	width,
+	height,
+	class: className,
+	loading = 'lazy',
+} = Astro.props;
 
 if (!image) {
-  return null
+	return null;
 }
 
-let imageUrl = urlFor(image)
+let imageUrl = urlFor(image);
 
 if (width) {
-  imageUrl = imageUrl.width(width)
+	imageUrl = imageUrl.width(width);
 }
 
 if (height) {
-  imageUrl = imageUrl.height(height)
+	imageUrl = imageUrl.height(height);
 }
 
-const src = imageUrl.url()
+const src = imageUrl.url();
 ---
 
 <img 

@@ -1,37 +1,37 @@
 ---
-import { cva, type VariantProps } from "class-variance-authority";
-import type { HTMLAttributes } from "astro/types";
+import type { HTMLAttributes } from 'astro/types';
+import { cva, type VariantProps } from 'class-variance-authority';
 
 const button = cva(
-  "py-4 px-8 rounded-full cursor-pointer hover:translate-y-[-1px]  font-neutral transition-transform active:translate-y-0 duration-200",
-  {
-    variants: {
-      variant: {
-        primary: "bg-primary text-white hover:bg-primary/90",
-        secondary: "bg-secondary text-white hover:bg-secondary/90",
-        tertiary: "bg-tertiary text-white hover:bg-tertiary/90",
-        outline: "bg-transparent border border-white border-1 text-white",
-      },
-      size: {
-        sm: "text-sm",
-        md: "text-md",
-        lg: "text-lg",
-      },
-    },
-    defaultVariants: {
-      variant: "primary",
-      size: "md",
-    },
-  },
+	'py-4 px-8 rounded-full cursor-pointer hover:translate-y-[-1px]  font-neutral transition-transform active:translate-y-0 duration-200',
+	{
+		variants: {
+			variant: {
+				primary: 'bg-primary text-white hover:bg-primary/90',
+				secondary: 'bg-secondary text-white hover:bg-secondary/90',
+				tertiary: 'bg-tertiary text-white hover:bg-tertiary/90',
+				outline: 'bg-transparent border border-white border-1 text-white',
+			},
+			size: {
+				sm: 'text-sm',
+				md: 'text-md',
+				lg: 'text-lg',
+			},
+		},
+		defaultVariants: {
+			variant: 'primary',
+			size: 'md',
+		},
+	},
 );
 
-interface Props extends HTMLAttributes<"button">, VariantProps<typeof button> {}
+interface Props extends HTMLAttributes<'button'>, VariantProps<typeof button> {}
 
 const {
-  variant = "primary",
-  size = "md",
-  class: _class,
-  ...props
+	variant = 'primary',
+	size = 'md',
+	class: _class,
+	...props
 } = Astro.props;
 ---
 

@@ -1,19 +1,19 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import Title from "../../components/Title.astro";
-import Button from "../../components/Button.astro";
-import { getMerken, getVoorraad } from "../../lib/sanity";
-import SanityImage from "../../components/SanityImage.astro";
+import Button from '../../components/Button.astro';
+import SanityImage from '../../components/SanityImage.astro';
+import Title from '../../components/Title.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getMerken, getVoorraad } from '../../lib/sanity';
 
 const { searchParams } = Astro.url;
 
-const selectedMerk = searchParams.get("merk");
-const selectedVerkocht = searchParams.get("verkocht");
+const selectedMerk = searchParams.get('merk');
+const selectedVerkocht = searchParams.get('verkocht');
 const merken = await getMerken();
 
 const voorraadItems = await getVoorraad({
-  ...(selectedMerk && { merk: selectedMerk }),
-  ...(selectedVerkocht && { verkocht: selectedVerkocht === "true" }),
+	...(selectedMerk && { merk: selectedMerk }),
+	...(selectedVerkocht && { verkocht: selectedVerkocht === 'true' }),
 });
 ---
 

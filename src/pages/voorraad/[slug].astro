@@ -1,31 +1,31 @@
 ---
-import type { GetStaticPaths } from "astro";
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import Icon from "../../components/Icon.astro";
-import Button from "../../components/Button.astro";
-import Accordion from "../../components/Accordion.astro";
-import AccordionItem from "../../components/AccordionItem.astro";
-import HighlightedVoorraad from "../../components/HighlightedVoorraad.astro";
-import { getVoorraad, getVoorraadItem } from "../../lib/sanity";
-import SanityImage from "../../components/SanityImage.astro";
+import type { GetStaticPaths } from 'astro';
+import Accordion from '../../components/Accordion.astro';
+import AccordionItem from '../../components/AccordionItem.astro';
+import Button from '../../components/Button.astro';
+import HighlightedVoorraad from '../../components/HighlightedVoorraad.astro';
+import Icon from '../../components/Icon.astro';
+import SanityImage from '../../components/SanityImage.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getVoorraad, getVoorraadItem } from '../../lib/sanity';
 
 export const prerender = true;
 
 const { slug } = Astro.params;
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const voorraadItems = await getVoorraad();
+	const voorraadItems = await getVoorraad();
 
-  return voorraadItems.map((item) => ({
-    params: { slug: item.slug.current },
-    props: { item },
-  }));
+	return voorraadItems.map((item) => ({
+		params: { slug: item.slug.current },
+		props: { item },
+	}));
 };
 
-const item = await getVoorraadItem("" + slug!);
+const item = await getVoorraadItem(String(slug));
 
 if (!item) {
-  return Astro.redirect("/404");
+	return Astro.redirect('/404');
 }
 ---
 
@@ -134,7 +134,7 @@ if (!item) {
                 <dd>
                   {
                     Intl.NumberFormat("nl-NL").format(
-                      Number(item.kilometerstand),
+                      Number(item.kilometerstand)
                     )
                   } km
                 </dd>
@@ -213,20 +213,20 @@ if (!item) {
 
   document.addEventListener("astro:page-load", () => {
     const mainCarouselNode = document.querySelector(
-      ".embla__viewport",
+      ".embla__viewport"
     ) as HTMLElement;
     const thumbCarouselNode = document.querySelector(
-      ".embla-thumbs__viewport",
+      ".embla-thumbs__viewport"
     ) as HTMLElement;
 
     const addThumbBtnsClickHandlers = (
       emblaApiMain: EmblaCarouselType,
-      emblaApiThumb: EmblaCarouselType,
+      emblaApiThumb: EmblaCarouselType
     ) => {
       const slidesThumbs = emblaApiThumb.slideNodes();
 
       const scrollToIndex = slidesThumbs.map(
-        (_, index) => () => emblaApiMain.scrollTo(index),
+        (_, index) => () => emblaApiMain.scrollTo(index)
       );
 
       slidesThumbs.forEach((slideNode, index) => {
@@ -242,7 +242,7 @@ if (!item) {
 
     const addToggleThumbBtnsActive = (
       emblaApiMain: EmblaCarouselType,
-      emblaApiThumb: EmblaCarouselType,
+      emblaApiThumb: EmblaCarouselType
     ) => {
       const slidesThumbs = emblaApiThumb.slideNodes();
 
@@ -265,10 +265,10 @@ if (!item) {
 
     const addPrevNextBtnsClickHandlers = (emblaApiMain: EmblaCarouselType) => {
       const prevBtn = document.querySelector(
-        ".embla-button__prev",
+        ".embla-button__prev"
       ) as HTMLElement;
       const nextBtn = document.querySelector(
-        ".embla-button__next",
+        ".embla-button__next"
       ) as HTMLElement;
 
       const scrollToPrev = () => emblaApiMain.scrollPrev();
@@ -292,11 +292,11 @@ if (!item) {
 
     const removeThumbBtnsClickHandlers = addThumbBtnsClickHandlers(
       emblaApiMain,
-      emblaApiThumb,
+      emblaApiThumb
     );
     const removeToggleThumbBtnsActive = addToggleThumbBtnsActive(
       emblaApiMain,
-      emblaApiThumb,
+      emblaApiThumb
     );
     const removePrevNextBtnsClickHandlers =
       addPrevNextBtnsClickHandlers(emblaApiMain);

@@ -1,22 +1,22 @@
 ---
-import Icon from "./Icon.astro";
-import Card from "./Card.astro";
-import { getVoorraad } from "../lib/sanity";
-import SanityImage from "./SanityImage.astro";
+import { getVoorraad } from '../lib/sanity';
+import Card from './Card.astro';
+import Icon from './Icon.astro';
+import SanityImage from './SanityImage.astro';
 
 interface Props {
-  exclude?: string;
+	exclude?: string;
 }
 
 const { exclude } = Astro.props;
 const otherItems = await getVoorraad({
-  uitgelicht: true,
-  verkocht: false,
+	uitgelicht: true,
+	verkocht: false,
 });
 
 const filteredItems = exclude
-  ? otherItems.filter((item) => item._id !== exclude)
-  : otherItems;
+	? otherItems.filter((item) => item._id !== exclude)
+	: otherItems;
 
 const displayItems = filteredItems.slice(0, 3);
 ---
