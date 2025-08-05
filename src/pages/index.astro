@@ -5,29 +5,21 @@ import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Card from "../components/Card.astro";
 import Icon from "../components/Icon.astro";
-import directus from "../lib/directus";
 
-import { readItems, readSingleton, type DirectusFile } from "@directus/sdk";
 import HighlightedVoorraad from "../components/HighlightedVoorraad.astro";
-import { getDirectusUrl } from "../utils";
-import DirectusPicture from "../components/DirectusPicture.astro";
-import DirectusImage from "../components/DirectusImage.astro";
+import { getDiensten, getGlobal, getHome, getReviews } from "../lib/sanity";
+import SanityImage from "../components/SanityImage.astro";
 
-const global = await directus.request(readSingleton("global"));
-const home = await directus.request(
-  readSingleton("home", { fields: ["*.*" as "*"] }),
-);
-
-const reviews = await directus.request(readItems("reviews"));
-const diensten = await directus.request(
-  readItems("diensten", { fields: ["*", { icoon: ["*"] }] }),
-);
+const global = await getGlobal();
+const home = await getHome();
+const diensten = await getDiensten();
+const reviews = await getReviews();
 ---
 
-<BaseLayout title={global.title} description="">
+<BaseLayout title={global?.title} description="">
   <div class="relative flex h-[100dvh] flex-col justify-center p-4 text-white">
     {
-      home.banner.type?.includes("video") && (
+      home?.bannerVideo && (
         <video
           autoplay
           playsinline
@@ -35,22 +27,17 @@ const diensten = await directus.request(
           loop
           class="absolute top-0 right-0 bottom-0 left-0 z-0 h-full w-full object-cover"
         >
-          <source src={getDirectusUrl(home.banner)} type={home.banner.type} />
+          <source src={home.bannerVideo.asset._ref} type="video/mp4" />
         </video>
       )
     }
     {
-      home.banner.type?.includes("image") && (
-        <DirectusPicture
-          file={home.banner}
-          sizes={[
-            { width: 320, height: 240 },
-            { width: 640, height: 480 },
-            { width: 1024, height: 768 },
-            { width: 1920, height: 1440 },
-          ]}
-          formats={["webp"]}
-          fit="cover"
+      home?.banner && (
+        <SanityImage
+          image={home.banner}
+          alt="Banner"
+          width={1920}
+          height={1080}
           class="absolute top-0 right-0 bottom-0 left-0 z-0 h-full w-full object-cover"
         />
       )
@@ -66,17 +53,17 @@ const diensten = await directus.request(
         </Title>
         <h2 class="font-neutral text-4xl">Passie voor auto's</h2>
         <p class="block text-xl leading-7 font-light">
-          {home.banner_tekst}
+          {home?.bannerTekst}
         </p>
         <div class="flex flex-col gap-4 pt-8">
-          <a href={home.cta_1_url}>
+          <a href={home?.cta1Url}>
             <Button class="w-full cursor-pointer" variant="tertiary"
-              >{home.cta_1_tekst}</Button
+              >{home?.cta1Tekst}</Button
             >
           </a>
-          <a href={home.cta_2_url}>
+          <a href={home?.cta2Url}>
             <Button class="w-full cursor-pointer" variant="outline"
-              >{home.cta_2_tekst}</Button
+              >{home?.cta2Tekst}</Button
             >
           </a>
         </div>
@@ -93,30 +80,33 @@ const diensten = await directus.request(
       </Title>
       <div class="mt-6 flex flex-col gap-4 md:flex-row">
         {
-          diensten.map(({ titel, opsomming, slug, icoon }) => (
+          diensten.map((dienst) => (
             <Card class="w-full space-y-4">
-              {icoon && (
+              {dienst.icoon && (
                 <div>
-                  <DirectusImage
-                    file={icoon as DirectusFile}
+                  <SanityImage
+                    image={dienst.icoon}
+                    alt={dienst.titel}
                     width={80}
                     height={80}
                     class="w-[80px]"
                   />
                 </div>
               )}
-              <div class="text-lg font-light">{titel}</div>
+              <div class="text-lg font-light">{dienst.titel}</div>
               <ul class="text-md flex-1 leading-9 font-light text-neutral-400">
-                {opsomming?.map(({ punt }) => (
-                  <li>{punt}</li>
+                {dienst.opsomming?.map((item) => (
+                  <li>{item.punt}</li>
                 ))}
               </ul>
-              <a href={"/diensten" + slug}>
-                <Icon
-                  class="mt-4 ml-auto h-10 transition-transform hover:translate-x-1"
-                  name="circle-arrow-right"
-                />
-              </a>
+              {dienst.slug && (
+                <a href={"/diensten/" + dienst.slug.current}>
+                  <Icon
+                    class="mt-4 ml-auto h-10 transition-transform hover:translate-x-1"
+                    name="circle-arrow-right"
+                  />
+                </a>
+              )}
             </Card>
           ))
         }

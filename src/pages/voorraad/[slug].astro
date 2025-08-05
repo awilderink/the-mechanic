@@ -1,49 +1,32 @@
 ---
 import type { GetStaticPaths } from "astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import Title from "../../components/Title.astro";
 import Icon from "../../components/Icon.astro";
 import Button from "../../components/Button.astro";
 import Accordion from "../../components/Accordion.astro";
 import AccordionItem from "../../components/AccordionItem.astro";
 import HighlightedVoorraad from "../../components/HighlightedVoorraad.astro";
-import directus from "../../lib/directus";
-import { readItems } from "@directus/sdk";
-import DirectusImage from "../../components/DirectusImage.astro";
+import { getVoorraad, getVoorraadItem } from "../../lib/sanity";
+import SanityImage from "../../components/SanityImage.astro";
 
 export const prerender = true;
 
 const { slug } = Astro.params;
 
-const voorraadItems = await directus.request(
-  readItems("voorraad", {
-    limit: 1,
-    fields: ["*", { merk: ["*"], fotos: [{ directus_files_id: ["*"] }] }],
-    filter: {
-      slug: {
-        _eq: slug as string,
-      },
-    },
-  }),
-);
-
-const voorraadItem = voorraadItems[0];
-const fotos = voorraadItem.fotos.filter((image) => typeof image !== "number");
-
 export const getStaticPaths: GetStaticPaths = async () => {
-  const voorraad = await directus.request(
-    readItems("voorraad", {
-      fields: ["slug"],
-    }),
-  );
-  return voorraad.map((item) => ({
-    params: { slug: item.slug },
+  const voorraadItems = await getVoorraad();
+
+  return voorraadItems.map((item) => ({
+    params: { slug: item.slug.current },
     props: { item },
   }));
 };
 
-const merk =
-  typeof voorraadItem.merk !== "number" ? voorraadItem.merk.naam : "Onbekend";
+const item = await getVoorraadItem("" + slug!);
+
+if (!item) {
+  return Astro.redirect("/404");
+}
 ---
 
 <style>
@@ -76,16 +59,16 @@ const merk =
     >
       <div
         class="embla__viewport relative overflow-hidden rounded-xl [grid-area:images]"
-        transition:name={fotos[0]?.directus_files_id.id}
+        transition:name={item.fotos?.[0].asset._ref}
       >
         <div class="embla__container flex gap-4">
           {
-            fotos.map((image) => (
-              <DirectusImage
+            item.fotos?.map((image) => (
+              <SanityImage
                 class="embla__slide min-w-0 shrink-0 grow-0 basis-full"
                 height={600}
                 width={800}
-                file={image.directus_files_id}
+                image={image.asset._ref}
               />
             ))
           }
@@ -108,20 +91,20 @@ const merk =
 
       <div class="min-w-0 [grid-area:thumbnails]">
         <h1 class="text-primary text-2xl md:text-4xl">
-          {merk}{" "}
-          {voorraadItem.model}
+          {item.merk?.naam}{" "}
+          {item.titel}
         </h1>
         <div class="embla-thumbs__viewport mt-2 overflow-hidden">
           <div class="embla-thumbs__container flex flex-row gap-1">
             {
-              fotos.map((image) => (
+              item.fotos?.map((foto) => (
                 <div class="group embla-thumbs__slide relative min-w-0 shrink-0 grow-0 basis-1/8 overflow-hidden rounded-md">
                   <div class="absolute inset-0 bg-neutral-200/50 transition-colors duration-75 group-[.active]:bg-neutral-200/0 hover:bg-neutral-200/0" />
-                  <DirectusImage
+                  <SanityImage
                     height={40}
                     width={60}
                     class="h-full w-full object-cover"
-                    file={image.directus_files_id}
+                    image={foto.asset._ref}
                   />
                 </div>
               ))
@@ -131,27 +114,27 @@ const merk =
       </div>
       <div class="relative mt-2 flex flex-col [grid-area:details]">
         <div class="sticky top-8 z-10">
-          {
-            voorraadItem.highlight && (
+          <!-- {
+            item?.highlight && (
               <Title variant="tertiary" class="text-primary mb-2">
                 {voorraadItem.highlight}
               </Title>
             )
-          }
+          } -->
           <div>
             <dl
               class="[&_dd]:text-primary grid grid-cols-2 gap-6 font-light md:grid-cols-3 [&_dt]:text-neutral-500"
             >
               <div>
                 <dt>Bouwjaar</dt>
-                <dd>{voorraadItem.bouwjaar}</dd>
+                <dd>{item.bouwjaar}</dd>
               </div>
               <div>
                 <dt>Km stand</dt>
                 <dd>
                   {
                     Intl.NumberFormat("nl-NL").format(
-                      Number(voorraadItem.km_stand),
+                      Number(item.kilometerstand),
                     )
                   } km
                 </dd>
@@ -163,22 +146,22 @@ const merk =
                     Intl.NumberFormat("nl-NL", {
                       currency: "EUR",
                       style: "currency",
-                    }).format(Number(voorraadItem.prijs))
+                    }).format(Number(item.prijs))
                   }
                 </dd>
               </div>
               <div>
                 <dt>Brandstof</dt>
-                <dd class="capitalize">{voorraadItem.brandstof}</dd>
+                <dd class="capitalize">{item.brandstof}</dd>
               </div>
-              <div>
+              <!-- <div>
                 <dt>Motorinhoud</dt>
-                <dd>{voorraadItem.motor_inhoud}</dd>
-              </div>
-              <div>
+                <dd>{item.motor_inhoud}</dd>
+              </div> -->
+              <!-- <div>
                 <dt>Kleur</dt>
-                <dd>{voorraadItem.kleur}</dd>
-              </div>
+                <dd>{item.kleur}</dd>
+              </div> -->
             </dl>
           </div>
           <div class="mt-4 flex flex-col gap-2">
@@ -198,19 +181,19 @@ const merk =
       </div>
       <div class="container mx-auto mt-10 max-w-6xl [grid-area:info]">
         <div class="flex items-center justify-between">
-          <h1 class="text-4xl">{merk}{" "}{voorraadItem.model}</h1>
+          <h1 class="text-4xl">{item.merk?.naam}{" "}{item.titel}</h1>
           <div class="flex gap-1">
-            <Icon name="linkedIn" class="h-9 w-9" />
-            <Icon name="facebook" class="h-9 w-9" />
-            <Icon name="instagram" class="h-9 w-9" />
+            <Icon name="linkedIn" class="size-9" />
+            <Icon name="facebook" class="size-9" />
+            <Icon name="instagram" class="size-9" />
           </div>
         </div>
         <Accordion class="mt-8">
           {
-            voorraadItem.teksten?.map(({ titel, tekst }, i) => (
+            item.specificaties?.map(({ label, waarde }, i) => (
               <AccordionItem open={!i}>
-                <span slot="title">{titel}</span>
-                <div set:html={tekst} />
+                <span slot="title">{label}</span>
+                <div set:html={waarde} />
               </AccordionItem>
             ))
           }
@@ -220,7 +203,7 @@ const merk =
   </section>
   <section class="bg-sand px-4 py-14">
     <div class="container mx-auto max-w-6xl">
-      <HighlightedVoorraad exclude={voorraadItem.slug} />
+      <HighlightedVoorraad exclude={item.slug.current} />
     </div>
   </section>
 </BaseLayout>

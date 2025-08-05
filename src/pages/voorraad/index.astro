@@ -1,26 +1,20 @@
 ---
-import { readItems } from "@directus/sdk";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import directus from "../../lib/directus";
-import DirectusImage from "../../components/DirectusImage.astro";
 import Title from "../../components/Title.astro";
 import Button from "../../components/Button.astro";
+import { getMerken, getVoorraad } from "../../lib/sanity";
+import SanityImage from "../../components/SanityImage.astro";
 
 const { searchParams } = Astro.url;
 
 const selectedMerk = searchParams.get("merk");
 const selectedVerkocht = searchParams.get("verkocht");
-const merken = await directus.request(readItems("merken"));
+const merken = await getMerken();
 
-const voorraadItems = await directus.request(
-  readItems("voorraad", {
-    filter: {
-      ...(selectedMerk && { merk: { _eq: selectedMerk } }),
-      verkocht: { _eq: selectedVerkocht === "true" },
-    },
-    fields: ["*", { merk: ["naam"], fotos: [{ directus_files_id: ["*"] }] }],
-  }),
-);
+const voorraadItems = await getVoorraad({
+  ...(selectedMerk && { merk: selectedMerk }),
+  ...(selectedVerkocht && { verkocht: selectedVerkocht === "true" }),
+});
 ---
 
 <BaseLayout
@@ -43,12 +37,9 @@ const voorraadItems = await directus.request(
         >
           <option value="">Alle merken</option>
           {
-            merken.map((merkItem) => (
-              <option
-                value={merkItem.id}
-                selected={selectedMerk == merkItem.id}
-              >
-                {merkItem.naam}
+            merken.map((merk) => (
+              <option value={merk.naam} selected={selectedMerk === merk.naam}>
+                {merk.naam}
               </option>
             ))
           }
@@ -76,34 +67,26 @@ const voorraadItems = await directus.request(
         {
           voorraadItems.length ? (
             voorraadItems.map((item) => {
-              const merk =
-                typeof item.merk !== "number" ? item.merk.naam : "Onbekend";
               return (
-                <a href={`/voorraad/${item.slug}`}>
+                <a href={`/voorraad/${item.slug.current}`}>
                   <div class="flex flex-col overflow-hidden rounded-2xl bg-white md:flex-row">
-                    {item.fotos &&
-                      item.fotos.length > 0 &&
-                      typeof item.fotos[0] !== "number" && (
-                        <div class="aspect-[4/3] basis-1/2 overflow-hidden">
-                          <DirectusImage
-                            file={item.fotos[0].directus_files_id}
-                            transition:name={
-                              item.fotos[0]?.directus_files_id.id
-                            }
-                            alt={item.model}
-                            width={400}
-                            height={300}
-                            class="h-full w-full object-cover"
-                          />
-                        </div>
-                      )}
+                    <div class="aspect-[4/3] basis-1/2 overflow-hidden">
+                      <SanityImage
+                        image={item.fotos?.[0].asset._ref}
+                        transition:name={item.fotos?.[0].asset._ref}
+                        alt={item.titel}
+                        width={400}
+                        height={300}
+                        class="h-full w-full object-cover"
+                      />
+                    </div>
                     <div class="space-y-6 px-8 py-12">
                       <Title class="text-primary text-2xl" variant="tertiary">
-                        {merk}&nbsp;{item.model}
+                        {item.merk?.naam}&nbsp;{item.titel}
                       </Title>
-                      <p class="text-sm font-light text-pretty">
+                      {/* <p class="text-sm font-light text-pretty">
                         {item.highlight}
-                      </p>
+                      </p> */}
                       <div class="mt-2 grid grid-cols-3">
                         <div class="space-y-1">
                           <dt class="text-neutral-400">Bouwjaar</dt>
@@ -112,7 +95,9 @@ const voorraadItems = await directus.request(
                         <div class="space-y-1">
                           <dt class="text-neutral-400">Km stand</dt>
                           <dd class="font-light">
-                            {Intl.NumberFormat("nl-NL").format(item.km_stand)}
+                            {Intl.NumberFormat("nl-NL").format(
+                              item?.kilometerstand || 0,
+                            )}
                           </dd>
                         </div>
                         <div class="space-y-1">
