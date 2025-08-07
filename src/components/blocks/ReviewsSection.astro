@@ -1,16 +1,13 @@
 ---
-import { getReviews } from '../../sanity/index.ts';
+import type { ReviewsSection } from '../../sanity/types';
 import Card from '../Card.astro';
 import Icon from '../Icon.astro';
 
 interface Props {
-	block: {
-		showReviews?: boolean;
-	};
+	block: ReviewsSection
 }
 
 const { block } = Astro.props;
-const reviews = block.showReviews ? await getReviews() : [];
 ---
 
 <section class="bg-sand overflow-hidden px-4 py-14">
@@ -20,13 +17,13 @@ const reviews = block.showReviews ? await getReviews() : [];
 				class="embla__container [&>*:nth-child(even)>*]:bg-primary -ml-4 flex [&>*:nth-child(even)>*]:text-white"
 			>
 				{
-					reviews.map(({ naam, body, waardering }) => (
+					block.reviews?.map(({ naam, body, waardering }) => (
 						<div class="embla__slide min-w-0 shrink-0 grow-0 basis-full pl-4 md:basis-1/2">
 							<Card class="h-full p-10">
 								<div class="-space-x-1">
 									{[...Array(5)].map((_, i) => (
 										<Icon
-											class={`inline h-4 ${i < waardering ? '' : 'opacity-30'}`}
+											class={`inline h-4 ${i < (waardering || 0) ? '' : 'opacity-30'}`}
 											name="star"
 										/>
 									))}

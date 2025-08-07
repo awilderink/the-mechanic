@@ -15,9 +15,8 @@ const { slug } = Astro.params;
 
 export const getStaticPaths: GetStaticPaths = async () => {
 	const voorraadItems = await getVoorraad();
-
 	return voorraadItems.map((item) => ({
-		params: { slug: item.slug.current },
+		params: { slug: item.slug?.current },
 		props: { item },
 	}));
 };
@@ -59,7 +58,7 @@ if (!item) {
     >
       <div
         class="embla__viewport relative overflow-hidden rounded-xl [grid-area:images]"
-        transition:name={item.fotos?.[0].asset._ref}
+        transition:name={item.fotos?.[0].asset?._ref}
       >
         <div class="embla__container flex gap-4">
           {
@@ -68,7 +67,7 @@ if (!item) {
                 class="embla__slide min-w-0 shrink-0 grow-0 basis-full"
                 height={600}
                 width={800}
-                image={image.asset._ref}
+                image={image.asset?._ref}
               />
             ))
           }
@@ -104,7 +103,7 @@ if (!item) {
                     height={40}
                     width={60}
                     class="h-full w-full object-cover"
-                    image={foto.asset._ref}
+                    image={foto.asset?._ref}
                   />
                 </div>
               ))
@@ -203,7 +202,7 @@ if (!item) {
   </section>
   <section class="bg-sand px-4 py-14">
     <div class="container mx-auto max-w-6xl">
-      <FeaturedVoorraad exclude={item.slug.current} />
+      <FeaturedVoorraad exclude={item.slug?.current} />
     </div>
   </section>
 </BaseLayout>

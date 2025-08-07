@@ -33,17 +33,6 @@ export const getHome = async () => {
 	return await client.fetch(homeQuery);
 };
 
-export const getReviews = async () => {
-	const reviewsQuery = defineQuery(`*[_type == "review"]{
-    _id,
-    naam,
-    body,
-    waardering
-  }`);
-
-	return await client.fetch(reviewsQuery);
-};
-
 export const getMerken = async () => {
 	const merkenQuery = defineQuery(`*[_type == "merk"]{
     _id,

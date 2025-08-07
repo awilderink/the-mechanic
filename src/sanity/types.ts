@@ -20,7 +20,12 @@ export type FeaturedVoorraadSection = {
 
 export type ReviewsSection = {
   _type: "reviewsSection";
-  showReviews?: boolean;
+  reviews?: Array<{
+    naam?: string;
+    body?: string;
+    waardering?: number;
+    _key: string;
+  }>;
 };
 
 export type CardSection = {
@@ -276,17 +281,6 @@ export type Merk = {
   };
 };
 
-export type Review = {
-  _id: string;
-  _type: "review";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  naam?: string;
-  body?: string;
-  waardering?: number;
-};
-
 export type TeamMember = {
   _id: string;
   _type: "teamMember";
@@ -494,7 +488,7 @@ export type SanityAssetSourceData = {
   url?: string;
 };
 
-export type AllSanitySchemaTypes = FeaturedVoorraadSection | ReviewsSection | CardSection | ContentSection | TeamSection | ImageSection | TextContent | Hero | BlockContent | Voorraad | Merk | Review | TeamMember | Page | Home | Global | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
+export type AllSanitySchemaTypes = FeaturedVoorraadSection | ReviewsSection | CardSection | ContentSection | TeamSection | ImageSection | TextContent | Hero | BlockContent | Voorraad | Merk | TeamMember | Page | Home | Global | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./src/sanity/index.ts
 // Variable: globalQuery
@@ -526,14 +520,6 @@ export type HomeQueryResult = {
     _key: string;
   } & TextContent> | null;
 } | null;
-// Variable: reviewsQuery
-// Query: *[_type == "review"]{    _id,    naam,    body,    waardering  }
-export type ReviewsQueryResult = Array<{
-  _id: string;
-  naam: string | null;
-  body: string | null;
-  waardering: number | null;
-}>;
 // Variable: merkenQuery
 // Query: *[_type == "merk"]{    _id,    naam,    logo  }
 export type MerkenQueryResult = Array<{
@@ -705,7 +691,6 @@ declare module "@sanity/client" {
   interface SanityQueries {
     "*[_type == \"global\"][0]{\n    _id,\n    title,\n    description\n  }": GlobalQueryResult;
     "*[_type == \"home\"][0]{\n    _id,\n    blocks\n  }": HomeQueryResult;
-    "*[_type == \"review\"]{\n    _id,\n    naam,\n    body,\n    waardering\n  }": ReviewsQueryResult;
     "*[_type == \"merk\"]{\n    _id,\n    naam,\n    logo\n  }": MerkenQueryResult;
     "*[_type == \"voorraad\" \n\t\t&& (!defined($merk) || merk->naam == $merk)\n\t\t&& (!defined($verkocht) || verkocht == $verkocht)\n\t\t&& (!defined($uitgelicht) || uitgelicht == $uitgelicht)\n\t]{\n    _id,\n    titel,\n    slug,\n    merk->{\n      _id,\n      naam,\n      logo\n    },\n    prijs,\n    bouwjaar,\n    kilometerstand,\n    brandstof,\n    transmissie,\n    verkocht,\n    uitgelicht,\n    fotos,\n    beschrijving,\n    specificaties\n  }": VoorraadQueryResult;
     "*[_type == \"voorraad\" && slug.current == $slug][0]{\n    _id,\n    titel,\n    slug,\n    merk->{\n      _id,\n      naam,\n      logo\n    },\n    prijs,\n    bouwjaar,\n    kilometerstand,\n    brandstof,\n    transmissie,\n    verkocht,\n    uitgelicht,\n    fotos,\n    beschrijving,\n    specificaties\n  }": VoorraadItemQueryResult;

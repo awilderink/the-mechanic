@@ -4,7 +4,6 @@ import { global } from './global';
 import { home } from './home';
 import { merk } from './merk';
 import { page } from './page';
-import { review } from './review';
 import { teamMember } from './teamMember';
 import { voorraad } from './voorraad';
 
@@ -13,7 +12,6 @@ export const schemaTypes = [
 	home,
 	page,
 	teamMember,
-	review,
 	merk,
 	voorraad,
 	blockContent,
