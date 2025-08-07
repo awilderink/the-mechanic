@@ -1,0 +1,90 @@
+---
+import Button from "../Button.astro";
+import SanityImage from "../SanityImage.astro";
+import Title from "../Title.astro";
+import Icon from "../Icon.astro";
+
+interface Props {
+  block: {
+    title?: string;
+    subtitle?: string;
+    description?: string;
+    image?: any;
+    video?: any;
+    buttons?: Array<{
+      text: string;
+      url: string;
+      style: "primary" | "secondary" | "tertiary" | "outline";
+    }>;
+  };
+}
+
+const { block } = Astro.props;
+---
+
+<section class="relative flex h-[100dvh] flex-col justify-center p-4 text-white">
+  {
+    block.video ? (
+      <video
+        autoplay
+        playsinline
+        muted
+        loop
+        class="absolute top-0 right-0 bottom-0 left-0 z-0 h-full w-full object-cover"
+      >
+        <source src={block.video.asset.url} type="video/mp4" />
+      </video>
+    ) : block.image ? (
+      <SanityImage
+        image={block.image}
+        alt="Hero Background"
+        width={1920}
+        height={1080}
+        class="absolute top-0 right-0 bottom-0 left-0 z-0 h-full w-full object-cover"
+      />
+    ) : null
+  }
+  <div
+    class="absolute top-0 right-0 bottom-0 left-0 bg-gradient-to-b from-black/0 to-black/50"
+  >
+  </div>
+  <div class="relative container mx-auto flex max-w-4xl">
+    <div class="space-y-2 md:basis-1/2">
+      {
+        block.title && (
+          <Title variant="tertiary" class="text-xl">
+            <h1>{block.title}</h1>
+          </Title>
+        )
+      }
+      {
+        block.subtitle && (
+          <h2 class="font-neutral text-4xl">{block.subtitle}</h2>
+        )
+      }
+      {
+        block.description && (
+          <p class="block text-xl leading-7 font-light">
+            {block.description}
+          </p>
+        )
+      }
+      {
+        block.buttons && block.buttons.length > 0 && (
+          <div class="flex flex-col gap-4 pt-8">
+            {block.buttons.map((button) => (
+              <a href={button.url}>
+                <Button class="w-full cursor-pointer" variant={button.style}>
+                  {button.text}
+                </Button>
+              </a>
+            ))}
+          </div>
+        )
+      }
+    </div>
+  </div>
+  <div class="absolute bottom-4 left-1/2 -translate-x-1/2">
+    <Icon name="circle-arrow-down" class="bottom-4 h-10 animate-bounce" />
+  </div>
+</section>

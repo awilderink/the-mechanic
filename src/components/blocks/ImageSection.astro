@@ -1,0 +1,22 @@
+---
+import SanityImage from '../SanityImage.astro';
+
+interface Props {
+	block: {
+		image?: any;
+		alt?: string;
+	};
+}
+
+const { block } = Astro.props;
+---
+
+{block.image && (
+	<div class="mx-auto max-w-4xl">
+		<SanityImage 
+			image={block.image} 
+			alt={block.alt || ''} 
+			class="h-auto w-full rounded-lg"
+		/>
+	</div>
+)}

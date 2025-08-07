@@ -1,0 +1,33 @@
+---
+import { getVoorraad } from "../../sanity";
+import { type FeaturedVoorraadSection } from "../../sanity/types";
+import Button from "../Button.astro";
+import FeaturedVoorraad from "../FeaturedVoorraad.astro";
+import Title from "../Title.astro";
+
+interface Props {
+  block: FeaturedVoorraadSection;
+}
+
+const { block } = Astro.props;
+---
+
+<section class="bg-sand px-4 py-14">
+  <div class="container mx-auto max-w-4xl">
+    {
+      block.title && (
+        <Title variant="tertiary" class="text-gray-400">
+          {block.title}
+        </Title>
+      )
+    }
+    <div class="mt-4">
+      <FeaturedVoorraad />
+    </div>
+    <div class="mt-8 text-right">
+      <a href="/voorraad">
+        <Button size="sm" variant="primary">Bekijk Voorraad</Button>
+      </a>
+    </div>
+  </div>
+</section>

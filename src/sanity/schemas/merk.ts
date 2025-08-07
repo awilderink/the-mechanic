@@ -1,24 +1,24 @@
-import { defineType } from 'sanity';
+import { defineField, defineType } from 'sanity';
 
-export default defineType({
+export const merk = defineType({
 	name: 'merk',
 	title: 'Merk',
 	type: 'document',
 	fields: [
-		{
+		defineField({
 			name: 'naam',
 			title: 'Naam',
 			type: 'string',
 			validation: (Rule) => Rule.required(),
-		},
-		{
+		}),
+		defineField({
 			name: 'logo',
 			title: 'Logo',
 			type: 'image',
 			options: {
 				hotspot: true,
 			},
-		},
+		}),
 	],
 	preview: {
 		select: {

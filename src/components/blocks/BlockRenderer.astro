@@ -1,0 +1,41 @@
+---
+import CardSection from "./CardSection.astro";
+import ContentSection from "./ContentSection.astro";
+import FeaturedVoorraadSection from "./FeaturedVoorraadSection.astro";
+import HeroSection from "./HeroSection.astro";
+import ImageSection from "./ImageSection.astro";
+import ReviewsSection from "./ReviewsSection.astro";
+import TeamSection from "./TeamSection.astro";
+import TextContent from "./TextContent.astro";
+
+interface Props {
+  blocks: any[];
+}
+
+const { blocks } = Astro.props;
+---
+
+{
+  blocks?.map((block) => {
+    switch (block._type) {
+      case "contentSection":
+        return <ContentSection block={block} />;
+      case "hero":
+        return <HeroSection block={block} />;
+      case "imageSection":
+        return <ImageSection block={block} />;
+      case "teamSection":
+        return <TeamSection block={block} />;
+      case "textContent":
+        return <TextContent block={block} />;
+      case "cardSection":
+        return <CardSection block={block} />;
+      case "reviewsSection":
+        return <ReviewsSection block={block} />;
+      case "featuredVoorraadSection":
+        return <FeaturedVoorraadSection block={block} />;
+      default:
+        return null;
+    }
+  })
+}

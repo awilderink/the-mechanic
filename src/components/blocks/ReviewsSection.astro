@@ -1,0 +1,61 @@
+---
+import { getReviews } from '../../sanity/index.ts';
+import Card from '../Card.astro';
+import Icon from '../Icon.astro';
+
+interface Props {
+	block: {
+		showReviews?: boolean;
+	};
+}
+
+const { block } = Astro.props;
+const reviews = block.showReviews ? await getReviews() : [];
+---
+
+<section class="bg-sand overflow-hidden px-4 py-14">
+	<div class="container mx-auto max-w-4xl">
+		<div class="embla__viewport">
+			<div
+				class="embla__container [&>*:nth-child(even)>*]:bg-primary -ml-4 flex [&>*:nth-child(even)>*]:text-white"
+			>
+				{
+					reviews.map(({ naam, body, waardering }) => (
+						<div class="embla__slide min-w-0 shrink-0 grow-0 basis-full pl-4 md:basis-1/2">
+							<Card class="h-full p-10">
+								<div class="-space-x-1">
+									{[...Array(5)].map((_, i) => (
+										<Icon
+											class={`inline h-4 ${i < waardering ? '' : 'opacity-30'}`}
+											name="star"
+										/>
+									))}
+								</div>
+								<div class="mt-4 text-lg font-light">{body}</div>
+								<div class="mt-9">{naam}</div>
+							</Card>
+						</div>
+					))
+				}
+			</div>
+		</div>
+	</div>
+</section>
+
+<script>
+	import EmblaCarousel from 'embla-carousel';
+	import Autoplay from 'embla-carousel-autoplay';
+
+	document.addEventListener('astro:page-load', () => {
+		const emblaNode = document.querySelector('.embla__viewport') as HTMLElement;
+		if (!emblaNode) return;
+
+		EmblaCarousel(
+			emblaNode,
+			{
+				slidesToScroll: 'auto',
+			},
+			[Autoplay({ delay: 3000 })],
+		);
+	});
+</script>

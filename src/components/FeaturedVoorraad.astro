@@ -1,5 +1,5 @@
 ---
-import { getVoorraad } from '../lib/sanity';
+import { getVoorraad } from '../sanity/index.ts';
 import Card from './Card.astro';
 import Icon from './Icon.astro';
 import SanityImage from './SanityImage.astro';
@@ -9,13 +9,14 @@ interface Props {
 }
 
 const { exclude } = Astro.props;
+
 const otherItems = await getVoorraad({
 	uitgelicht: true,
 	verkocht: false,
 });
 
 const filteredItems = exclude
-	? otherItems.filter((item) => item._id !== exclude)
+	? otherItems.filter((item) => item.slug?.current !== exclude)
 	: otherItems;
 
 const displayItems = filteredItems.slice(0, 3);
@@ -25,12 +26,12 @@ const displayItems = filteredItems.slice(0, 3);
   {
     displayItems.map((item) => {
       return (
-        <a class="md:basis-1/3" href={`/voorraad/${item.slug.current}`}>
+        <a class="md:basis-1/3" href={`/voorraad/${item.slug?.current}`}>
           <Card>
             <div class="-mx-6 -mt-8 mb-4">
               <SanityImage
-                transition:name={item.fotos?.[0].asset._ref}
-                image={item.fotos?.[0].asset._ref}
+                transition:name={item.fotos?.[0].asset?._ref}
+                image={item.fotos?.[0].asset?._ref}
                 width={358}
                 height={233}
                 class="w-full"

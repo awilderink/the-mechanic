@@ -1,4 +1,4 @@
-import { defineType } from 'sanity';
+import { defineField, defineType } from 'sanity';
 
 export const blockContent = defineType({
 	title: 'Block Content',
@@ -30,11 +30,11 @@ export const blockContent = defineType({
 						name: 'link',
 						type: 'object',
 						fields: [
-							{
+							defineField({
 								title: 'URL',
 								name: 'href',
 								type: 'url',
-							},
+							}),
 						],
 					},
 				],

@@ -1,0 +1,50 @@
+---
+import SanityImage from '../SanityImage.astro';
+import Title from '../Title.astro';
+
+interface Props {
+	block: {
+		title?: string;
+		members?: Array<{
+			_id: string;
+			naam: string;
+			functie: string;
+			afbeelding?: any;
+			bio?: string;
+		}>;
+	};
+}
+
+const { block } = Astro.props;
+---
+
+{block.title && (
+	<Title variant="secondary" class="mb-8 text-center">
+		{block.title}
+	</Title>
+)}
+
+{block.members && block.members.length > 0 && (
+	<div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+		{block.members.map((member) => (
+			<div class="text-center">
+				{member.afbeelding && (
+					<div class="mb-4">
+						<SanityImage 
+							image={member.afbeelding} 
+							alt={member.naam}
+							class="mx-auto h-48 w-48 rounded-full object-cover"
+						/>
+					</div>
+				)}
+				<h3 class="text-xl font-semibold">{member.naam}</h3>
+				{member.functie && (
+					<p class="text-gray-600">{member.functie}</p>
+				)}
+				{member.bio && (
+					<p class="mt-2 text-sm">{member.bio}</p>
+				)}
+			</div>
+		))}
+	</div>
+)}

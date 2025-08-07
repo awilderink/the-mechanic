@@ -1,0 +1,4 @@
+{
+  "path": "./src/sanity/**/*.ts",
+  "generates": "./src/sanity/types.ts"
+}

@@ -3,7 +3,7 @@ import Button from '../../components/Button.astro';
 import SanityImage from '../../components/SanityImage.astro';
 import Title from '../../components/Title.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getMerken, getVoorraad } from '../../lib/sanity';
+import { getMerken, getVoorraad } from '../../sanity';
 
 const { searchParams } = Astro.url;
 
@@ -68,13 +68,13 @@ const voorraadItems = await getVoorraad({
           voorraadItems.length ? (
             voorraadItems.map((item) => {
               return (
-                <a href={`/voorraad/${item.slug.current}`}>
+                <a href={`/voorraad/${item.slug!.current}`}>
                   <div class="flex flex-col overflow-hidden rounded-2xl bg-white md:flex-row">
                     <div class="aspect-[4/3] basis-1/2 overflow-hidden">
                       <SanityImage
-                        image={item.fotos?.[0].asset._ref}
-                        transition:name={item.fotos?.[0].asset._ref}
-                        alt={item.titel}
+                        image={item.fotos?.[0].asset!._ref}
+                        transition:name={item.fotos?.[0].asset!._ref}
+                        alt={item.titel!}
                         width={400}
                         height={300}
                         class="h-full w-full object-cover"

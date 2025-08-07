@@ -1,0 +1,51 @@
+---
+import { PortableText } from "astro-portabletext";
+import type { CardSection } from "../../sanity/types";
+import Card from "../Card.astro";
+import SanityImage from "../SanityImage.astro";
+import Title from "../Title.astro";
+
+interface Props {
+  block: CardSection;
+}
+
+const { block } = Astro.props;
+const cards = block.cards || [];
+---
+
+<section class="bg-sand p-4 py-16">
+  <div class="container mx-auto max-w-4xl">
+    {
+      block.title && (
+        <Title variant="tertiary">
+          <span class="text-primary">{block.title}</span>
+        </Title>
+      )
+    }
+    <div class="mt-6 flex flex-col gap-4 md:flex-row">
+      {
+        cards.map((card) => (
+          <Card class="w-full space-y-4">
+            {card.icoon && (
+              <div>
+                <SanityImage
+                  image={card.icoon}
+                  alt={card.titel}
+                  width={80}
+                  height={80}
+                  class="w-[80px]"
+                />
+              </div>
+            )}
+            {card.titel && <div class="text-lg font-light">{card.titel}</div>}
+            {card.body && (
+              <div class="text-md flex-1 font-light text-neutral-400">
+                <PortableText value={card.body} />
+              </div>
+            )}
+          </Card>
+        ))
+      }
+    </div>
+  </div>
+</section>

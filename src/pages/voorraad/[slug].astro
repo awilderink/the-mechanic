@@ -3,11 +3,11 @@ import type { GetStaticPaths } from 'astro';
 import Accordion from '../../components/Accordion.astro';
 import AccordionItem from '../../components/AccordionItem.astro';
 import Button from '../../components/Button.astro';
-import HighlightedVoorraad from '../../components/HighlightedVoorraad.astro';
+import FeaturedVoorraad from '../../components/FeaturedVoorraad.astro';
 import Icon from '../../components/Icon.astro';
 import SanityImage from '../../components/SanityImage.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getVoorraad, getVoorraadItem } from '../../lib/sanity';
+import { getVoorraad, getVoorraadItem } from '../../sanity/index.ts';
 
 export const prerender = true;
 
@@ -203,7 +203,7 @@ if (!item) {
   </section>
   <section class="bg-sand px-4 py-14">
     <div class="container mx-auto max-w-6xl">
-      <HighlightedVoorraad exclude={item.slug.current} />
+      <FeaturedVoorraad exclude={item.slug.current} />
     </div>
   </section>
 </BaseLayout>

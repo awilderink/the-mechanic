@@ -1,0 +1,16 @@
+---
+import { PortableText } from "astro-portabletext";
+import type { TextContent } from "../../sanity/types";
+
+interface Props {
+	block: TextContent
+}
+
+const { block } = Astro.props;
+---
+
+{block.content && (
+	<div class="prose mx-auto max-w-4xl">
+		<PortableText value={block.content} />
+	</div>
+)}

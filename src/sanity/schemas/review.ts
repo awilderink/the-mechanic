@@ -1,28 +1,28 @@
-import { defineType } from 'sanity';
+import { defineField, defineType } from 'sanity';
 
-export default defineType({
+export const review = defineType({
 	name: 'review',
 	title: 'Review',
 	type: 'document',
 	fields: [
-		{
+		defineField({
 			name: 'naam',
 			title: 'Naam',
 			type: 'string',
 			validation: (Rule) => Rule.required(),
-		},
-		{
+		}),
+		defineField({
 			name: 'body',
 			title: 'Review Text',
 			type: 'text',
 			validation: (Rule) => Rule.required(),
-		},
-		{
+		}),
+		defineField({
 			name: 'waardering',
 			title: 'Waardering',
 			type: 'number',
 			validation: (Rule) => Rule.required().min(1).max(5),
-		},
+		}),
 	],
 	preview: {
 		select: {
