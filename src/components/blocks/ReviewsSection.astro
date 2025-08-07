@@ -2,6 +2,7 @@
 import type { ReviewsSection } from '../../sanity/types';
 import Card from '../Card.astro';
 import Icon from '../Icon.astro';
+import Title from '../Title.astro';
 
 interface Props {
 	block: ReviewsSection
@@ -12,6 +13,7 @@ const { block } = Astro.props;
 
 <section class="bg-sand overflow-hidden px-4 py-14">
 	<div class="container mx-auto max-w-4xl">
+		<Title variant="tertiary">Testimonials</Title>
 		<div class="embla__viewport">
 			<div
 				class="embla__container [&>*:nth-child(even)>*]:bg-primary -ml-4 flex [&>*:nth-child(even)>*]:text-white"

@@ -13,12 +13,12 @@ export default defineType({
 		defineField({
 			name: 'mainTitle',
 			title: 'Main Title',
-			type: 'text',
+			type: 'string',
 		}),
 		defineField({
-			name: 'description',
-			title: 'Description',
-			type: 'text',
+			name: 'body',
+			title: 'Body',
+			type: 'blockContent',
 		}),
 		defineField({
 			name: 'buttonText',
