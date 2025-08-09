@@ -1,15 +1,15 @@
-import hero from './hero';
-import heroImageSection from './heroImageSection';
-import textContent from './textContent';
-import imageSection from './imageSection';
-import teamSection from './teamSection';
-import contentSection from './contentSection';
 import cardSection from './cardSection';
-import reviewsSection from './reviewsSection';
+import contentSection from './contentSection';
 import featuredVoorraadSection from './featuredVoorraadSection';
+import heroImageSection from './heroImageSection';
+import heroSection from './heroSection';
+import imageSection from './imageSection';
+import reviewsSection from './reviewsSection';
+import teamSection from './teamSection';
+import textContent from './textContent';
 
 export const blockTypes = [
-	hero,
+	heroSection,
 	heroImageSection,
 	textContent,
 	imageSection,

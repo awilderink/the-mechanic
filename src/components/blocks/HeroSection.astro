@@ -1,22 +1,12 @@
 ---
+import type { HeroSection } from '../../sanity/types'
 import Button from "../Button.astro";
 import Icon from "../Icon.astro";
 import SanityImage from "../SanityImage.astro";
 import Title from "../Title.astro";
 
 interface Props {
-  block: {
-    title?: string;
-    subtitle?: string;
-    description?: string;
-    image?: any;
-    video?: any;
-    buttons?: Array<{
-      text: string;
-      url: string;
-      style: "primary" | "secondary" | "tertiary" | "outline";
-    }>;
-  };
+  block: HeroSection
 }
 
 const { block } = Astro.props;
@@ -32,7 +22,7 @@ const { block } = Astro.props;
         loop
         class="absolute top-0 right-0 bottom-0 left-0 z-0 h-full w-full object-cover"
       >
-        <source src={block.video.asset.url} type="video/mp4" />
+        <source src={block.video?.asset?._ref} type="video/mp4" />
       </video>
     ) : block.image ? (
       <SanityImage
@@ -76,7 +66,7 @@ const { block } = Astro.props;
         block.buttons && block.buttons.length > 0 && (
           <div class="flex flex-col gap-4 pt-8">
             {block.buttons.map((button) => (
-              <a href={button.url}>
+              <a href={button.slug?.current}>
                 <Button class="w-full cursor-pointer" variant={button.style}>
                   {button.text}
                 </Button>

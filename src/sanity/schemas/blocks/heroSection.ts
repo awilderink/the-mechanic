@@ -1,7 +1,7 @@
 import { defineField, defineType } from 'sanity';
 
 export default defineType({
-	name: 'hero',
+	name: 'heroSection',
 	title: 'Hero Section',
 	type: 'object',
 	fields: [
@@ -48,9 +48,9 @@ export default defineType({
 							type: 'string',
 						}),
 						defineField({
-							name: 'url',
-							title: 'URL',
-							type: 'url',
+							name: 'slug',
+							title: 'Slug',
+							type: 'slug',
 						}),
 						defineField({
 							name: 'style',

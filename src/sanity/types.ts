@@ -212,8 +212,8 @@ export type HeroImageSection = {
   alt?: string;
 };
 
-export type Hero = {
-  _type: "hero";
+export type HeroSection = {
+  _type: "heroSection";
   title?: string;
   subtitle?: string;
   description?: string;
@@ -241,7 +241,7 @@ export type Hero = {
   };
   buttons?: Array<{
     text?: string;
-    url?: string;
+    slug?: Slug;
     style?: "primary" | "secondary" | "tertiary" | "outline";
     _key: string;
   }>;
@@ -378,7 +378,7 @@ export type Page = {
   };
   blocks?: Array<{
     _key: string;
-  } & Hero | {
+  } & HeroSection | {
     _key: string;
   } & HeroImageSection | {
     _key: string;
@@ -405,7 +405,7 @@ export type Home = {
   _rev: string;
   blocks?: Array<{
     _key: string;
-  } & Hero | {
+  } & HeroSection | {
     _key: string;
   } & HeroImageSection | {
     _key: string;
@@ -564,7 +564,7 @@ export type SanityAssetSourceData = {
   url?: string;
 };
 
-export type AllSanitySchemaTypes = FeaturedVoorraadSection | ReviewsSection | CardSection | ContentSection | TeamSection | ImageSection | TextContent | HeroImageSection | Hero | BlockContent | Voorraad | Merk | TeamMember | Page | Home | Global | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
+export type AllSanitySchemaTypes = FeaturedVoorraadSection | ReviewsSection | CardSection | ContentSection | TeamSection | ImageSection | TextContent | HeroImageSection | HeroSection | BlockContent | Voorraad | Merk | TeamMember | Page | Home | Global | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./src/sanity/index.ts
 // Variable: globalQuery
@@ -594,9 +594,9 @@ export type HomeQueryResult = {
     _key: string;
   } & FeaturedVoorraadSection | {
     _key: string;
-  } & Hero | {
-    _key: string;
   } & HeroImageSection | {
+    _key: string;
+  } & HeroSection | {
     _key: string;
   } & ImageSection | {
     _key: string;
@@ -740,9 +740,9 @@ export type PageQueryResult = {
     _key: string;
   } & FeaturedVoorraadSection | {
     _key: string;
-  } & Hero | {
-    _key: string;
   } & HeroImageSection | {
+    _key: string;
+  } & HeroSection | {
     _key: string;
   } & ImageSection | {
     _key: string;

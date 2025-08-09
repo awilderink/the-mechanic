@@ -21,7 +21,7 @@ const { blocks } = Astro.props;
     switch (block._type) {
       case "contentSection":
         return <ContentSection block={block} />;
-      case "hero":
+      case "heroSection":
         return <HeroSection block={block} />;
       case "heroImageSection":
         return <HeroImageSection block={block} />;

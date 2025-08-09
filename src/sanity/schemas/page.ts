@@ -43,7 +43,7 @@ export const page = defineType({
 			title: 'Page Blocks',
 			type: 'array',
 			of: [
-				{ type: 'hero' },
+				{ type: 'heroSection' },
 				{ type: 'heroImageSection' },
 				{ type: 'textContent' },
 				{ type: 'imageSection' },

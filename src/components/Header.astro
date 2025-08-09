@@ -15,7 +15,6 @@ const global = await getGlobal();
 const menuItems = global?.mainMenu || [];
 
 const getUrl = (slug?: Slug | null) => {
-  console.log(slug);
   return slug?.current || '#';
 };
 ---

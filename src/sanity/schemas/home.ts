@@ -10,7 +10,7 @@ export const home = defineType({
 			title: 'Page Blocks',
 			type: 'array',
 			of: [
-				{ type: 'hero' },
+				{ type: 'heroSection' },
 				{ type: 'heroImageSection' },
 				{ type: 'textContent' },
 				{ type: 'imageSection' },

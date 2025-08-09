@@ -1352,7 +1352,7 @@
     }
   },
   {
-    "name": "hero",
+    "name": "heroSection",
     "type": "type",
     "value": {
       "type": "object",
@@ -1361,7 +1361,7 @@
           "type": "objectAttribute",
           "value": {
             "type": "string",
-            "value": "hero"
+            "value": "heroSection"
           }
         },
         "title": {
@@ -1521,10 +1521,11 @@
                   },
                   "optional": true
                 },
-                "url": {
+                "slug": {
                   "type": "objectAttribute",
                   "value": {
-                    "type": "string"
+                    "type": "inline",
+                    "name": "slug"
                   },
                   "optional": true
                 },
@@ -2439,7 +2440,7 @@
                 },
                 "rest": {
                   "type": "inline",
-                  "name": "hero"
+                  "name": "heroSection"
                 }
               },
               {
@@ -2623,7 +2624,7 @@
                 },
                 "rest": {
                   "type": "inline",
-                  "name": "hero"
+                  "name": "heroSection"
                 }
               },
               {
