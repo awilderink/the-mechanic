@@ -16,6 +16,8 @@ const { block } = Astro.props;
     <section class="py-16 px-4">
       <div class="container mx-auto max-w-4xl">
         <SanityImage
+          format="webp"
+          quality={75}
           image={block.image}
           alt={block.alt || ""}
           class="h-auto w-full rounded-lg"

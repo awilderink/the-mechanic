@@ -8,6 +8,19 @@ interface Props {
 	height?: number;
 	class?: string;
 	loading?: 'lazy' | 'eager';
+	quality?: number;
+	format?: 'auto' | 'jpg' | 'png' | 'webp';
+	fit?: 'clip' | 'crop' | 'fill' | 'fillmax' | 'max' | 'scale' | 'min';
+	crop?: 'top' | 'bottom' | 'left' | 'right' | 'center' | 'focalpoint' | 'entropy';
+	blur?: number;
+	sharpen?: number;
+	invert?: boolean;
+	flipHorizontal?: boolean;
+	flipVertical?: boolean;
+	saturation?: number;
+	bg?: string;
+	pad?: number;
+	dpr?: number;
 }
 
 const {
@@ -17,6 +30,19 @@ const {
 	height,
 	class: className,
 	loading = 'lazy',
+	quality = 75,
+	format = 'webp',
+	fit,
+	crop,
+	blur,
+	sharpen,
+	invert,
+	flipHorizontal,
+	flipVertical,
+	saturation,
+	bg,
+	pad,
+	dpr,
 } = Astro.props;
 
 if (!image) {
@@ -31,6 +57,58 @@ if (width) {
 
 if (height) {
 	imageUrl = imageUrl.height(height);
+}
+
+if (quality) {
+	imageUrl = imageUrl.quality(quality);
+}
+
+if (format && format !== 'auto') {
+	imageUrl = imageUrl.format(format);
+}
+
+if (fit) {
+	imageUrl = imageUrl.fit(fit);
+}
+
+if (crop) {
+	imageUrl = imageUrl.crop(crop);
+}
+
+if (blur) {
+	imageUrl = imageUrl.blur(blur);
+}
+
+if (sharpen) {
+	imageUrl = imageUrl.sharpen(sharpen);
+}
+
+if (invert) {
+	imageUrl = imageUrl.invert(true);
+}
+
+if (flipHorizontal) {
+	imageUrl = imageUrl.flipHorizontal();
+}
+
+if (flipVertical) {
+	imageUrl = imageUrl.flipVertical();
+}
+
+if (saturation !== undefined) {
+	imageUrl = imageUrl.saturation(saturation);
+}
+
+if (bg) {
+	imageUrl = imageUrl.bg(bg);
+}
+
+if (pad) {
+	imageUrl = imageUrl.pad(pad);
+}
+
+if (dpr) {
+	imageUrl = imageUrl.dpr(dpr);
 }
 
 const src = imageUrl.url();
