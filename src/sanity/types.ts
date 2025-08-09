@@ -744,13 +744,24 @@ export type AllPagesQueryResult = Array<{
   } | null;
 }>;
 // Variable: teamMembersQuery
-// Query: *[_type == "teamMember"] | order(_createdAt asc) {    _id,    naam,    functie,    foto,    beschrijving  }
+// Query: *[_type == "teamMember"] | order(_createdAt asc) {    _id,    naam,    functie,    afbeelding,    bio  }
 export type TeamMembersQueryResult = Array<{
   _id: string;
   naam: string | null;
   functie: string | null;
-  foto: null;
-  beschrijving: null;
+  afbeelding: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  } | null;
+  bio: string | null;
 }>;
 
 // Query TypeMap
@@ -764,6 +775,6 @@ declare module "@sanity/client" {
     "*[_type == \"voorraad\" && slug.current == $slug][0]{\n    _id,\n    titel,\n    slug,\n    merk->{\n      _id,\n      naam,\n      logo\n    },\n    prijs,\n    bouwjaar,\n    kilometerstand,\n    brandstof,\n    transmissie,\n    verkocht,\n    uitgelicht,\n    fotos,\n    beschrijving,\n    specificaties\n  }": VoorraadItemQueryResult;
     "*[_type == \"page\" && slug.current == $slug][0]{\n    _id,\n    title,\n    slug,\n    seo,\n    blocks\n  }": PageQueryResult;
     "*[_type == \"page\"]{\n    _id,\n    title,\n    slug,\n    seo\n  }": AllPagesQueryResult;
-    "*[_type == \"teamMember\"] | order(_createdAt asc) {\n    _id,\n    naam,\n    functie,\n    foto,\n    beschrijving\n  }": TeamMembersQueryResult;
+    "*[_type == \"teamMember\"] | order(_createdAt asc) {\n    _id,\n    naam,\n    functie,\n    afbeelding,\n    bio\n  }": TeamMembersQueryResult;
   }
 }

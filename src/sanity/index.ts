@@ -135,8 +135,8 @@ export const getTeamMembers = async () => {
     _id,
     naam,
     functie,
-    foto,
-    beschrijving
+    afbeelding,
+    bio
   }`);
 
 	return await client.fetch(teamMembersQuery);

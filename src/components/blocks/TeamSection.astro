@@ -1,50 +1,126 @@
 ---
-import SanityImage from '../SanityImage.astro';
-import Title from '../Title.astro';
+import { getTeamMembers } from "../../sanity";
+import type { TeamSection } from "../../sanity/types";
+import Icon from "../Icon.astro";
+import SanityImage from "../SanityImage.astro";
+import Title from "../Title.astro";
 
 interface Props {
-	block: {
-		title?: string;
-		members?: Array<{
-			_id: string;
-			naam: string;
-			functie: string;
-			afbeelding?: any;
-			bio?: string;
-		}>;
-	};
+  block: TeamSection;
 }
 
 const { block } = Astro.props;
+const teamMembers = await getTeamMembers();
+
+const filteredMembers =
+  block.members?.map((member) => {
+    return teamMembers.find((teamMember) => teamMember._id === member._ref);
+  }) || [];
 ---
 
-{block.title && (
-	<Title variant="secondary" class="mb-8 text-center">
-		{block.title}
-	</Title>
-)}
+<section class="bg-sand py-16">
+  <div class="container max-w-6xl mx-auto px-4">
+    <Title variant="tertiary" class="text-neutral-600">Team</Title>
+    {block.title && <div class="mt-2 text-2xl">{block.title}</div>}
+    {
+      filteredMembers && filteredMembers.length > 0 && (
+        <div
+          class="mt-6"
+          x-data="teamCarousel"
+          data-members={JSON.stringify(filteredMembers)}
+        >
+          <div class="flex gap-4 md:gap-8 flex-col md:flex-row">
+            <div class="relative flex-1/2">
+              <div
+                x-ref="emblaViewport"
+                class="embla__viewport overflow-hidden"
+              >
+                <div class="embla__container flex">
+                  {filteredMembers.map(
+                    (member) =>
+                      member && (
+                        <div class="embla__slide flex-none w-full min-w-0">
+                          <SanityImage
+                            width={960}
+                            height={720}
+                            image={member.afbeelding}
+                            alt={member.naam || "Team member"}
+                            class="w-full h-full object-cover rounded-lg"
+                          />
+                        </div>
+                      )
+                  )}
+                </div>
+              </div>
+            </div>
+            <div class="flex-1/2 min-h-80 flex flex-col-reverse justify-between md:flex-col gap-4">
+              <div class="bio-content transition-opacity duration-300 ease-in-out">
+                <h3
+                  class="text-xl font-regular text-gray-900 mb-2"
+                  x-text="currentMember.naam || ''"
+                />
+                <p
+                  class="text-gray-600 text-sm mb-4 font-thin"
+                  x-text="currentMember.functie || ''"
+                />
+                <p
+                  class="text-gray-700 leading-relaxed font-thin text-sm"
+                  x-text="currentMember.bio || ''"
+                />
+              </div>
 
-{block.members && block.members.length > 0 && (
-	<div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-		{block.members.map((member) => (
-			<div class="text-center">
-				{member.afbeelding && (
-					<div class="mb-4">
-						<SanityImage 
-							image={member.afbeelding} 
-							alt={member.naam}
-							class="mx-auto h-48 w-48 rounded-full object-cover"
-						/>
-					</div>
-				)}
-				<h3 class="text-xl font-semibold">{member.naam}</h3>
-				{member.functie && (
-					<p class="text-gray-600">{member.functie}</p>
-				)}
-				{member.bio && (
-					<p class="mt-2 text-sm">{member.bio}</p>
-				)}
-			</div>
-		))}
-	</div>
-)}
+              <div class="flex gap-4 self-end md:self-start">
+                <button @click="prevSlide()" class="size-10 cursor-pointer">
+                  <Icon name="circle-arrow-left" />
+                </button>
+                <button @click="nextSlide()" class="size-10 cursor-pointer">
+                  <Icon name="circle-arrow-right" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<script>
+  import EmblaCarousel from "embla-carousel";
+  import type { EmblaCarouselType } from "embla-carousel";
+  import Alpine from "alpinejs";
+  import type { TeamMember } from "../../sanity/types";
+
+  document.addEventListener("alpine:init", () => {
+    Alpine.data("teamCarousel", () => ({
+      currentIndex: 0,
+      emblaApi: null as EmblaCarouselType | null,
+      members: [] as TeamMember[],
+
+      get currentMember() {
+        return this.members[this.currentIndex] || {};
+      },
+
+      init() {
+        this.members = JSON.parse(this.$el.dataset.members!);
+        this.$nextTick(() => {
+          const emblaNode = this.$refs.emblaViewport;
+          if (emblaNode) {
+            this.emblaApi = EmblaCarousel(emblaNode, { loop: true });
+            this.emblaApi.on("select", () => {
+              this.currentIndex = this.emblaApi!.selectedScrollSnap();
+            });
+          }
+        });
+      },
+
+      prevSlide() {
+        if (this.emblaApi) this.emblaApi.scrollPrev();
+      },
+
+      nextSlide() {
+        if (this.emblaApi) this.emblaApi.scrollNext();
+      },
+    }));
+  });
+</script>
