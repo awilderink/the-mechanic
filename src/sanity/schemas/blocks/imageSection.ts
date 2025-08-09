@@ -6,27 +6,40 @@ export default defineType({
 	type: 'object',
 	fields: [
 		defineField({
-			name: 'image',
-			title: 'Image',
-			type: 'image',
-			options: { hotspot: true },
-		}),
-		defineField({
-			name: 'alt',
-			title: 'Alt Text',
-			type: 'string',
+			name: 'images',
+			title: 'Images',
+			type: 'array',
+			of: [
+				{
+					type: 'object',
+					fields: [
+						defineField({
+							name: 'image',
+							title: 'Image',
+							type: 'image',
+							options: { hotspot: true },
+						}),
+						defineField({
+							name: 'alt',
+							title: 'Alt Text',
+							type: 'string',
+						}),
+					],
+				},
+			],
 		}),
 	],
 	preview: {
 		select: {
-			media: 'image',
-			alt: 'alt',
+			images: 'images',
 		},
-		prepare({ media, alt }) {
+		prepare({ images }) {
+			const imageCount = images?.length || 0;
+			const firstImage = images?.[0]?.image;
 			return {
 				title: 'Image Section',
-				subtitle: alt || 'No alt text',
-				media,
+				subtitle: `${imageCount} image${imageCount !== 1 ? 's' : ''}`,
+				media: firstImage,
 			};
 		},
 	},

@@ -2,6 +2,7 @@
 import CardSection from "./blocks/CardSection.astro";
 import ContentSection from "./blocks/ContentSection.astro";
 import FeaturedVoorraadSection from "./blocks/FeaturedVoorraadSection.astro";
+import HeroImageSection from "./blocks/HeroImageSection.astro";
 import HeroSection from "./blocks/HeroSection.astro";
 import ImageSection from "./blocks/ImageSection.astro";
 import ReviewsSection from "./blocks/ReviewsSection.astro";
@@ -14,7 +15,7 @@ interface Props {
 
 const { blocks } = Astro.props;
 ---
-
+{blocks?.[0]._type !== 'hero' && <div class="mt-10" />}
 {
   blocks?.map((block) => {
     switch (block._type) {
@@ -22,6 +23,8 @@ const { blocks } = Astro.props;
         return <ContentSection block={block} />;
       case "hero":
         return <HeroSection block={block} />;
+      case "heroImageSection":
+        return <HeroImageSection block={block} />;
       case "imageSection":
         return <ImageSection block={block} />;
       case "teamSection":

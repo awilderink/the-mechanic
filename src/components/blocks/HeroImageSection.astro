@@ -1,0 +1,28 @@
+---
+import type { HeroImageSection } from "../../sanity/types";
+import SanityImage from "../SanityImage.astro";
+
+interface Props {
+  block: HeroImageSection;
+}
+
+const { block } = Astro.props;
+---
+
+<section class="py-16 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-6xl mx-auto">
+    <div
+      class="relative rounded-xl overflow-hidden h-96 sm:h-[500px] lg:h-[600px]"
+    >
+      {
+        block.image && (
+          <SanityImage
+            image={block.image}
+            alt={block.alt || "Hero image"}
+            class="w-full h-full object-cover"
+          />
+        )
+      }
+    </div>
+  </div>
+</section>

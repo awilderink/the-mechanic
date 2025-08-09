@@ -143,19 +143,22 @@ export type TeamSection = {
 
 export type ImageSection = {
   _type: "imageSection";
-  image?: {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+  images?: Array<{
+    image?: {
+      asset?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+      };
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
     };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: "image";
-  };
-  alt?: string;
+    alt?: string;
+    _key: string;
+  }>;
 };
 
 export type TextContent = {
@@ -190,6 +193,23 @@ export type TextContent = {
     _type: "image";
     _key: string;
   }>;
+};
+
+export type HeroImageSection = {
+  _type: "heroImageSection";
+  image?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  alt?: string;
 };
 
 export type Hero = {
@@ -360,6 +380,8 @@ export type Page = {
     _key: string;
   } & Hero | {
     _key: string;
+  } & HeroImageSection | {
+    _key: string;
   } & TextContent | {
     _key: string;
   } & ImageSection | {
@@ -384,6 +406,8 @@ export type Home = {
   blocks?: Array<{
     _key: string;
   } & Hero | {
+    _key: string;
+  } & HeroImageSection | {
     _key: string;
   } & TextContent | {
     _key: string;
@@ -528,7 +552,7 @@ export type SanityAssetSourceData = {
   url?: string;
 };
 
-export type AllSanitySchemaTypes = FeaturedVoorraadSection | ReviewsSection | CardSection | ContentSection | TeamSection | ImageSection | TextContent | Hero | BlockContent | Voorraad | Merk | TeamMember | Page | Home | Global | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
+export type AllSanitySchemaTypes = FeaturedVoorraadSection | ReviewsSection | CardSection | ContentSection | TeamSection | ImageSection | TextContent | HeroImageSection | Hero | BlockContent | Voorraad | Merk | TeamMember | Page | Home | Global | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./src/sanity/index.ts
 // Variable: globalQuery
@@ -551,6 +575,8 @@ export type HomeQueryResult = {
   } & FeaturedVoorraadSection | {
     _key: string;
   } & Hero | {
+    _key: string;
+  } & HeroImageSection | {
     _key: string;
   } & ImageSection | {
     _key: string;
@@ -695,6 +721,8 @@ export type PageQueryResult = {
   } & FeaturedVoorraadSection | {
     _key: string;
   } & Hero | {
+    _key: string;
+  } & HeroImageSection | {
     _key: string;
   } & ImageSection | {
     _key: string;

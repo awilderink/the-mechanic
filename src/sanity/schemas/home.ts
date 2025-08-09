@@ -11,6 +11,7 @@ export const home = defineType({
 			type: 'array',
 			of: [
 				{ type: 'hero' },
+				{ type: 'heroImageSection' },
 				{ type: 'textContent' },
 				{ type: 'imageSection' },
 				{ type: 'teamSection' },

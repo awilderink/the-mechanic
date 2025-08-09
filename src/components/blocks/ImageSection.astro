@@ -1,28 +1,198 @@
 ---
+import type { ImageSection } from "../../sanity/types";
+import Icon from "../Icon.astro";
 import SanityImage from "../SanityImage.astro";
 
 interface Props {
-  block: {
-    image?: any;
-    alt?: string;
-  };
+  block: ImageSection
 }
 
 const { block } = Astro.props;
+const images = block.images || [];
+const hasMultipleImages = images.length > 1;
 ---
 
 {
-  block.image && (
+  images.length > 0 && (
     <section class="py-16 px-4">
       <div class="container mx-auto max-w-4xl">
-        <SanityImage
-          format="webp"
-          quality={75}
-          image={block.image}
-          alt={block.alt || ""}
-          class="h-auto w-full rounded-lg"
-        />
+        {hasMultipleImages ? (
+          <div class="space-y-4">
+            <div class="embla relative">
+              <div class="embla__viewport overflow-hidden rounded-lg h-96 sm:h-[500px] lg:h-[600px]">
+                <div class="embla__container flex h-full">
+                  {images.map((item) => (
+                    <div class="embla__slide min-w-0 shrink-0 grow-0 basis-full h-full">
+                      <SanityImage
+                        format="webp"
+                        quality={75}
+                        image={item.image}
+                        alt={item.alt || ""}
+                        class="w-full h-full object-cover"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div class="absolute bottom-4 text-white right-4 flex gap-2">
+                <button class="embla__prev transition-colors">
+                  <Icon name="circle-arrow-left" class="size-8" />
+                </button>
+                <button class="embla__next transition-colors">
+                  <Icon name="circle-arrow-right" class="size-8" />
+                </button>
+              </div>
+            </div>
+
+            <div class="embla-thumbs__viewport overflow-hidden">
+              <div class="embla-thumbs__container flex flex-row gap-2">
+                {images.map((item) => (
+                  <div class="group embla-thumbs__slide relative min-w-0 shrink-0 grow-0 basis-20 overflow-hidden rounded-md cursor-pointer">
+                    <div class="absolute inset-0 bg-neutral-200/50 transition-colors duration-75 group-[.active]:bg-neutral-200/0 hover:bg-neutral-200/0" />
+                    <SanityImage
+                      format="webp"
+                      quality={75}
+                      image={item.image}
+                      alt={item.alt || ""}
+                      class="h-16 w-20 object-cover"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <SanityImage
+            format="webp"
+            quality={75}
+            image={images[0].image}
+            alt={images[0].alt || ""}
+            class="h-auto w-full rounded-lg"
+          />
+        )}
       </div>
     </section>
   )
 }
+
+{hasMultipleImages && (
+  <script>
+  import EmblaCarousel, { type EmblaCarouselType } from "embla-carousel";
+  import Autoplay from "embla-carousel-autoplay";
+
+  document.addEventListener("astro:page-load", () => {
+    const emblaNode = document.querySelector(".embla__viewport") as HTMLElement;
+    const thumbCarouselNode = document.querySelector(".embla-thumbs__viewport") as HTMLElement;
+    
+    if (!emblaNode) return;
+
+    if (thumbCarouselNode) {
+      const emblaApiMain = EmblaCarousel(emblaNode, {
+        loop: true,
+      }, [Autoplay({ delay: 4000, stopOnInteraction: false })]);
+      
+      const emblaApiThumb = EmblaCarousel(thumbCarouselNode, {
+        dragFree: true,
+        containScroll: "keepSnaps",
+      });
+
+      const addThumbBtnsClickHandlers = (
+        emblaApiMain: EmblaCarouselType,
+        emblaApiThumb: EmblaCarouselType
+      ) => {
+        const slidesThumbs = emblaApiThumb.slideNodes();
+
+        const scrollToIndex = slidesThumbs.map(
+          (_, index) => () => emblaApiMain.scrollTo(index)
+        );
+
+        slidesThumbs.forEach((slideNode, index) => {
+          slideNode.addEventListener("click", scrollToIndex[index], false);
+        });
+
+        return () => {
+          slidesThumbs.forEach((slideNode, index) => {
+            slideNode.removeEventListener("click", scrollToIndex[index], false);
+          });
+        };
+      };
+
+      const addToggleThumbBtnsActive = (
+        emblaApiMain: EmblaCarouselType,
+        emblaApiThumb: EmblaCarouselType
+      ) => {
+        const slidesThumbs = emblaApiThumb.slideNodes();
+
+        const toggleThumbBtnsState = () => {
+          emblaApiThumb.scrollTo(emblaApiMain.selectedScrollSnap());
+          const previous = emblaApiMain.previousScrollSnap();
+          const selected = emblaApiMain.selectedScrollSnap();
+          slidesThumbs[previous]?.classList.remove("active");
+          slidesThumbs[selected]?.classList.add("active");
+        };
+
+        emblaApiMain.on("select", toggleThumbBtnsState);
+        emblaApiThumb.on("init", toggleThumbBtnsState);
+
+        return () => {
+          const selected = emblaApiMain.selectedScrollSnap();
+          slidesThumbs[selected]?.classList.remove("active");
+        };
+      };
+
+      const addPrevNextBtnsClickHandlers = (emblaApiMain: EmblaCarouselType) => {
+        const prevBtn = document.querySelector(".embla__prev") as HTMLElement;
+        const nextBtn = document.querySelector(".embla__next") as HTMLElement;
+
+        if (!prevBtn || !nextBtn) return;
+
+        const scrollToPrev = () => emblaApiMain.scrollPrev();
+        const scrollToNext = () => emblaApiMain.scrollNext();
+
+        prevBtn.addEventListener("click", scrollToPrev, false);
+        nextBtn.addEventListener("click", scrollToNext, false);
+
+        return () => {
+          prevBtn.removeEventListener("click", scrollToPrev, false);
+          nextBtn.removeEventListener("click", scrollToNext, false);
+        };
+      };
+
+      const removeThumbBtnsClickHandlers = addThumbBtnsClickHandlers(
+        emblaApiMain,
+        emblaApiThumb
+      );
+      const removeToggleThumbBtnsActive = addToggleThumbBtnsActive(
+        emblaApiMain,
+        emblaApiThumb
+      );
+      const removePrevNextBtnsClickHandlers = addPrevNextBtnsClickHandlers(emblaApiMain);
+
+       return () => {
+         removeThumbBtnsClickHandlers();
+         removeToggleThumbBtnsActive();
+         if (removePrevNextBtnsClickHandlers) {
+           removePrevNextBtnsClickHandlers();
+         }
+         emblaApiMain.destroy();
+         emblaApiThumb.destroy();
+       };
+    } else {
+      const emblaApi = EmblaCarousel(emblaNode, {
+        loop: true,
+      }, [Autoplay({ delay: 4000, stopOnInteraction: false })]);
+
+      const prevBtn = document.querySelector(".embla__prev") as HTMLElement;
+      const nextBtn = document.querySelector(".embla__next") as HTMLElement;
+
+      if (prevBtn && nextBtn) {
+        const scrollToPrev = () => emblaApi.scrollPrev();
+        const scrollToNext = () => emblaApi.scrollNext();
+
+        prevBtn.addEventListener("click", scrollToPrev);
+        nextBtn.addEventListener("click", scrollToNext);
+      }
+    }
+  });
+</script>
+)}

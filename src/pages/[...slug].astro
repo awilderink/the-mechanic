@@ -1,0 +1,12 @@
+---
+import BlockRenderer from "../components/BlockRenderer.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getGlobal, getHome, getPage } from "../sanity";
+
+const { slug } = Astro.params;
+const page = await getPage(slug || "");
+---
+
+<BaseLayout title={page?.title || "The Mechanic"} description={page?.seo?.metaDescription}>
+  {page?.blocks && <BlockRenderer blocks={page.blocks} />}
+</BaseLayout>
