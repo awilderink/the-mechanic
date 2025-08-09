@@ -1,7 +1,7 @@
 ---
 import BlockRenderer from "../components/BlockRenderer.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { getGlobal, getHome, getPage } from "../sanity";
+import { getPage } from "../sanity";
 
 const { slug } = Astro.params;
 const page = await getPage(slug || "");

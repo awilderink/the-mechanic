@@ -3,7 +3,7 @@ import node from '@astrojs/node';
 import react from '@astrojs/react';
 import sanity from '@sanity/astro';
 import tailwindcss from '@tailwindcss/vite';
-import { defineConfig, envField } from 'astro/config';
+import { defineConfig } from 'astro/config';
 import { loadEnv } from 'vite';
 
 const {
