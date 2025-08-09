@@ -3,7 +3,7 @@ import type { HTMLAttributes } from 'astro/types';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { twMerge } from 'tailwind-merge';
 
-const title = cva('flex items-center gap-3', {
+const title = cva('flex items-center gap-3 font-thin', {
 	variants: {
 		variant: {
 			primary: ['[&>svg]:text-primary', 'text-white'],

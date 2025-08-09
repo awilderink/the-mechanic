@@ -6,6 +6,11 @@ export default defineType({
 	type: 'object',
 	fields: [
 		defineField({
+			name: 'image',
+			title: 'Image',
+			type: 'image',
+		}),
+		defineField({
 			name: 'reviews',
 			title: 'Reviews',
 			type: 'array',
@@ -25,12 +30,6 @@ export default defineType({
 							type: 'text',
 							validation: (Rule) => Rule.required(),
 						}),
-						defineField({
-							name: 'waardering',
-							title: 'Waardering',
-							type: 'number',
-							validation: (Rule) => Rule.required().min(1).max(5),
-						}),
 					],
 					preview: {
 						select: {
@@ -39,10 +38,10 @@ export default defineType({
 							rating: 'waardering',
 						},
 						prepare(selection) {
-							const { title, subtitle, rating } = selection;
+							const { title, subtitle } = selection;
 							return {
 								title,
-								subtitle: `${rating}/5 - ${subtitle?.slice(0, 50)}...`,
+								subtitle: `${subtitle?.slice(0, 50)}...`,
 							};
 						},
 					},

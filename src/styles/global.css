@@ -7,6 +7,7 @@
 	--color-secondary: #99b5bb;
 	--color-tertiary: #ff9900;
 	--color-sand: #edede6;
+	--color-gray-700: #545853;
 }
 
 @layer base {

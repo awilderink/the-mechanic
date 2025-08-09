@@ -38,8 +38,8 @@ const displayItems = filteredItems.slice(0, 3);
               />
             </div>
             <div>{item.merk?.naam}</div>
-            <div class="text-neutral-400">{item.titel}</div>
-            <div class="mt-8 flex items-center justify-between text-sm">
+            <div class="text-neutral-400 leading-loose">{item.titel}</div>
+            <div class="mt-8 flex items-end justify-between text-sm">
               <span>
                 {!!item.prijs &&
                   Intl.NumberFormat("nl-NL", {

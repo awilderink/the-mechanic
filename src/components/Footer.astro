@@ -4,7 +4,7 @@ import Button from '../components/Button.astro';
 import Icon from './Icon.astro';
 ---
 
-<footer class="bg-neutral-600 px-4 py-10 text-white md:py-16">
+<footer class="bg-gray-700 px-4 py-10 text-white md:py-16 font-light">
   <div
     class="container mx-auto flex max-w-4xl flex-col justify-between gap-10 md:flex-row"
   >
@@ -15,30 +15,30 @@ import Icon from './Icon.astro';
         height="1"
         width="200"
       />
-      <div class="mt-6 text-sm">
+      <div class="mt-6 text-sm leading-loose">
         Van Leijdenstraat 2C<br />
         2277 AW Voorburg
       </div>
       <div class="mt-6 space-x-1 [&>*]:inline-block">
         <a href="https://www.linkedin.com">
-          <Icon name="linkedIn" class="h-10" />
+          <Icon name="linkedIn" class="size-7" />
         </a>
         <a href="https://www.facebook.com">
-          <Icon name="facebook" class="h-10" />
+          <Icon name="facebook" class="size-7" />
         </a>
         <a href="https://www.instagram.com">
-          <Icon name="instagram" class="h-10" />
+          <Icon name="instagram" class="size-7" />
         </a>
       </div>
       <div class="mt-12 flex flex-col gap-2">
         <a href="tel:0708209890">
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" class="flex items-center">
             <Icon name="phone" class="mr-2 inline-block h-5" />
             070 8209890
           </Button>
         </a>
         <a href="mailto:The Mechanic<info@themechanic.nl>">
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" class="flex items-center">
             <Icon name="email" class="mr-2 inline-block h-5" />
             info@themechanic.nl
           </Button>
@@ -85,6 +85,7 @@ import Icon from './Icon.astro';
           <td>Gesloten</td>
         </tr>
       </table>
+      
     </div>
     <div class="mt-auto space-y-4">
       <img src="/rdw.svg" alt="RDW" height="1" width="100" class="grayscale" />
@@ -102,5 +103,5 @@ import Icon from './Icon.astro';
   const today = new Date();
   const nameOfDay = today.toLocaleDateString("en-GB", { weekday: "long" });
   const day = document.getElementById(nameOfDay.toLowerCase());
-  if (day) day.classList.add("font-bold");
+  if (day) day.classList.add("font-semibold");
 </script>

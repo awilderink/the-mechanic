@@ -14,7 +14,7 @@ const isActive = href === pathname || href === pathname.replace(/\/$/, '');
   data-active={isActive}
   class:list={[
     className,
-    "font-md text-neutral-400 data-[active]:text-[#1F1F1F]",
+    "font-md text-neutral-600 data-[active=true]:text-[#1F1F1F]",
   ]}
   {...props}
 >

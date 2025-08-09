@@ -20,10 +20,21 @@ export type FeaturedVoorraadSection = {
 
 export type ReviewsSection = {
   _type: "reviewsSection";
+  image?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
   reviews?: Array<{
     naam?: string;
     body?: string;
-    waardering?: number;
     _key: string;
   }>;
 };
