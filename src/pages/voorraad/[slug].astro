@@ -54,50 +54,62 @@ if (!item) {
 <BaseLayout>
   <section class="p-4">
     <div
+      x-data="carCarousel"
       class="car-grid container mx-auto grid max-w-6xl gap-4 pt-24 md:flex-row md:gap-10"
     >
-      <div
-        class="embla__viewport relative overflow-hidden rounded-xl [grid-area:images]"
-        transition:name={item.fotos?.[0].asset?._ref}
-      >
-        <div class="embla__container flex gap-4">
-          {
-            item.fotos?.map((image) => (
-              <SanityImage
-                class="embla__slide min-w-0 shrink-0 grow-0 basis-full"
-                height={600}
-                width={800}
-                image={image.asset?._ref}
-              />
-            ))
-          }
+        <div 
+          x-ref="emblaViewport"
+          class="embla__viewport overflow-hidden rounded-xl relative [grid-area:images]"
+           transition:name={item.fotos?.[0]._key}
+        >
+          <div class="embla__container flex gap-4">
+            {
+              item.fotos?.map((image) => (
+                <SanityImage
+                  class="embla__slide min-w-0 shrink-0 grow-0 basis-full"
+                  height={600}
+                  width={800}
+                  image={image.asset?._ref}
+                />
+              ))
+            }
+          </div>
         </div>
         <div class="text-primary absolute right-6 bottom-6 flex gap-2">
           <button
-            class="embla-button__prev hover:text-sand"
+            @click="prevSlide()"
+            class="hover:text-sand transition-colors"
             aria-label="Vorige"
           >
             <Icon name="circle-arrow-left" class="size-10" />
           </button>
           <button
-            class="embla-button__next hover:text-sand"
+            @click="nextSlide()"
+            class="hover:text-sand transition-colors"
             aria-label="Volgende"
           >
             <Icon name="circle-arrow-right" class="size-10" />
           </button>
         </div>
-      </div>
+     
 
       <div class="min-w-0 [grid-area:thumbnails]">
         <h1 class="text-primary text-2xl md:text-4xl">
           {item.merk?.naam}{" "}
           {item.titel}
         </h1>
-        <div class="embla-thumbs__viewport mt-2 overflow-hidden">
+        <div 
+          x-ref="emblaThumbsViewport"
+          class="embla-thumbs__viewport mt-2 overflow-hidden"
+        >
           <div class="embla-thumbs__container flex flex-row gap-1">
             {
-              item.fotos?.map((foto) => (
-                <div class="group embla-thumbs__slide relative min-w-0 shrink-0 grow-0 basis-1/8 overflow-hidden rounded-md">
+              item.fotos?.map((foto, index) => (
+                <div 
+                  @click={`scrollToIndex(${index})`}
+                  class="group embla-thumbs__slide relative min-w-0 shrink-0 grow-0 basis-1/8 overflow-hidden rounded-md cursor-pointer"
+                  :class={`{'active': currentIndex === ${index}}`}
+                >
                   <div class="absolute inset-0 bg-neutral-200/50 transition-colors duration-75 group-[.active]:bg-neutral-200/0 hover:bg-neutral-200/0" />
                   <SanityImage
                     height={40}
@@ -208,105 +220,54 @@ if (!item) {
 </BaseLayout>
 
 <script>
-  import EmblaCarousel, { type EmblaCarouselType } from "embla-carousel";
+  import EmblaCarousel from "embla-carousel";
+  import Autoplay from "embla-carousel-autoplay";
+  import type { EmblaCarouselType } from "embla-carousel";
+  import Alpine from "alpinejs";
 
-  document.addEventListener("astro:page-load", () => {
-    const mainCarouselNode = document.querySelector(
-      ".embla__viewport"
-    ) as HTMLElement;
-    const thumbCarouselNode = document.querySelector(
-      ".embla-thumbs__viewport"
-    ) as HTMLElement;
+  
+  Alpine.data("carCarousel", () => ({
+    currentIndex: 0,
+    emblaApiMain: null as EmblaCarouselType | null,
+    emblaApiThumb: null as EmblaCarouselType | null,
 
-    const addThumbBtnsClickHandlers = (
-      emblaApiMain: EmblaCarouselType,
-      emblaApiThumb: EmblaCarouselType
-    ) => {
-      const slidesThumbs = emblaApiThumb.slideNodes();
+    init() {
+      this.$nextTick(() => {
+        const emblaMainNode = this.$refs.emblaViewport;
+        const emblaThumbNode = this.$refs.emblaThumbsViewport;
+        
+        if (emblaMainNode) {
+          this.emblaApiMain = EmblaCarousel(emblaMainNode, { 
+            loop: true 
+          }, [Autoplay({ delay: 4000, stopOnInteraction: false })]);
+          
+          this.emblaApiMain.on("select", () => {
+            this.currentIndex = this.emblaApiMain!.selectedScrollSnap();
+            if (this.emblaApiThumb) {
+              this.emblaApiThumb.scrollTo(this.currentIndex);
+            }
+          });
+        }
 
-      const scrollToIndex = slidesThumbs.map(
-        (_, index) => () => emblaApiMain.scrollTo(index)
-      );
-
-      slidesThumbs.forEach((slideNode, index) => {
-        slideNode.addEventListener("click", scrollToIndex[index], false);
+        if (emblaThumbNode) {
+          this.emblaApiThumb = EmblaCarousel(emblaThumbNode, {
+            dragFree: true,
+            containScroll: "keepSnaps",
+          });
+        }
       });
+    },
 
-      return () => {
-        slidesThumbs.forEach((slideNode, index) => {
-          slideNode.removeEventListener("click", scrollToIndex[index], false);
-        });
-      };
-    };
+    prevSlide() {
+      if (this.emblaApiMain) this.emblaApiMain.scrollPrev();
+    },
 
-    const addToggleThumbBtnsActive = (
-      emblaApiMain: EmblaCarouselType,
-      emblaApiThumb: EmblaCarouselType
-    ) => {
-      const slidesThumbs = emblaApiThumb.slideNodes();
+    nextSlide() {
+      if (this.emblaApiMain) this.emblaApiMain.scrollNext();
+    },
 
-      const toggleThumbBtnsState = () => {
-        emblaApiThumb.scrollTo(emblaApiMain.selectedScrollSnap());
-        const previous = emblaApiMain.previousScrollSnap();
-        const selected = emblaApiMain.selectedScrollSnap();
-        slidesThumbs[previous].classList.remove("active");
-        slidesThumbs[selected].classList.add("active");
-      };
-
-      emblaApiMain.on("select", toggleThumbBtnsState);
-      emblaApiThumb.on("init", toggleThumbBtnsState);
-
-      return () => {
-        const selected = emblaApiMain.selectedScrollSnap();
-        slidesThumbs[selected].classList.remove("active");
-      };
-    };
-
-    const addPrevNextBtnsClickHandlers = (emblaApiMain: EmblaCarouselType) => {
-      const prevBtn = document.querySelector(
-        ".embla-button__prev"
-      ) as HTMLElement;
-      const nextBtn = document.querySelector(
-        ".embla-button__next"
-      ) as HTMLElement;
-
-      const scrollToPrev = () => emblaApiMain.scrollPrev();
-      const scrollToNext = () => emblaApiMain.scrollNext();
-
-      prevBtn.addEventListener("click", scrollToPrev, false);
-      nextBtn.addEventListener("click", scrollToNext, false);
-
-      return () => {
-        prevBtn.removeEventListener("click", scrollToPrev, false);
-        nextBtn.removeEventListener("click", scrollToNext, false);
-      };
-    };
-
-    if (!mainCarouselNode || !thumbCarouselNode) return;
-    const emblaApiMain = EmblaCarousel(mainCarouselNode, {});
-    const emblaApiThumb = EmblaCarousel(thumbCarouselNode, {
-      dragFree: true,
-      containScroll: "keepSnaps",
-    });
-
-    const removeThumbBtnsClickHandlers = addThumbBtnsClickHandlers(
-      emblaApiMain,
-      emblaApiThumb
-    );
-    const removeToggleThumbBtnsActive = addToggleThumbBtnsActive(
-      emblaApiMain,
-      emblaApiThumb
-    );
-    const removePrevNextBtnsClickHandlers =
-      addPrevNextBtnsClickHandlers(emblaApiMain);
-
-    emblaApiMain
-      .on("destroy", removeThumbBtnsClickHandlers)
-      .on("destroy", removeToggleThumbBtnsActive)
-      .on("destroy", removePrevNextBtnsClickHandlers);
-
-    emblaApiThumb
-      .on("destroy", removeThumbBtnsClickHandlers)
-      .on("destroy", removeToggleThumbBtnsActive);
-  });
+    scrollToIndex(index: number) {
+      if (this.emblaApiMain) this.emblaApiMain.scrollTo(index);
+    },
+  }));
 </script>

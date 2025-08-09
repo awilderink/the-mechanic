@@ -30,9 +30,11 @@ const displayItems = filteredItems.slice(0, 3);
         return (
           <a class="md:basis-1/3" href={`/voorraad/${item.slug?.current}`}>
             <Card>
-              <div class="-mx-6 -mt-8 mb-4">
+              <div
+                class="-mx-6 -mt-8 mb-4"
+                transition:name={item.fotos?.[0]._key}
+              >
                 <SanityImage
-                  transition:name={item.fotos?.[0].asset?._ref}
                   image={item.fotos?.[0].asset?._ref}
                   width={358}
                   height={233}
@@ -75,9 +77,11 @@ const displayItems = filteredItems.slice(0, 3);
               <div class="embla-featured__slide min-w-0 shrink-0 grow-0 basis-full">
                 <a href={`/voorraad/${item.slug?.current}`}>
                   <Card>
-                    <div class="-mx-6 -mt-8 mb-4">
+                    <div
+                      class="-mx-6 -mt-8 mb-4"
+                      transition:name={item.fotos?.[0]._key || "skljhkjsh"}
+                    >
                       <SanityImage
-                        transition:name={item.fotos?.[0].asset?._ref}
                         image={item.fotos?.[0].asset?._ref}
                         width={358}
                         height={233}

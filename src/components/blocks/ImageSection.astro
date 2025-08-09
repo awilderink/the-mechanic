@@ -17,9 +17,15 @@ const hasMultipleImages = images.length > 1;
     <section class="py-16 px-4">
       <div class="container mx-auto max-w-6xl">
         {hasMultipleImages ? (
-          <div class="space-y-4">
+          <div 
+            class="space-y-4"
+            x-data="imageCarousel"
+          >
             <div class="embla relative">
-              <div class="embla__viewport overflow-hidden rounded-lg h-96 sm:h-[500px] lg:h-[600px]">
+              <div 
+                x-ref="emblaViewport"
+                class="embla__viewport overflow-hidden rounded-lg h-96 sm:h-[500px] lg:h-[600px]"
+              >
                 <div class="embla__container flex h-full">
                   {images.map((item) => (
                     <div class="embla__slide min-w-0 shrink-0 grow-0 basis-full h-full">
@@ -35,19 +41,26 @@ const hasMultipleImages = images.length > 1;
                 </div>
               </div>
               <div class="absolute bottom-4 text-white right-4 flex gap-2">
-                <button class="embla__prev transition-colors">
+                <button @click="prevSlide()" class="transition-colors">
                   <Icon name="circle-arrow-left" class="size-8" />
                 </button>
-                <button class="embla__next transition-colors">
+                <button @click="nextSlide()" class="transition-colors">
                   <Icon name="circle-arrow-right" class="size-8" />
                 </button>
               </div>
             </div>
 
-            <div class="embla-thumbs__viewport overflow-hidden">
+            <div 
+              x-ref="emblaThumbsViewport"
+              class="embla-thumbs__viewport overflow-hidden"
+            >
               <div class="embla-thumbs__container flex flex-row gap-2">
-                {images.map((item) => (
-                  <div class="group embla-thumbs__slide relative min-w-0 shrink-0 grow-0 basis-20 overflow-hidden rounded-md cursor-pointer">
+                {images.map((item, index) => (
+                  <div 
+                    @click={`scrollToIndex(${index})`}
+                    class="group embla-thumbs__slide relative min-w-0 shrink-0 grow-0 basis-20 overflow-hidden rounded-md cursor-pointer"
+                    :class={`{'active': currentIndex === ${index}}`}
+                  >
                     <div class="absolute inset-0 bg-neutral-200/50 transition-colors duration-75 group-[.active]:bg-neutral-200/0 hover:bg-neutral-200/0" />
                     <SanityImage
                       format="webp"
@@ -77,122 +90,54 @@ const hasMultipleImages = images.length > 1;
 
 {hasMultipleImages && (
   <script>
-  import EmblaCarousel, { type EmblaCarouselType } from "embla-carousel";
-  import Autoplay from "embla-carousel-autoplay";
+    import EmblaCarousel from "embla-carousel";
+    import Autoplay from "embla-carousel-autoplay";
+    import type { EmblaCarouselType } from "embla-carousel";
+    import Alpine from "alpinejs";
 
-  document.addEventListener("astro:page-load", () => {
-    const emblaNode = document.querySelector(".embla__viewport") as HTMLElement;
-    const thumbCarouselNode = document.querySelector(".embla-thumbs__viewport") as HTMLElement;
-    
-    if (!emblaNode) return;
+    Alpine.data("imageCarousel", () => ({
+      currentIndex: 0,
+      emblaApiMain: null as EmblaCarouselType | null,
+      emblaApiThumb: null as EmblaCarouselType | null,
 
-    if (thumbCarouselNode) {
-      const emblaApiMain = EmblaCarousel(emblaNode, {
-        loop: true,
-      }, [Autoplay({ delay: 4000, stopOnInteraction: false })]);
-      
-      const emblaApiThumb = EmblaCarousel(thumbCarouselNode, {
-        dragFree: true,
-        containScroll: "keepSnaps",
-      });
+      init() {
+        this.$nextTick(() => {
+          const emblaMainNode = this.$refs.emblaViewport;
+          const emblaThumbNode = this.$refs.emblaThumbsViewport;
+          
+          if (emblaMainNode) {
+            this.emblaApiMain = EmblaCarousel(emblaMainNode, { 
+              loop: true 
+            }, [Autoplay({ delay: 4000, stopOnInteraction: false })]);
+            
+            this.emblaApiMain.on("select", () => {
+              this.currentIndex = this.emblaApiMain!.selectedScrollSnap();
+              if (this.emblaApiThumb) {
+                this.emblaApiThumb.scrollTo(this.currentIndex);
+              }
+            });
+          }
 
-      const addThumbBtnsClickHandlers = (
-        emblaApiMain: EmblaCarouselType,
-        emblaApiThumb: EmblaCarouselType
-      ) => {
-        const slidesThumbs = emblaApiThumb.slideNodes();
-
-        const scrollToIndex = slidesThumbs.map(
-          (_, index) => () => emblaApiMain.scrollTo(index)
-        );
-
-        slidesThumbs.forEach((slideNode, index) => {
-          slideNode.addEventListener("click", scrollToIndex[index], false);
+          if (emblaThumbNode) {
+            this.emblaApiThumb = EmblaCarousel(emblaThumbNode, {
+              dragFree: true,
+              containScroll: "keepSnaps",
+            });
+          }
         });
+      },
 
-        return () => {
-          slidesThumbs.forEach((slideNode, index) => {
-            slideNode.removeEventListener("click", scrollToIndex[index], false);
-          });
-        };
-      };
+      prevSlide() {
+        if (this.emblaApiMain) this.emblaApiMain.scrollPrev();
+      },
 
-      const addToggleThumbBtnsActive = (
-        emblaApiMain: EmblaCarouselType,
-        emblaApiThumb: EmblaCarouselType
-      ) => {
-        const slidesThumbs = emblaApiThumb.slideNodes();
+      nextSlide() {
+        if (this.emblaApiMain) this.emblaApiMain.scrollNext();
+      },
 
-        const toggleThumbBtnsState = () => {
-          emblaApiThumb.scrollTo(emblaApiMain.selectedScrollSnap());
-          const previous = emblaApiMain.previousScrollSnap();
-          const selected = emblaApiMain.selectedScrollSnap();
-          slidesThumbs[previous]?.classList.remove("active");
-          slidesThumbs[selected]?.classList.add("active");
-        };
-
-        emblaApiMain.on("select", toggleThumbBtnsState);
-        emblaApiThumb.on("init", toggleThumbBtnsState);
-
-        return () => {
-          const selected = emblaApiMain.selectedScrollSnap();
-          slidesThumbs[selected]?.classList.remove("active");
-        };
-      };
-
-      const addPrevNextBtnsClickHandlers = (emblaApiMain: EmblaCarouselType) => {
-        const prevBtn = document.querySelector(".embla__prev") as HTMLElement;
-        const nextBtn = document.querySelector(".embla__next") as HTMLElement;
-
-        if (!prevBtn || !nextBtn) return;
-
-        const scrollToPrev = () => emblaApiMain.scrollPrev();
-        const scrollToNext = () => emblaApiMain.scrollNext();
-
-        prevBtn.addEventListener("click", scrollToPrev, false);
-        nextBtn.addEventListener("click", scrollToNext, false);
-
-        return () => {
-          prevBtn.removeEventListener("click", scrollToPrev, false);
-          nextBtn.removeEventListener("click", scrollToNext, false);
-        };
-      };
-
-      const removeThumbBtnsClickHandlers = addThumbBtnsClickHandlers(
-        emblaApiMain,
-        emblaApiThumb
-      );
-      const removeToggleThumbBtnsActive = addToggleThumbBtnsActive(
-        emblaApiMain,
-        emblaApiThumb
-      );
-      const removePrevNextBtnsClickHandlers = addPrevNextBtnsClickHandlers(emblaApiMain);
-
-       return () => {
-         removeThumbBtnsClickHandlers();
-         removeToggleThumbBtnsActive();
-         if (removePrevNextBtnsClickHandlers) {
-           removePrevNextBtnsClickHandlers();
-         }
-         emblaApiMain.destroy();
-         emblaApiThumb.destroy();
-       };
-    } else {
-      const emblaApi = EmblaCarousel(emblaNode, {
-        loop: true,
-      }, [Autoplay({ delay: 4000, stopOnInteraction: false })]);
-
-      const prevBtn = document.querySelector(".embla__prev") as HTMLElement;
-      const nextBtn = document.querySelector(".embla__next") as HTMLElement;
-
-      if (prevBtn && nextBtn) {
-        const scrollToPrev = () => emblaApi.scrollPrev();
-        const scrollToNext = () => emblaApi.scrollNext();
-
-        prevBtn.addEventListener("click", scrollToPrev);
-        nextBtn.addEventListener("click", scrollToNext);
-      }
-    }
-  });
-</script>
+      scrollToIndex(index: number) {
+        if (this.emblaApiMain) this.emblaApiMain.scrollTo(index);
+      },
+    }));
+  </script>
 )}
