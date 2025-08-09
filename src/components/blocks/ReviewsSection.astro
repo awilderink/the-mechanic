@@ -20,26 +20,58 @@ const { block } = Astro.props;
         width={448}
         height={640}
       />
-      <div class="bg-sand basis-3/5 p-8 flex flex-col gap-4 rounded-xl">
-        <Title variant="tertiary" class="text-neutral-600">Testimonials</Title>
-        <div class="embla__viewport grow flex items-center overflow-hidden">
-          <div class="embla__container -ml-4 flex items-center">
-            {
-              block.reviews?.map(({ body }) => (
-                <div class="embla__slide min-w-0 shrink-0 grow-0 basis-full pl-4">
-                  <div class="mt-4 text-2xl italic font-light">
-                    &ldquo;{body}&rdquo;
-                  </div>
-                </div>
-              ))
+      <div
+        class="bg-sand basis-3/5 p-8 flex flex-col gap-4 rounded-xl"
+        x-data="{
+          emblaApi: null,
+          init() {
+            $nextTick(() => {
+              const emblaNode = $refs.emblaViewport;
+              if (emblaNode) {
+                this.emblaApi = EmblaCarousel(emblaNode, {
+                  slidesToScroll: 'auto',
+                }, [Autoplay({ delay: 3000 })]);
+              }
+            });
+          },
+          prev() {
+            if (this.emblaApi) {
+              this.emblaApi.scrollPrev();
+              this.emblaApi.plugins().autoplay.reset();
             }
+          },
+          next() {
+            if (this.emblaApi) {
+              this.emblaApi.scrollNext();
+              this.emblaApi.plugins().autoplay.reset();
+            }
+          }
+        }"
+      >
+        <Title variant="tertiary" class="text-neutral-600">Testimonials</Title>
+        <div class="grow flex items-center overflow-hidden">
+          <div
+            x-ref="emblaViewport"
+            class="embla__viewport grow flex items-center overflow-hidden"
+          >
+            <div class="embla__container -ml-4 flex items-center">
+              {
+                block.reviews?.map(({ body }) => (
+                  <div class="embla__slide min-w-0 shrink-0 grow-0 basis-full pl-4">
+                    <div class="mt-4 text-2xl italic font-light">
+                      &ldquo;{body}&rdquo;
+                    </div>
+                  </div>
+                ))
+              }
+            </div>
           </div>
         </div>
         <div class="flex gap-2">
-          <button class="embla__prev">
+          <button class="cursor-pointer" @click="prev()">
             <Icon name="circle-arrow-left" class="size-10" />
           </button>
-          <button class="embla__next">
+          <button class="cursor-pointer" @click="next()">
             <Icon name="circle-arrow-right" class="size-10" />
           </button>
         </div>
@@ -51,35 +83,5 @@ const { block } = Astro.props;
 <script>
   import EmblaCarousel from "embla-carousel";
   import Autoplay from "embla-carousel-autoplay";
-
-  document.addEventListener("astro:page-load", () => {
-    const emblaNode = document.querySelector(".embla__viewport") as HTMLElement;
-    if (!emblaNode) return;
-
-    const autoplay = Autoplay({ delay: 3000 });
-    const embla = EmblaCarousel(
-      emblaNode,
-      {
-        slidesToScroll: "auto",
-      },
-      [autoplay]
-    );
-
-    const prevButton = document.querySelector(".embla__prev") as HTMLButtonElement;
-    const nextButton = document.querySelector(".embla__next") as HTMLButtonElement;
-
-    if (prevButton) {
-      prevButton.addEventListener("click", () => {
-        embla.scrollPrev();
-        autoplay.reset();
-      });
-    }
-
-    if (nextButton) {
-      nextButton.addEventListener("click", () => {
-        embla.scrollNext();
-        autoplay.reset();
-      });
-    }
-  });
+  Object.assign(window, { EmblaCarousel, Autoplay });
 </script>

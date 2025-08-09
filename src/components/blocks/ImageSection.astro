@@ -19,7 +19,46 @@ const hasMultipleImages = images.length > 1;
         {hasMultipleImages ? (
           <div 
             class="space-y-4"
-            x-data="imageCarousel"
+            x-data="{
+              currentIndex: 0,
+              emblaApiMain: null,
+              emblaApiThumb: null,
+              init() {
+                this.$nextTick(() => {
+                  const emblaMainNode = this.$refs.emblaViewport;
+                  const emblaThumbNode = this.$refs.emblaThumbsViewport;
+                  
+                  if (emblaMainNode) {
+                    this.emblaApiMain = EmblaCarousel(emblaMainNode, { 
+                      loop: true 
+                    }, [Autoplay({ delay: 4000, stopOnInteraction: false })]);
+                    
+                    this.emblaApiMain.on('select', () => {
+                      this.currentIndex = this.emblaApiMain.selectedScrollSnap();
+                      if (this.emblaApiThumb) {
+                        this.emblaApiThumb.scrollTo(this.currentIndex);
+                      }
+                    });
+                  }
+
+                  if (emblaThumbNode) {
+                    this.emblaApiThumb = EmblaCarousel(emblaThumbNode, {
+                      dragFree: true,
+                      containScroll: 'keepSnaps',
+                    });
+                  }
+                });
+              },
+              prevSlide() {
+                if (this.emblaApiMain) this.emblaApiMain.scrollPrev();
+              },
+              nextSlide() {
+                if (this.emblaApiMain) this.emblaApiMain.scrollNext();
+              },
+              scrollToIndex(index) {
+                if (this.emblaApiMain) this.emblaApiMain.scrollTo(index);
+              }
+            }"
           >
             <div class="embla relative">
               <div 
@@ -92,52 +131,6 @@ const hasMultipleImages = images.length > 1;
   <script>
     import EmblaCarousel from "embla-carousel";
     import Autoplay from "embla-carousel-autoplay";
-    import type { EmblaCarouselType } from "embla-carousel";
-    import Alpine from "alpinejs";
-
-    Alpine.data("imageCarousel", () => ({
-      currentIndex: 0,
-      emblaApiMain: null as EmblaCarouselType | null,
-      emblaApiThumb: null as EmblaCarouselType | null,
-
-      init() {
-        this.$nextTick(() => {
-          const emblaMainNode = this.$refs.emblaViewport;
-          const emblaThumbNode = this.$refs.emblaThumbsViewport;
-          
-          if (emblaMainNode) {
-            this.emblaApiMain = EmblaCarousel(emblaMainNode, { 
-              loop: true 
-            }, [Autoplay({ delay: 4000, stopOnInteraction: false })]);
-            
-            this.emblaApiMain.on("select", () => {
-              this.currentIndex = this.emblaApiMain!.selectedScrollSnap();
-              if (this.emblaApiThumb) {
-                this.emblaApiThumb.scrollTo(this.currentIndex);
-              }
-            });
-          }
-
-          if (emblaThumbNode) {
-            this.emblaApiThumb = EmblaCarousel(emblaThumbNode, {
-              dragFree: true,
-              containScroll: "keepSnaps",
-            });
-          }
-        });
-      },
-
-      prevSlide() {
-        if (this.emblaApiMain) this.emblaApiMain.scrollPrev();
-      },
-
-      nextSlide() {
-        if (this.emblaApiMain) this.emblaApiMain.scrollNext();
-      },
-
-      scrollToIndex(index: number) {
-        if (this.emblaApiMain) this.emblaApiMain.scrollTo(index);
-      },
-    }));
+    Object.assign(window, { EmblaCarousel, Autoplay });
   </script>
 )}

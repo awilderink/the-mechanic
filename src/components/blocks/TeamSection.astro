@@ -26,7 +26,32 @@ const filteredMembers =
       filteredMembers && filteredMembers.length > 0 && (
         <div
           class="mt-6"
-          x-data="teamCarousel"
+          x-data="{
+            currentIndex: 0,
+            emblaApi: null,
+            members: [],
+            get currentMember() {
+              return this.members[this.currentIndex] || {};
+            },
+            init() {
+              this.members = JSON.parse($el.dataset.members);
+              this.$nextTick(() => {
+                const emblaNode = this.$refs.emblaViewport;
+                if (emblaNode) {
+                  this.emblaApi = EmblaCarousel(emblaNode, { loop: true });
+                  this.emblaApi.on('select', () => {
+                    this.currentIndex = this.emblaApi.selectedScrollSnap();
+                  });
+                }
+              });
+            },
+            prevSlide() {
+              if (this.emblaApi) this.emblaApi.scrollPrev();
+            },
+            nextSlide() {
+              if (this.emblaApi) this.emblaApi.scrollNext();
+            }
+          }"
           data-members={JSON.stringify(filteredMembers)}
         >
           <div class="flex gap-4 md:gap-8 flex-col md:flex-row">
@@ -87,38 +112,5 @@ const filteredMembers =
 
 <script>
   import EmblaCarousel from "embla-carousel";
-  import type { EmblaCarouselType } from "embla-carousel";
-  import Alpine from "alpinejs";
-  import type { TeamMember } from "../../sanity/types";
-
-  Alpine.data("teamCarousel", () => ({
-    currentIndex: 0,
-    emblaApi: null as EmblaCarouselType | null,
-    members: [] as TeamMember[],
-
-    get currentMember() {
-      return this.members[this.currentIndex] || {};
-    },
-
-    init() {
-      this.members = JSON.parse(this.$el.dataset.members!);
-      this.$nextTick(() => {
-        const emblaNode = this.$refs.emblaViewport;
-        if (emblaNode) {
-          this.emblaApi = EmblaCarousel(emblaNode, { loop: true });
-          this.emblaApi.on("select", () => {
-            this.currentIndex = this.emblaApi!.selectedScrollSnap();
-          });
-        }
-      });
-    },
-
-    prevSlide() {
-      if (this.emblaApi) this.emblaApi.scrollPrev();
-    },
-
-    nextSlide() {
-      if (this.emblaApi) this.emblaApi.scrollNext();
-    },
-  }));
+  Object.assign(window, { EmblaCarousel });
 </script>
