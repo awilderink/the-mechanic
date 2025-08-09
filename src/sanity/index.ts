@@ -18,7 +18,15 @@ export const getGlobal = async () => {
 	const globalQuery = defineQuery(`*[_type == "global"][0]{
     _id,
     title,
-    description
+    description,
+    mainMenu[]{
+      title,
+      slug,
+      children[]{
+        title,
+        slug
+      }
+    }
   }`);
 
 	return await client.fetch(globalQuery);

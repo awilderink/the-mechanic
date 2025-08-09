@@ -432,6 +432,18 @@ export type Global = {
   _rev: string;
   title?: string;
   description?: string;
+  mainMenu?: Array<{
+    title?: string;
+    slug?: Slug;
+    children?: Array<{
+      title?: string;
+      slug?: Slug;
+      _type: "subMenuItem";
+      _key: string;
+    }>;
+    _type: "menuItem";
+    _key: string;
+  }>;
 };
 
 export type SanityImagePaletteSwatch = {
@@ -556,11 +568,19 @@ export type AllSanitySchemaTypes = FeaturedVoorraadSection | ReviewsSection | Ca
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./src/sanity/index.ts
 // Variable: globalQuery
-// Query: *[_type == "global"][0]{    _id,    title,    description  }
+// Query: *[_type == "global"][0]{    _id,    title,    description,    mainMenu[]{      title,      slug,      children[]{        title,        slug      }    }  }
 export type GlobalQueryResult = {
   _id: string;
   title: string | null;
   description: string | null;
+  mainMenu: Array<{
+    title: string | null;
+    slug: Slug | null;
+    children: Array<{
+      title: string | null;
+      slug: Slug | null;
+    }> | null;
+  }> | null;
 } | null;
 // Variable: homeQuery
 // Query: *[_type == "home"][0]{    _id,    blocks  }
@@ -768,7 +788,7 @@ export type TeamMembersQueryResult = Array<{
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    "*[_type == \"global\"][0]{\n    _id,\n    title,\n    description\n  }": GlobalQueryResult;
+    "*[_type == \"global\"][0]{\n    _id,\n    title,\n    description,\n    mainMenu[]{\n      title,\n      slug,\n      children[]{\n        title,\n        slug\n      }\n    }\n  }": GlobalQueryResult;
     "*[_type == \"home\"][0]{\n    _id,\n    blocks\n  }": HomeQueryResult;
     "*[_type == \"merk\"]{\n    _id,\n    naam,\n    logo\n  }": MerkenQueryResult;
     "*[_type == \"voorraad\" \n\t\t&& (!defined($merk) || merk->naam == $merk)\n\t\t&& (!defined($verkocht) || verkocht == $verkocht)\n\t\t&& (!defined($uitgelicht) || uitgelicht == $uitgelicht)\n\t]{\n    _id,\n    titel,\n    slug,\n    merk->{\n      _id,\n      naam,\n      logo\n    },\n    prijs,\n    bouwjaar,\n    kilometerstand,\n    brandstof,\n    transmissie,\n    verkocht,\n    uitgelicht,\n    fotos,\n    beschrijving,\n    specificaties\n  }": VoorraadQueryResult;

@@ -1,13 +1,23 @@
 ---
-import Button from './Button.astro';
-import HeaderLink from './HeaderLink.astro';
-import TextLogo from './TextLogo.astro';
+import { getGlobal } from "../sanity";
+import type { Slug } from "../sanity/types";
+import Button from "./Button.astro";
+import HeaderLink from "./HeaderLink.astro";
+import TextLogo from "./TextLogo.astro";
 
 interface Props {
-	transparent?: boolean;
+  transparent?: boolean;
 }
 
-const { transparent } = Astro.props as { transparent?: boolean };
+const { transparent = false } = Astro.props;
+
+const global = await getGlobal();
+const menuItems = global?.mainMenu || [];
+
+const getUrl = (slug?: Slug | null) => {
+  console.log(slug);
+  return slug?.current || '#';
+};
 ---
 
 <header
@@ -25,9 +35,42 @@ const { transparent } = Astro.props as { transparent?: boolean };
         <TextLogo class="h-6 text-[#b0b1b3] md:h-8" />
       </a>
       <div class="hidden items-center gap-6 md:flex">
-        <HeaderLink href="/diensten">Diensten</HeaderLink>
-        <HeaderLink href="/voorraad">Voorraad</HeaderLink>
-        <HeaderLink href="/about">Over</HeaderLink>
+        {
+          menuItems.map((item) =>
+            item.children && item.children.length > 0 ? (
+              <div class="relative group">
+                <span class="flex items-center gap-1 cursor-pointer text-gray-700 hover:text-tertiary transition-colors duration-200 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-tertiary after:transition-all after:duration-300 hover:after:w-full">
+                  {item.title}
+                  <svg
+                    class="w-4 h-4 transition-transform group-hover:rotate-180"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </span>
+                <div class="absolute top-full right-0 mt-2 w-56 bg-white shadow-xl border border-gray-200 rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                  {item.children.map((child) => (
+                    <a
+                      href={getUrl(child.slug)}
+                      class="block px-6 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 first:rounded-t-md last:rounded-b-md transition-all duration-150 hover:pl-8 border-l-2 border-transparent hover:border-tertiary"
+                    >
+                      {child.title}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <HeaderLink href={getUrl(item.slug)}>{item.title}</HeaderLink>
+            )
+          )
+        }
         <Button variant="tertiary">Contact</Button>
       </div>
       <div
@@ -75,14 +118,26 @@ const { transparent } = Astro.props as { transparent?: boolean };
             <div
               class="flex grow flex-col justify-center space-y-8 text-4xl [&_a]:block"
             >
-              <a href="/diensten">Diensten</a>
-              <div class="space-y-6 pl-6 text-2xl text-white/90">
-                <a>Onderhoud</a>
-                <a>Restauratie</a>
-                <a>Inkoop Verkoop</a>
-              </div>
-              <a href="/voorraad">Voorraad</a>
-              <a href="/over-ons">Over ons</a>
+              {
+                menuItems.map((item) => (
+                  <div>
+                    {item.children && item.children.length > 0 ? (
+                      <div>
+                        <span class="flex items-center gap-2">
+                          {item.title}
+                        </span>
+                        <div class="space-y-6 mt-6 pl-6 text-2xl text-white/90">
+                          {item.children.map((child) => (
+                            <a href={getUrl(child?.slug)}>{child.title}</a>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      <a href={getUrl(item?.slug)}>{item.title}</a>
+                    )}
+                  </div>
+                ))
+              }
               <a href="/contact">Contact</a>
             </div>
             <div class="text-2xl text-white/50">Passie voor auto's</div>
