@@ -126,17 +126,6 @@ export const getPage = async (slug: string) => {
 	return await client.fetch(pageQuery, { slug });
 };
 
-export const getAllPages = async () => {
-	const allPagesQuery = defineQuery(`*[_type == "page"]{
-    _id,
-    title,
-    slug,
-    seo
-  }`);
-
-	return await client.fetch(allPagesQuery);
-};
-
 export const getTeamMembers = async () => {
 	const teamMembersQuery =
 		defineQuery(`*[_type == "teamMember"] | order(_createdAt asc) {
