@@ -1,4 +1,5 @@
 ---
+import { PortableText } from 'astro-portabletext';
 import type { GetStaticPaths } from 'astro';
 import Button from '../../components/Button.astro';
 import FeaturedVoorraad from '../../components/FeaturedVoorraad.astro';
@@ -177,7 +178,20 @@ const specificaties: AccordionEntry[] = (item.specificaties ?? []).map(({ label,
             <Icon name="instagram" class="size-9" />
           </div>
         </div>
-        <Accordion client:visible items={specificaties} openFirst class="mt-8" />
+        {
+          item.beschrijving && (
+            <div
+              class="mt-8 max-w-3xl space-y-4 font-light [&_a]:underline [&_h2]:text-xl [&_h3]:text-lg [&_ol]:list-decimal [&_ol]:pl-5 [&_ul]:list-disc [&_ul]:pl-5"
+            >
+              <PortableText value={item.beschrijving} />
+            </div>
+          )
+        }
+        {
+          specificaties.length > 0 && (
+            <Accordion client:visible items={specificaties} openFirst class="mt-8" />
+          )
+        }
       </div>
     </div>
   </section>
