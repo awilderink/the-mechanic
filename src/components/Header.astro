@@ -4,6 +4,7 @@ import type { Slug } from "../sanity/types";
 import Button from "./Button.astro";
 import HeaderLink from "./HeaderLink.astro";
 import TextLogo from "./TextLogo.astro";
+import MobileMenu, { type MenuGroup } from "../solid/MobileMenu.tsx";
 
 interface Props {
   transparent?: boolean;
@@ -17,6 +18,27 @@ const menuItems = global?.mainMenu || [];
 const getUrl = (slug?: Slug | null) => {
   return slug?.current || '#';
 };
+
+// Plain strings only: the island never sees a Sanity object. A group without
+// its own slug gets no self-link, so `#` never reaches the markup.
+const mobileItems: MenuGroup[] = menuItems.map((item) => ({
+  title: item.title || '',
+  href: item.slug?.current ? getUrl(item.slug) : undefined,
+  children: (item.children || []).map((child) => ({
+    title: child.title || '',
+    href: getUrl(child.slug),
+  })),
+}));
+
+if (!mobileItems.some((item) => item.title.toLowerCase() === 'contact')) {
+  mobileItems.push({ title: 'Contact', href: '/contact', children: [] });
+}
+
+// Contact already has a dedicated CTA button at the end of the desktop nav,
+// so drop it from the text links to avoid rendering it twice.
+const desktopItems = menuItems.filter(
+  (item) => getUrl(item.slug) !== '/contact' && item.title?.toLowerCase() !== 'contact',
+);
 ---
 
 <header
@@ -35,7 +57,7 @@ const getUrl = (slug?: Slug | null) => {
       </a>
       <div class="hidden items-center gap-6 md:flex">
         {
-          menuItems.map((item) =>
+          desktopItems.map((item) =>
             item.children && item.children.length > 0 ? (
               <div class="relative group">
                 <span class="flex items-center gap-1 cursor-pointer text-gray-700 hover:text-tertiary transition-colors duration-200 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-tertiary after:transition-all after:duration-300 hover:after:w-full">
@@ -70,78 +92,12 @@ const getUrl = (slug?: Slug | null) => {
             )
           )
         }
-        <Button variant="tertiary">Contact</Button>
+        <a href="/contact">
+          <Button variant="tertiary">Contact</Button>
+        </a>
       </div>
-      <div
-        class="md:hidden"
-        x-data="{ open: false }"
-        x-on:resize.window="open = false"
-        x-effect="if (open) { document.body.style.position = 'fixed' } else { document.body.style.position = 'relative' }"
-      >
-        <div
-          @click="open = !open"
-          class="bg-tertiary relative z-20 flex size-12 cursor-pointer items-center justify-center rounded-full text-white"
-        >
-          <button class="cursor-pointer">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="size-8 transition-transform"
-              :class="{ 'rotate-45': open }"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="1"
-                d="M4 9h16M4 15h16"
-                x-show="!open"></path>
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="1"
-                d="M12 4v16M4 12h16"
-                x-cloak
-                x-show="open"></path>
-            </svg>
-          </button>
-        </div>
-        <div
-          x-show="open"
-          x-collapse
-          x-cloak
-          class="bg-tertiary fixed top-0 right-0 z-10 w-full"
-        >
-          <div class="flex h-dvh flex-col p-10 text-white">
-            <div
-              class="flex grow flex-col justify-center space-y-8 text-4xl [&_a]:block"
-            >
-              {
-                menuItems.map((item) => (
-                  <div>
-                    {item.children && item.children.length > 0 ? (
-                      <div>
-                        <span class="flex items-center gap-2">
-                          {item.title}
-                        </span>
-                        <div class="space-y-6 mt-6 pl-6 text-2xl text-white/90">
-                          {item.children.map((child) => (
-                            <a href={getUrl(child?.slug)}>{child.title}</a>
-                          ))}
-                        </div>
-                      </div>
-                    ) : (
-                      <a href={getUrl(item?.slug)}>{item.title}</a>
-                    )}
-                  </div>
-                ))
-              }
-              <a href="/contact">Contact</a>
-            </div>
-            <div class="text-2xl text-white/50">Passie voor auto's</div>
-          </div>
-        </div>
+      <div class="md:hidden">
+        <MobileMenu client:load items={mobileItems} />
       </div>
     </div>
   </nav>

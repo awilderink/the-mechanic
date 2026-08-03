@@ -1,5 +1,8 @@
 ---
-import { getVoorraad } from "../sanity/index.ts";
+import { getVoorraad, urlFor } from "../sanity/index.ts";
+import type { FeaturedCard } from "../solid/FeaturedCarousel.tsx";
+import FeaturedCarousel from "../solid/FeaturedCarousel.tsx";
+import { astroTransitionName } from "../solid/viewTransitions";
 import Button from "./Button.astro";
 import Card from "./Card.astro";
 import Icon from "./Icon.astro";
@@ -21,6 +24,25 @@ const filteredItems = exclude
   : otherItems;
 
 const displayItems = filteredItems.slice(0, 3);
+
+const carouselItems: FeaturedCard[] = displayItems.map((item) => {
+  const ref = item.fotos?.[0]?.asset?._ref;
+  return {
+    href: `/voorraad/${item.slug?.current}`,
+    titel: item.titel ?? "",
+    merk: item.merk?.naam ?? undefined,
+    prijs: item.prijs ?? undefined,
+    viewTransitionName: astroTransitionName(item.fotos?.[0]._key),
+    image: {
+      src: ref
+        ? urlFor(ref).width(358).height(233).quality(75).format("webp").url()
+        : "",
+      alt: "",
+      width: 358,
+      height: 233,
+    },
+  };
+});
 ---
 
 <div>
@@ -72,109 +94,6 @@ const displayItems = filteredItems.slice(0, 3);
   </div>
 
   <div class="md:hidden">
-    <div class="embla-featured overflow-hidden">
-      <div class="embla-featured__container flex">
-        {
-          displayItems.map((item) => {
-            return (
-              <div class="embla-featured__slide min-w-0 shrink-0 grow-0 basis-full">
-                <a href={`/voorraad/${item.slug?.current}`}>
-                  <Card>
-                    <div
-                      class="-mx-6 -mt-8 mb-4"
-                      transition:name={item.fotos?.[0]._key || "skljhkjsh"}
-                    >
-                      <SanityImage
-                        image={item.fotos?.[0].asset?._ref}
-                        width={358}
-                        height={233}
-                        class="w-full"
-                      />
-                    </div>
-                    <div>{item.merk?.naam}</div>
-                    <div class="text-neutral-400 leading-loose">
-                      {item.titel}
-                    </div>
-                    <div class="mt-8 flex items-end justify-between text-sm">
-                      <span>
-                        {!!item.prijs &&
-                          Intl.NumberFormat("nl-NL", {
-                            style: "currency",
-                            currency: "EUR",
-                          }).format(Number(item.prijs))}
-                      </span>
-                      <Icon
-                        class="h-10 transition-transform hover:translate-x-1"
-                        name="circle-arrow-right"
-                      />
-                    </div>
-                  </Card>
-                </a>
-              </div>
-            );
-          })
-        }
-      </div>
-    </div>
-    <div class="flex justify-between items-center mt-4 gap-2">
-      <div class="embla-featured__dots flex justify-start gap-2">
-        {
-          displayItems.map((_, index) => (
-            <button
-              class="embla-featured__dot size-3 rounded-full bg-neutral-300 border border-neutral-400 transition-colors duration-200"
-              data-index={index}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))
-        }
-      </div>
-      <a href="/voorraad">
-        <Button size="sm" variant="primary">Bekijk alles</Button>
-      </a>
-    </div>
+    <FeaturedCarousel client:visible items={carouselItems} />
   </div>
 </div>
-
-<script>
-  import EmblaCarousel from "embla-carousel";
-
-  document.addEventListener("astro:page-load", () => {
-    const emblaNode = document.querySelector(".embla-featured") as HTMLElement;
-
-    if (!emblaNode) return;
-
-    const emblaApi = EmblaCarousel(emblaNode, {
-      loop: true,
-      align: "start",
-    });
-
-    const dots = document.querySelectorAll(
-      ".embla-featured__dot"
-    ) as NodeListOf<HTMLElement>;
-
-    const updateDots = () => {
-      const selectedIndex = emblaApi.selectedScrollSnap();
-      dots.forEach((dot, index) => {
-        if (index === selectedIndex) {
-          dot.classList.remove("bg-neutral-300");
-          dot.classList.add("bg-neutral-800");
-        } else {
-          dot.classList.remove("bg-neutral-800");
-          dot.classList.add("bg-neutral-300");
-        }
-      });
-    };
-
-    const addDotClickHandlers = () => {
-      dots.forEach((dot, index) => {
-        dot.addEventListener("click", () => {
-          emblaApi.scrollTo(index);
-        });
-      });
-    };
-
-    emblaApi.on("select", updateDots);
-    emblaApi.on("init", updateDots);
-    addDotClickHandlers();
-  });
-</script>

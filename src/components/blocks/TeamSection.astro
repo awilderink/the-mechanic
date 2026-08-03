@@ -1,8 +1,7 @@
 ---
-import { getTeamMembers } from "../../sanity";
+import { getTeamMembers, urlFor } from "../../sanity";
 import type { TeamSection } from "../../sanity/types";
-import Icon from "../Icon.astro";
-import SanityImage from "../SanityImage.astro";
+import TeamCarousel, { type TeamMemberCard } from "../../solid/TeamCarousel";
 import Title from "../Title.astro";
 
 interface Props {
@@ -16,101 +15,35 @@ const filteredMembers =
   block.members?.map((member) => {
     return teamMembers.find((teamMember) => teamMember._id === member._ref);
   }) || [];
+
+const members: TeamMemberCard[] = filteredMembers.flatMap((member) =>
+  member?.afbeelding
+    ? [
+        {
+          naam: member.naam ?? "",
+          functie: member.functie ?? "",
+          bio: member.bio ?? "",
+          image: {
+            src: urlFor(member.afbeelding)
+              .width(960)
+              .height(720)
+              .quality(75)
+              .format("webp")
+              .url(),
+            alt: member.naam || "Team member",
+            width: 960,
+            height: 720,
+          },
+        },
+      ]
+    : [],
+);
 ---
 
 <section class="bg-sand py-16">
   <div class="container max-w-6xl mx-auto px-4">
     <Title variant="tertiary" class="text-neutral-600">Team</Title>
     {block.title && <div class="mt-2 text-2xl">{block.title}</div>}
-    {
-      filteredMembers && filteredMembers.length > 0 && (
-        <div
-          class="mt-6"
-          x-data="{
-            currentIndex: 0,
-            emblaApi: null,
-            members: [],
-            get currentMember() {
-              return this.members[this.currentIndex] || {};
-            },
-            init() {
-              this.members = JSON.parse($el.dataset.members);
-              this.$nextTick(() => {
-                const emblaNode = this.$refs.emblaViewport;
-                if (emblaNode) {
-                  this.emblaApi = EmblaCarousel(emblaNode, { loop: true });
-                  this.emblaApi.on('select', () => {
-                    this.currentIndex = this.emblaApi.selectedScrollSnap();
-                  });
-                }
-              });
-            },
-            prevSlide() {
-              if (this.emblaApi) this.emblaApi.scrollPrev();
-            },
-            nextSlide() {
-              if (this.emblaApi) this.emblaApi.scrollNext();
-            }
-          }"
-          data-members={JSON.stringify(filteredMembers)}
-        >
-          <div class="flex gap-4 md:gap-8 flex-col md:flex-row">
-            <div class="relative flex-1/2">
-              <div
-                x-ref="emblaViewport"
-                class="embla__viewport overflow-hidden"
-              >
-                <div class="embla__container flex">
-                  {filteredMembers.map(
-                    (member) =>
-                      member && (
-                        <div class="embla__slide flex-none w-full min-w-0">
-                          <SanityImage
-                            width={960}
-                            height={720}
-                            image={member.afbeelding}
-                            alt={member.naam || "Team member"}
-                            class="w-full h-full object-cover rounded-lg"
-                          />
-                        </div>
-                      )
-                  )}
-                </div>
-              </div>
-            </div>
-            <div class="flex-1/2 min-h-80 flex flex-col-reverse md:justify-between md:flex-col gap-4">
-              <div class="bio-content transition-opacity duration-300 ease-in-out">
-                <h3
-                  class="text-xl font-regular text-gray-900 mb-2"
-                  x-text="currentMember.naam || ''"
-                />
-                <p
-                  class="text-gray-600 text-sm mb-4 font-thin"
-                  x-text="currentMember.functie || ''"
-                />
-                <p
-                  class="text-gray-700 leading-relaxed font-thin text-sm"
-                  x-text="currentMember.bio || ''"
-                />
-              </div>
-
-              <div class="flex gap-4 self-end md:self-start">
-                <button @click="prevSlide()" class="size-10 cursor-pointer">
-                  <Icon name="circle-arrow-left" />
-                </button>
-                <button @click="nextSlide()" class="size-10 cursor-pointer">
-                  <Icon name="circle-arrow-right" />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )
-    }
+    {members.length > 0 && <TeamCarousel client:visible members={members} />}
   </div>
 </section>
-
-<script>
-  import EmblaCarousel from "embla-carousel";
-  Object.assign(window, { EmblaCarousel });
-</script>

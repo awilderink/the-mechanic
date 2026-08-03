@@ -1,6 +1,6 @@
 ---
 import type { ReviewsSection } from "../../sanity/types";
-import Icon from "../Icon.astro";
+import ReviewsCarousel, { type Review } from "../../solid/ReviewsCarousel";
 import SanityImage from "../SanityImage.astro";
 import Title from "../Title.astro";
 
@@ -9,6 +9,12 @@ interface Props {
 }
 
 const { block } = Astro.props;
+
+const reviews: Review[] =
+  block.reviews?.map(({ naam, body }) => ({
+    naam: naam ?? "",
+    body: body ?? "",
+  })) || [];
 ---
 
 <section class="overflow-hidden px-4 py-14">
@@ -20,68 +26,10 @@ const { block } = Astro.props;
         width={448}
         height={640}
       />
-      <div
-        class="bg-sand basis-3/5 p-8 flex flex-col gap-4 rounded-xl"
-        x-data="{
-          emblaApi: null,
-          init() {
-            $nextTick(() => {
-              const emblaNode = $refs.emblaViewport;
-              if (emblaNode) {
-                this.emblaApi = EmblaCarousel(emblaNode, {
-                  slidesToScroll: 'auto',
-                }, [Autoplay({ delay: 3000 })]);
-              }
-            });
-          },
-          prev() {
-            if (this.emblaApi) {
-              this.emblaApi.scrollPrev();
-              this.emblaApi.plugins().autoplay.reset();
-            }
-          },
-          next() {
-            if (this.emblaApi) {
-              this.emblaApi.scrollNext();
-              this.emblaApi.plugins().autoplay.reset();
-            }
-          }
-        }"
-      >
+      <div class="bg-sand basis-3/5 p-8 flex flex-col gap-4 rounded-xl">
         <Title variant="tertiary" class="text-neutral-600">Testimonials</Title>
-        <div class="grow flex items-center overflow-hidden">
-          <div
-            x-ref="emblaViewport"
-            class="embla__viewport grow flex items-center overflow-hidden"
-          >
-            <div class="embla__container -ml-4 flex items-center">
-              {
-                block.reviews?.map(({ body }) => (
-                  <div class="embla__slide min-w-0 shrink-0 grow-0 basis-full pl-4">
-                    <div class="mt-4 text-2xl italic font-light">
-                      &ldquo;{body}&rdquo;
-                    </div>
-                  </div>
-                ))
-              }
-            </div>
-          </div>
-        </div>
-        <div class="flex gap-2">
-          <button class="cursor-pointer" @click="prev()">
-            <Icon name="circle-arrow-left" class="size-10" />
-          </button>
-          <button class="cursor-pointer" @click="next()">
-            <Icon name="circle-arrow-right" class="size-10" />
-          </button>
-        </div>
+        <ReviewsCarousel client:visible reviews={reviews} />
       </div>
     </div>
   </div>
 </section>
-
-<script>
-  import EmblaCarousel from "embla-carousel";
-  import Autoplay from "embla-carousel-autoplay";
-  Object.assign(window, { EmblaCarousel, Autoplay });
-</script>

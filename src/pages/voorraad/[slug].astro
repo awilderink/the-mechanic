@@ -1,13 +1,14 @@
 ---
 import type { GetStaticPaths } from 'astro';
-import Accordion from '../../components/Accordion.astro';
-import AccordionItem from '../../components/AccordionItem.astro';
 import Button from '../../components/Button.astro';
 import FeaturedVoorraad from '../../components/FeaturedVoorraad.astro';
 import Icon from '../../components/Icon.astro';
-import SanityImage from '../../components/SanityImage.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getVoorraad, getVoorraadItem } from '../../sanity/index.ts';
+import { getVoorraad, getVoorraadItem, urlFor } from '../../sanity/index.ts';
+import Accordion, { type AccordionEntry } from '../../solid/Accordion';
+import GalleryMain from '../../solid/GalleryMain';
+import GalleryThumbs from '../../solid/GalleryThumbs';
+import type { Img } from '../../solid/types';
 
 export const prerender = true;
 
@@ -26,12 +27,27 @@ const item = await getVoorraadItem(String(slug));
 if (!item) {
 	return Astro.redirect('/404');
 }
+
+const fotos: Img[] = (item.fotos ?? [])
+	.filter((foto) => foto.asset?._ref)
+	.map((foto) => ({
+		src: urlFor(foto.asset!._ref).width(1600).height(1000).quality(75).format('webp').url(),
+		alt: `${item.merk?.naam ?? ''} ${item.titel ?? ''}`.trim(),
+		width: 1600,
+		height: 1000,
+	}));
+
+const specificaties: AccordionEntry[] = (item.specificaties ?? []).map(({ label, waarde }) => ({
+	title: label ?? '',
+	html: waarde ?? '',
+}));
 ---
 
 <style>
   .car-grid {
     grid-template-areas:
       "images"
+      "title"
       "thumbnails"
       "details"
       "actions"
@@ -42,8 +58,8 @@ if (!item) {
   @media (min-width: 768px) {
     .car-grid {
       grid-template-areas:
+        "images title"
         "images thumbnails"
-        "images details"
         "images details"
         "info   details";
       grid-template-columns: 6fr 4fr;
@@ -54,113 +70,36 @@ if (!item) {
 <BaseLayout>
   <section class="p-4">
     <div
-      x-data="{
-        currentIndex: 0,
-        emblaApiMain: null,
-        emblaApiThumb: null,
-        init() {
-          this.$nextTick(() => {
-            const emblaMainNode = this.$refs.emblaViewport;
-            const emblaThumbNode = this.$refs.emblaThumbsViewport;
-            
-            if (emblaMainNode) {
-              this.emblaApiMain = EmblaCarousel(emblaMainNode, { 
-                loop: true 
-              }, [Autoplay({ delay: 4000, stopOnInteraction: false })]);
-              
-              this.emblaApiMain.on('select', () => {
-                this.currentIndex = this.emblaApiMain.selectedScrollSnap();
-                if (this.emblaApiThumb) {
-                  this.emblaApiThumb.scrollTo(this.currentIndex);
-                }
-              });
-            }
-
-            if (emblaThumbNode) {
-              this.emblaApiThumb = EmblaCarousel(emblaThumbNode, {
-                dragFree: true,
-                containScroll: 'keepSnaps',
-              });
-            }
-          });
-        },
-        prevSlide() {
-          if (this.emblaApiMain) this.emblaApiMain.scrollPrev();
-        },
-        nextSlide() {
-          if (this.emblaApiMain) this.emblaApiMain.scrollNext();
-        },
-        scrollToIndex(index) {
-          if (this.emblaApiMain) this.emblaApiMain.scrollTo(index);
-        }
-      }"
       class="car-grid container mx-auto grid max-w-6xl gap-4 pt-24 md:flex-row md:gap-10"
     >
-        <div 
-          x-ref="emblaViewport"
-          class="embla__viewport overflow-hidden rounded-xl relative [grid-area:images]"
-           transition:name={item.fotos?.[0]._key}
-        >
-          <div class="embla__container flex gap-4">
-            {
-              item.fotos?.map((image) => (
-                <SanityImage
-                  class="embla__slide min-w-0 shrink-0 grow-0 basis-full"
-                  height={600}
-                  width={800}
-                  image={image.asset?._ref}
-                />
-              ))
-            }
-          </div>
-        </div>
-        <div class="text-primary absolute right-6 bottom-6 flex gap-2">
-          <button
-            @click="prevSlide()"
-            class="hover:text-sand transition-colors"
-            aria-label="Vorige"
-          >
-            <Icon name="circle-arrow-left" class="size-10" />
-          </button>
-          <button
-            @click="nextSlide()"
-            class="hover:text-sand transition-colors"
-            aria-label="Volgende"
-          >
-            <Icon name="circle-arrow-right" class="size-10" />
-          </button>
-        </div>
-     
+      {/* transition:name must sit on a real Astro element: an <astro-island>
+          is display:contents and has no box to fly. */}
+      <div
+        class="relative overflow-hidden rounded-xl [grid-area:images]"
+        transition:name={item.fotos?.[0]._key}
+      >
+        <GalleryMain
+          client:load
+          galleryId={item._id}
+          images={fotos}
+          arrowClass="text-primary"
+        />
+      </div>
 
-      <div class="min-w-0 [grid-area:thumbnails]">
+      <div class="min-w-0 [grid-area:title]">
         <h1 class="text-primary text-2xl md:text-4xl">
           {item.merk?.naam}{" "}
           {item.titel}
         </h1>
-        <div 
-          x-ref="emblaThumbsViewport"
-          class="embla-thumbs__viewport mt-2 overflow-hidden"
-        >
-          <div class="embla-thumbs__container flex flex-row gap-1">
-            {
-              item.fotos?.map((foto, index) => (
-                <div 
-                  @click={`scrollToIndex(${index})`}
-                  class="group embla-thumbs__slide relative min-w-0 shrink-0 grow-0 basis-1/8 overflow-hidden rounded-md cursor-pointer"
-                  :class={`{'active': currentIndex === ${index}}`}
-                >
-                  <div class="absolute inset-0 bg-neutral-200/50 transition-colors duration-75 group-[.active]:bg-neutral-200/0 hover:bg-neutral-200/0" />
-                  <SanityImage
-                    height={40}
-                    width={60}
-                    class="h-full w-full object-cover"
-                    image={foto.asset?._ref}
-                  />
-                </div>
-              ))
-            }
-          </div>
-        </div>
+      </div>
+
+      <div class="mt-2 min-w-0 [grid-area:thumbnails]">
+        <GalleryThumbs
+          client:load
+          galleryId={item._id}
+          images={fotos}
+          thumbBasis="basis-1/8"
+        />
       </div>
       <div class="relative mt-2 flex flex-col [grid-area:details]">
         <div class="sticky top-8 z-10">
@@ -238,16 +177,7 @@ if (!item) {
             <Icon name="instagram" class="size-9" />
           </div>
         </div>
-        <Accordion class="mt-8">
-          {
-            item.specificaties?.map(({ label, waarde }, i) => (
-              <AccordionItem open={!i}>
-                <span slot="title">{label}</span>
-                <div set:html={waarde} />
-              </AccordionItem>
-            ))
-          }
-        </Accordion>
+        <Accordion client:visible items={specificaties} openFirst class="mt-8" />
       </div>
     </div>
   </section>
@@ -257,9 +187,3 @@ if (!item) {
     </div>
   </section>
 </BaseLayout>
-
-<script>
-  import EmblaCarousel from "embla-carousel";
-  import Autoplay from "embla-carousel-autoplay";
-  Object.assign(window, { EmblaCarousel, Autoplay });
-</script>

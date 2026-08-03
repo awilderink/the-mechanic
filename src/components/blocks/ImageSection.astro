@@ -1,124 +1,55 @@
 ---
-import type { ImageSection } from "../../sanity/types";
-import Icon from "../Icon.astro";
-import SanityImage from "../SanityImage.astro";
+import { urlFor } from '../../sanity/index.ts';
+import type { ImageSection } from '../../sanity/types';
+import GalleryMain from '../../solid/GalleryMain';
+import GalleryThumbs from '../../solid/GalleryThumbs';
+import type { Img } from '../../solid/types';
+import SanityImage from '../SanityImage.astro';
 
 interface Props {
   block: ImageSection
 }
 
 const { block } = Astro.props;
-const images = block.images || [];
-const hasMultipleImages = images.length > 1;
+// Only needs to be unique per rendered block; both islands receive this value.
+const galleryId = crypto.randomUUID();
+const entries = block.images || [];
+const hasMultipleImages = entries.length > 1;
+
+const images: Img[] = entries
+  .filter((entry) => entry.image)
+  .map((entry) => ({
+    src: urlFor(entry.image!).width(1600).height(1000).quality(75).format('webp').url(),
+    alt: entry.alt || '',
+    width: 1600,
+    height: 1000,
+  }));
 ---
 
 {
-  images.length > 0 && (
+  entries.length > 0 && (
     <section class="py-16 px-4">
       <div class="container mx-auto max-w-6xl">
         {hasMultipleImages ? (
-          <div 
-            class="space-y-4"
-            x-data="{
-              currentIndex: 0,
-              emblaApiMain: null,
-              emblaApiThumb: null,
-              init() {
-                this.$nextTick(() => {
-                  const emblaMainNode = this.$refs.emblaViewport;
-                  const emblaThumbNode = this.$refs.emblaThumbsViewport;
-                  
-                  if (emblaMainNode) {
-                    this.emblaApiMain = EmblaCarousel(emblaMainNode, { 
-                      loop: true 
-                    }, [Autoplay({ delay: 4000, stopOnInteraction: false })]);
-                    
-                    this.emblaApiMain.on('select', () => {
-                      this.currentIndex = this.emblaApiMain.selectedScrollSnap();
-                      if (this.emblaApiThumb) {
-                        this.emblaApiThumb.scrollTo(this.currentIndex);
-                      }
-                    });
-                  }
-
-                  if (emblaThumbNode) {
-                    this.emblaApiThumb = EmblaCarousel(emblaThumbNode, {
-                      dragFree: true,
-                      containScroll: 'keepSnaps',
-                    });
-                  }
-                });
-              },
-              prevSlide() {
-                if (this.emblaApiMain) this.emblaApiMain.scrollPrev();
-              },
-              nextSlide() {
-                if (this.emblaApiMain) this.emblaApiMain.scrollNext();
-              },
-              scrollToIndex(index) {
-                if (this.emblaApiMain) this.emblaApiMain.scrollTo(index);
-              }
-            }"
-          >
-            <div class="embla relative">
-              <div 
-                x-ref="emblaViewport"
-                class="embla__viewport overflow-hidden rounded-lg h-96 sm:h-[500px] lg:h-[600px]"
-              >
-                <div class="embla__container flex h-full">
-                  {images.map((item) => (
-                    <div class="embla__slide min-w-0 shrink-0 grow-0 basis-full h-full">
-                      <SanityImage
-                        format="webp"
-                        quality={75}
-                        image={item.image}
-                        alt={item.alt || ""}
-                        class="w-full h-full object-cover"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div class="absolute bottom-4 text-white right-4 flex gap-2">
-                <button @click="prevSlide()" class="transition-colors">
-                  <Icon name="circle-arrow-left" class="size-8" />
-                </button>
-                <button @click="nextSlide()" class="transition-colors">
-                  <Icon name="circle-arrow-right" class="size-8" />
-                </button>
-              </div>
+          <>
+            <div class="relative h-96 overflow-hidden rounded-lg sm:h-[500px] lg:h-[600px]">
+              <GalleryMain client:visible galleryId={galleryId} images={images} />
             </div>
-
-            <div 
-              x-ref="emblaThumbsViewport"
-              class="embla-thumbs__viewport overflow-hidden"
-            >
-              <div class="embla-thumbs__container flex flex-row gap-2">
-                {images.map((item, index) => (
-                  <div 
-                    @click={`scrollToIndex(${index})`}
-                    class="group embla-thumbs__slide relative min-w-0 shrink-0 grow-0 basis-20 overflow-hidden rounded-md cursor-pointer"
-                    :class={`{'active': currentIndex === ${index}}`}
-                  >
-                    <div class="absolute inset-0 bg-neutral-200/50 transition-colors duration-75 group-[.active]:bg-neutral-200/0 hover:bg-neutral-200/0" />
-                    <SanityImage
-                      format="webp"
-                      quality={75}
-                      image={item.image}
-                      alt={item.alt || ""}
-                      class="h-16 w-20 object-cover"
-                    />
-                  </div>
-                ))}
-              </div>
+            <div class="mt-2">
+              <GalleryThumbs
+                client:visible
+                galleryId={galleryId}
+                images={images}
+                thumbBasis="basis-20"
+              />
             </div>
-          </div>
+          </>
         ) : (
           <SanityImage
             format="webp"
             quality={75}
-            image={images[0].image}
-            alt={images[0].alt || ""}
+            image={entries[0].image}
+            alt={entries[0].alt || ""}
             class="h-auto w-full rounded-lg"
           />
         )}
@@ -126,11 +57,3 @@ const hasMultipleImages = images.length > 1;
     </section>
   )
 }
-
-{hasMultipleImages && (
-  <script>
-    import EmblaCarousel from "embla-carousel";
-    import Autoplay from "embla-carousel-autoplay";
-    Object.assign(window, { EmblaCarousel, Autoplay });
-  </script>
-)}

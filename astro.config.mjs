@@ -1,6 +1,6 @@
-import alpinejs from '@astrojs/alpinejs';
 import node from '@astrojs/node';
 import react from '@astrojs/react';
+import solid from '@astrojs/solid-js';
 import sanity from '@sanity/astro';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
@@ -22,14 +22,16 @@ export default defineConfig({
 	output: 'server',
 	site: 'https://dev.themechanic.nl',
 	integrations: [
-		alpinejs({ entrypoint: './src/entrypoint.ts' }),
 		sanity({
 			projectId,
 			dataset,
 			useCdn: false,
 			studioBasePath: '/admin',
 		}),
-		react(),
+		// Our own interactivity is Solid. React stays only because the Sanity
+		// Studio at /admin is a React app - hence the exclude/include split.
+		solid({ include: ['**/src/solid/**'] }),
+		react({ exclude: ['**/src/solid/**'] }),
 	],
 	vite: {
 		plugins: [tailwindcss()],
