@@ -42,6 +42,39 @@ const specificaties: AccordionEntry[] = (item.specificaties ?? []).map(({ label,
 	title: label ?? '',
 	html: waarde ?? '',
 }));
+
+// Car + Offer structured data, zodat Google en AI-zoekmachines prijs,
+// bouwjaar en beschikbaarheid rechtstreeks uit de CMS-velden kunnen lezen.
+const carJsonLd = {
+	'@context': 'https://schema.org',
+	'@type': 'Car',
+	name: `${item.merk?.naam ?? ''} ${item.titel ?? ''}`.trim(),
+	...(item.merk?.naam && { brand: { '@type': 'Brand', name: item.merk.naam } }),
+	...(item.bouwjaar && { productionDate: String(item.bouwjaar), modelDate: String(item.bouwjaar) }),
+	...(item.kilometerstand != null && {
+		mileageFromOdometer: {
+			'@type': 'QuantitativeValue',
+			value: item.kilometerstand,
+			unitCode: 'KMT',
+		},
+	}),
+	...(item.brandstof && { fuelType: item.brandstof }),
+	...(item.transmissie && { vehicleTransmission: item.transmissie }),
+	...(item.seo?.aiSummary || item.seo?.metaDescription
+		? { description: item.seo.aiSummary || item.seo.metaDescription }
+		: {}),
+	...(fotos.length && { image: fotos.map((foto) => foto.src) }),
+	offers: {
+		'@type': 'Offer',
+		url: new URL(`/voorraad/${item.slug?.current ?? ''}`, Astro.site).href,
+		itemCondition: 'https://schema.org/UsedCondition',
+		availability: item.verkocht
+			? 'https://schema.org/SoldOut'
+			: 'https://schema.org/InStock',
+		...(item.prijs != null && { price: item.prijs, priceCurrency: 'EUR' }),
+		seller: { '@type': 'AutoDealer', name: 'The Mechanic' },
+	},
+};
 ---
 
 <style>
@@ -68,7 +101,16 @@ const specificaties: AccordionEntry[] = (item.specificaties ?? []).map(({ label,
     }
   }
 </style>
-<BaseLayout>
+<BaseLayout
+  title={`${item.merk?.naam ?? ''} ${item.titel ?? ''}`.trim()}
+  image={fotos[0]?.src}
+  seo={item.seo}
+>
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(carJsonLd)}
+    is:inline
+  />
   <section class="p-4">
     <div
       class="car-grid container mx-auto grid max-w-6xl gap-4 pt-24 md:flex-row md:gap-10"

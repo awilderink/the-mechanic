@@ -3,20 +3,87 @@ import '@fontsource/poppins/300.css';
 import '@fontsource/poppins/400.css';
 import '@fontsource/poppins/500.css';
 import '@fontsource/poppins/700.css';
+import { getGlobal, urlFor } from '../sanity';
+import type { Seo } from '../sanity/types';
 
 interface Props {
 	title?: string;
 	description?: string;
 	image?: string;
+	seo?: Seo | null;
 }
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const { title, description, image, seo } = Astro.props;
 
-const {
-	title = "The Mechanic. Passie voor auto's",
-	description = 'The Mechanic is een jong garagebedrijf met meer dan 50 jaar ervaring. Gestart uit liefde voor auto’s en de overtuiging dat het anders kan. Moderner, klantvriendelijker en vooral: met veel meer plezier.',
-	image = '/blog-placeholder-1.jpg',
-} = Astro.props;
+const global = await getGlobal();
+const fallback = global?.defaultSeo;
+
+const metaTitle =
+	seo?.metaTitle ||
+	title ||
+	fallback?.metaTitle ||
+	global?.title ||
+	"The Mechanic. Passie voor auto's";
+const metaDescription =
+	seo?.metaDescription ||
+	description ||
+	fallback?.metaDescription ||
+	global?.description ||
+	'The Mechanic is een jong garagebedrijf met meer dan 50 jaar ervaring. Gestart uit liefde voor auto’s en de overtuiging dat het anders kan. Moderner, klantvriendelijker en vooral: met veel meer plezier.';
+
+// Volgorde: CMS-upload per pagina -> CMS-standaard -> paginabeeld (auto's) ->
+// merkkaart uit /og/[...path].png.
+const route = Astro.url.pathname.replace(/\/+$/, '') || '/index';
+const card = `/og${route}.png`;
+
+const ogImageSource = seo?.ogImage?.asset ? seo.ogImage : fallback?.ogImage;
+const ogImage = ogImageSource?.asset
+	? urlFor(ogImageSource).width(1200).height(630).fit('crop').url()
+	: new URL(image || card, Astro.url).href;
+
+const canonicalURL =
+	seo?.canonicalUrl || new URL(Astro.url.pathname, Astro.site).href;
+const noIndex = seo?.noIndex ?? fallback?.noIndex ?? false;
+
+// GEO: locatiesignalen voor lokale zoekresultaten en AI-zoekmachines.
+const placename = seo?.geoPlacename || fallback?.geoPlacename;
+const region = seo?.geoRegion || fallback?.geoRegion;
+const position = seo?.geoPosition ?? fallback?.geoPosition;
+const serviceAreas = seo?.serviceAreas?.length
+	? seo.serviceAreas
+	: fallback?.serviceAreas;
+const aiSummary = seo?.aiSummary || fallback?.aiSummary;
+
+const jsonLd = {
+	'@context': 'https://schema.org',
+	'@type': 'AutoRepair',
+	name: global?.title || 'The Mechanic',
+	url: new URL('/', Astro.site).href,
+	description: aiSummary || metaDescription,
+	image: ogImage,
+	...(placename || region
+		? {
+				address: {
+					'@type': 'PostalAddress',
+					...(placename && { addressLocality: placename }),
+					...(region && { addressRegion: region }),
+					addressCountry: 'NL',
+				},
+			}
+		: {}),
+	...(position?.lat != null && position?.lng != null
+		? {
+				geo: {
+					'@type': 'GeoCoordinates',
+					latitude: position.lat,
+					longitude: position.lng,
+				},
+			}
+		: {}),
+	...(serviceAreas?.length
+		? { areaServed: serviceAreas.map((name) => ({ '@type': 'Place', name })) }
+		: {}),
+};
 ---
 
 <!-- Global Metadata -->
@@ -27,25 +94,41 @@ const {
 
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
+{noIndex && <meta name="robots" content="noindex, nofollow" />}
 
 <!-- Primary Meta Tags -->
-<title>{title}</title>
-<meta name="title" content={title} />
-<meta name="description" content={description} />
+<title>{metaTitle}</title>
+<meta name="title" content={metaTitle} />
+<meta name="description" content={metaDescription} />
+
+<!-- GEO -->
+{placename && <meta name="geo.placename" content={placename} />}
+{region && <meta name="geo.region" content={region} />}
+{
+  position?.lat != null && position?.lng != null && (
+    <>
+      <meta name="geo.position" content={`${position.lat};${position.lng}`} />
+      <meta name="ICBM" content={`${position.lat}, ${position.lng}`} />
+    </>
+  )
+}
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website" />
 <meta property="og:url" content={Astro.url} />
-<meta property="og:title" content={title} />
-<meta property="og:description" content={description} />
-<meta property="og:image" content={new URL(image, Astro.url)} />
+<meta property="og:title" content={metaTitle} />
+<meta property="og:description" content={metaDescription} />
+<meta property="og:image" content={ogImage} />
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image" />
 <meta property="twitter:url" content={Astro.url} />
-<meta property="twitter:title" content={title} />
-<meta property="twitter:description" content={description} />
-<meta property="twitter:image" content={new URL(image, Astro.url)} />
+<meta property="twitter:title" content={metaTitle} />
+<meta property="twitter:description" content={metaDescription} />
+<meta property="twitter:image" content={ogImage} />
+
+<!-- Structured data -->
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
 
 <!-- Scripts  -->
 <script is:inline defer src="https://unpkg.com/htmx.org@2.0.4"></script>

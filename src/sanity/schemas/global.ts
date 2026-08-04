@@ -16,6 +16,18 @@ export const global = defineType({
 			type: 'text',
 		}),
 		defineField({
+			name: 'defaultSeo',
+			title: 'SEO & GEO standaardwaarden',
+			description: 'Wordt gebruikt op elke pagina die zelf niets ingevuld heeft.',
+			type: 'seo',
+		}),
+		defineField({
+			name: 'voorraadSeo',
+			title: 'SEO & GEO - voorraad overzicht',
+			description: 'De /voorraad overzichtspagina heeft geen eigen document.',
+			type: 'seo',
+		}),
+		defineField({
 			name: 'mainMenu',
 			title: 'Main Menu',
 			type: 'array',

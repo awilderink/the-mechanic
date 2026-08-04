@@ -23,20 +23,8 @@ export const page = defineType({
 		}),
 		defineField({
 			name: 'seo',
-			title: 'SEO',
-			type: 'object',
-			fields: [
-				defineField({
-					name: 'metaTitle',
-					title: 'Meta Title',
-					type: 'string',
-				}),
-				defineField({
-					name: 'metaDescription',
-					title: 'Meta Description',
-					type: 'text',
-				}),
-			],
+			title: 'SEO & GEO',
+			type: 'seo',
 		}),
 		defineField({
 			name: 'blocks',

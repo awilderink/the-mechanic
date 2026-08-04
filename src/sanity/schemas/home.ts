@@ -6,6 +6,11 @@ export const home = defineType({
 	type: 'document',
 	fields: [
 		defineField({
+			name: 'seo',
+			title: 'SEO & GEO',
+			type: 'seo',
+		}),
+		defineField({
 			name: 'blocks',
 			title: 'Page Blocks',
 			type: 'array',

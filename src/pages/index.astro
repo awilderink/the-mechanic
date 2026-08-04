@@ -1,12 +1,11 @@
 ---
 import BlockRenderer from '../components/BlockRenderer.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getGlobal, getHome } from '../sanity';
+import { getHome } from '../sanity';
 
-const global = await getGlobal();
 const home = await getHome();
 ---
 
-<BaseLayout title={global?.title || 'The Mechanic'} description="">
+<BaseLayout seo={home?.seo}>
   {home?.blocks && <BlockRenderer blocks={home.blocks} />}
 </BaseLayout>

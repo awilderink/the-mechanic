@@ -118,6 +118,11 @@ export const voorraad = defineType({
 				},
 			],
 		}),
+		defineField({
+			name: 'seo',
+			title: 'SEO & GEO',
+			type: 'seo',
+		}),
 	],
 	preview: {
 		select: {

@@ -19,6 +19,8 @@ export const getGlobal = async () => {
     _id,
     title,
     description,
+    defaultSeo,
+    voorraadSeo,
     mainMenu[]{
       title,
       slug,
@@ -35,6 +37,7 @@ export const getGlobal = async () => {
 export const getHome = async () => {
 	const homeQuery = defineQuery(`*[_type == "home"][0]{
     _id,
+    seo,
     blocks
   }`);
 
@@ -108,7 +111,8 @@ export const getVoorraadItem = async (slug: string) => {
     uitgelicht,
     fotos,
     beschrijving,
-    specificaties
+    specificaties,
+    seo
   }`);
 
 	return await client.fetch(voorraadItemQuery, { slug });

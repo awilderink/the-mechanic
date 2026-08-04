@@ -7,6 +7,6 @@ const { slug } = Astro.params;
 const page = await getPage(slug || "");
 ---
 
-<BaseLayout title={page?.title || "The Mechanic"} description={page?.seo?.metaDescription}>
+<BaseLayout title={page?.title ?? undefined} seo={page?.seo}>
   {page?.blocks && <BlockRenderer blocks={page.blocks} />}
 </BaseLayout>
