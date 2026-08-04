@@ -19,7 +19,12 @@ const { variant = 'primary', class: _class, ...props } = Astro.props;
 ---
 
 <div {...props} class={twMerge(title({ variant, class: _class }), _class)}>
-  <svg width="8" height="8" fill="currentColor">
+  <svg
+    class="mt-[calc(0.5lh-4px)] shrink-0 self-start"
+    width="8"
+    height="8"
+    fill="currentColor"
+  >
     <circle cx="4" cy="4" r="4"></circle>
   </svg>
   <slot />

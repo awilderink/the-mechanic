@@ -4,9 +4,9 @@ import type { GetStaticPaths } from 'astro';
 import Button from '../../components/Button.astro';
 import FeaturedVoorraad from '../../components/FeaturedVoorraad.astro';
 import Icon from '../../components/Icon.astro';
+import Title from '../../components/Title.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getVoorraad, getVoorraadItem, urlFor } from '../../sanity/index.ts';
-import Accordion, { type AccordionEntry } from '../../solid/Accordion';
 import GalleryMain from '../../solid/GalleryMain';
 import GalleryThumbs from '../../solid/GalleryThumbs';
 import type { Img } from '../../solid/types';
@@ -38,10 +38,7 @@ const fotos: Img[] = (item.fotos ?? [])
 		height: 1000,
 	}));
 
-const specificaties: AccordionEntry[] = (item.specificaties ?? []).map(({ label, waarde }) => ({
-	title: label ?? '',
-	html: waarde ?? '',
-}));
+const specificaties = (item.specificaties ?? []).filter((spec) => spec.label && spec.waarde);
 
 // Car + Offer structured data, zodat Google en AI-zoekmachines prijs,
 // bouwjaar en beschikbaarheid rechtstreeks uit de CMS-velden kunnen lezen.
@@ -96,8 +93,54 @@ const carJsonLd = {
         "images thumbnails"
         "images details"
         "info   details";
-      grid-template-columns: 6fr 4fr;
+      grid-template-columns: 2fr 1fr;
       grid-template-rows: auto auto 1fr auto;
+    }
+  }
+
+  .info-row {
+    interpolate-size: allow-keywords;
+  }
+
+  .info-row::details-content {
+    block-size: 0;
+    overflow: clip;
+    transition:
+      block-size 250ms ease,
+      content-visibility 250ms allow-discrete;
+  }
+
+  .info-row[open]::details-content {
+    block-size: auto;
+  }
+
+  .info-row summary {
+    list-style: none;
+  }
+
+  .info-row summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .info-row summary::after {
+    content: "";
+    width: 16px;
+    height: 16px;
+    flex: none;
+    transition: background-size 200ms ease;
+    background:
+      linear-gradient(currentColor, currentColor) center / 16px 1px no-repeat,
+      linear-gradient(currentColor, currentColor) center / 1px 16px no-repeat;
+  }
+
+  .info-row[open] summary::after {
+    background-size: 16px 1px, 0 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .info-row::details-content,
+    .info-row summary::after {
+      transition: none;
     }
   }
 </style>
@@ -119,7 +162,7 @@ const carJsonLd = {
           is display:contents and has no box to fly. */}
       <div
         class="relative overflow-hidden rounded-xl [grid-area:images]"
-        transition:name={item.fotos?.[0]._key}
+        transition:name={item._id}
       >
         <GalleryMain
           client:load
@@ -127,10 +170,17 @@ const carJsonLd = {
           images={fotos}
           arrowClass="text-primary"
         />
+        {
+          item.verkocht && (
+            <span class="bg-primary absolute top-4 left-4 z-20 rounded-full px-4 py-2 text-sm text-white">
+              Verkocht
+            </span>
+          )
+        }
       </div>
 
       <div class="min-w-0 [grid-area:title]">
-        <h1 class="text-primary text-2xl md:text-4xl">
+        <h1 class="text-primary text-2xl md:text-[40px] md:leading-[56px]">
           {item.merk?.naam}{" "}
           {item.titel}
         </h1>
@@ -155,37 +205,45 @@ const carJsonLd = {
           } -->
           <div>
             <dl
-              class="[&_dd]:text-primary grid grid-cols-2 gap-6 font-light md:grid-cols-3 [&_dt]:text-neutral-500"
+              class="[&_dd]:text-primary grid grid-cols-2 gap-6 font-light md:grid-cols-3 [&_dt]:text-gray-400"
             >
               <div>
                 <dt>Bouwjaar</dt>
-                <dd>{item.bouwjaar}</dd>
+                <dd>{item.bouwjaar ?? "—"}</dd>
               </div>
               <div>
                 <dt>Km stand</dt>
                 <dd>
                   {
-                    Intl.NumberFormat("nl-NL").format(
-                      Number(item.kilometerstand)
-                    )
-                  } km
+                    item.kilometerstand != null
+                      ? `${Intl.NumberFormat("nl-NL").format(item.kilometerstand)} km`
+                      : "—"
+                  }
                 </dd>
               </div>
               <div>
                 <dt>Prijs</dt>
                 <dd>
                   {
-                    Intl.NumberFormat("nl-NL", {
-                      currency: "EUR",
-                      style: "currency",
-                    }).format(Number(item.prijs))
+                    item.verkocht
+                      ? "Verkocht"
+                      : item.prijs != null
+                        ? Intl.NumberFormat("nl-NL", {
+                            currency: "EUR",
+                            style: "currency",
+                          }).format(item.prijs)
+                        : "Op aanvraag"
                   }
                 </dd>
               </div>
-              <div>
-                <dt>Brandstof</dt>
-                <dd class="capitalize">{item.brandstof}</dd>
-              </div>
+              {
+                item.brandstof && (
+                  <div>
+                    <dt>Brandstof</dt>
+                    <dd class="capitalize">{item.brandstof}</dd>
+                  </div>
+                )
+              }
               <!-- <div>
                 <dt>Motorinhoud</dt>
                 <dd>{item.motor_inhoud}</dd>
@@ -197,23 +255,36 @@ const carJsonLd = {
             </dl>
           </div>
           <div class="mt-4 flex flex-col gap-2">
-            <Button class="flex items-center justify-center gap-2 font-thin">
-              <Icon class="mr-2 h-4 w-4" name="phone" />
-              <span>070 8209890</span>
-            </Button>
-            <Button
-              class="flex items-center justify-center gap-2 font-thin"
-              variant="secondary"
-            >
-              <Icon name="email" class="mr-2 h-4 w-4" />
-              info@themechanic.nl
-            </Button>
+            <a href="tel:+31708209890" class="flex">
+              <Button
+                class="w-full flex items-center justify-center gap-2 border border-secondary font-thin"
+              >
+                <Icon class="mr-2 h-4 w-4" name="phone" />
+                <span>070 8209890</span>
+              </Button>
+            </a>
+            <a href="mailto:info@themechanic.nl" class="flex">
+              <Button
+                class="w-full flex items-center justify-center gap-2 font-thin"
+                variant="outlinePrimary"
+              >
+                <Icon name="email" class="mr-2 h-4 w-4" />
+                info@themechanic.nl
+              </Button>
+            </a>
           </div>
         </div>
       </div>
       <div class="container mx-auto mt-10 max-w-6xl [grid-area:info]">
-        <div class="flex items-center justify-between">
-          <h1 class="text-4xl">{item.merk?.naam}{" "}{item.titel}</h1>
+        <nav aria-label="Kruimelpad" class="flex items-center gap-0.5 text-gray-400">
+          <a href="/voorraad" class="hover:underline">Collectie</a>
+          <Icon name="chevron-right" class="size-4" />
+          <span>{item.merk?.naam}{" "}{item.titel}</span>
+        </nav>
+        <div class="mt-2 flex items-baseline justify-between">
+          <h1 class="text-2xl md:text-[40px] md:leading-[56px]">
+            {item.merk?.naam}{" "}{item.titel}
+          </h1>
           <div class="flex gap-1">
             <Icon name="linkedIn" class="size-9" />
             <Icon name="facebook" class="size-9" />
@@ -221,17 +292,27 @@ const carJsonLd = {
           </div>
         </div>
         {
-          item.beschrijving && (
-            <div
-              class="mt-8 max-w-3xl space-y-4 font-light [&_a]:underline [&_h2]:text-xl [&_h3]:text-lg [&_ol]:list-decimal [&_ol]:pl-5 [&_ul]:list-disc [&_ul]:pl-5"
-            >
-              <PortableText value={item.beschrijving} />
+          (item.beschrijving || specificaties.length > 0) && (
+            <div class="mt-8 max-w-3xl border-black/20 border-t">
+              {item.beschrijving && (
+                <details name="voorraad-info" open class="info-row border-black/20 border-b">
+                  <summary class="flex cursor-pointer items-center justify-between py-3">
+                    Omschrijving
+                  </summary>
+                  <div class="space-y-4 pt-2 pr-6 pb-8 pl-6 font-light [&_a]:underline [&_h2]:text-xl [&_h3]:text-lg [&_ol]:list-decimal [&_ol]:pl-5 [&_ul]:list-disc [&_ul]:pl-5">
+                    <PortableText value={item.beschrijving} />
+                  </div>
+                </details>
+              )}
+              {specificaties.map((spec) => (
+                <details name="voorraad-info" class="info-row border-black/20 border-b">
+                  <summary class="flex cursor-pointer items-center justify-between py-3">
+                    {spec.label}
+                  </summary>
+                  <div class="pt-2 pr-6 pb-8 pl-6 font-light" set:html={spec.waarde} />
+                </details>
+              ))}
             </div>
-          )
-        }
-        {
-          specificaties.length > 0 && (
-            <Accordion client:visible items={specificaties} openFirst class="mt-8" />
           )
         }
       </div>
@@ -239,7 +320,10 @@ const carJsonLd = {
   </section>
   <section class="bg-sand px-4 py-14">
     <div class="container mx-auto max-w-6xl">
-      <FeaturedVoorraad exclude={item.slug?.current} />
+      <Title variant="tertiary" class="text-gray-400">Uitgelichte auto's</Title>
+      <div class="mt-4">
+        <FeaturedVoorraad exclude={item.slug?.current} />
+      </div>
     </div>
   </section>
 </BaseLayout>

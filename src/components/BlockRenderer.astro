@@ -14,8 +14,13 @@ interface Props {
 }
 
 const { blocks } = Astro.props;
+
+// De header staat fixed (88px op desktop) en heeft alleen bij een hero een
+// beeld om over te liggen. Zonder hero dus zelf ruimte maken.
+const firstType = blocks?.[0]?._type;
+const startsWithHero = firstType === 'heroSection' || firstType === 'heroImageSection';
 ---
-{blocks?.[0]._type !== 'hero' && <div class="mt-10" />}
+{!startsWithHero && <div class="h-20 md:h-28" />}
 {
   blocks?.map((block) => {
     switch (block._type) {

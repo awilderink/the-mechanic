@@ -9,7 +9,7 @@ import VoorraadFilters from "../../solid/VoorraadFilters";
 const { searchParams } = Astro.url;
 
 const selectedMerk = searchParams.get("merk");
-const selectedVerkocht = searchParams.get("verkocht");
+const selectedVerkocht = searchParams.get("verkocht") ?? "false";
 const merken = await getMerken();
 const global = await getGlobal();
 const merkOpties = merken
@@ -18,7 +18,7 @@ const merkOpties = merken
 
 const voorraadItems = await getVoorraad({
   ...(selectedMerk && { merk: selectedMerk }),
-  ...(selectedVerkocht && { verkocht: selectedVerkocht === "true" }),
+  verkocht: selectedVerkocht === "true",
 });
 ---
 
@@ -45,8 +45,8 @@ const voorraadItems = await getVoorraad({
                 <a href={`/voorraad/${item.slug!.current}`}>
                   <div class="flex flex-col overflow-hidden rounded-2xl bg-white md:flex-row">
                     <div
-                      class="aspect-[4/3] basis-1/2 overflow-hidden"
-                      transition:name={item.fotos?.[0]._key}
+                      class="aspect-[4/3] shrink-0 basis-1/2 overflow-hidden"
+                      transition:name={item._id}
                     >
                       <SanityImage
                         image={item.fotos?.[0].asset!._ref}
@@ -56,7 +56,7 @@ const voorraadItems = await getVoorraad({
                         class="h-full w-full object-cover"
                       />
                     </div>
-                    <div class="space-y-6 px-8 py-12">
+                    <div class="min-w-0 basis-1/2 space-y-6 px-8 py-12">
                       <Title class="text-primary text-2xl" variant="tertiary">
                         {item.merk?.naam}&nbsp;{item.titel}
                       </Title>
@@ -66,14 +66,14 @@ const voorraadItems = await getVoorraad({
                       <div class="mt-2 grid grid-cols-3">
                         <div class="space-y-1">
                           <dt class="text-neutral-400">Bouwjaar</dt>
-                          <dd class="font-light">{item.bouwjaar}</dd>
+                          <dd class="font-light">{item.bouwjaar ?? "—"}</dd>
                         </div>
                         <div class="space-y-1">
                           <dt class="text-neutral-400">Km stand</dt>
                           <dd class="font-light">
-                            {Intl.NumberFormat("nl-NL").format(
-                              item?.kilometerstand || 0
-                            )}
+                            {item.kilometerstand != null
+                              ? `${Intl.NumberFormat("nl-NL").format(item.kilometerstand)} km`
+                              : "—"}
                           </dd>
                         </div>
                         <div class="space-y-1">

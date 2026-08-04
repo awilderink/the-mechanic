@@ -44,10 +44,11 @@ const desktopItems = menuItems.filter(
 <header
   class="fixed top-0 right-0 left-0 z-50 transition-transform font-thin"
   id="site-header"
+  data-transparent={transparent ? "true" : null}
 >
   <nav
     class:list={[
-      "p-4",
+      "p-4 transition-colors duration-200",
       { "bg-transparent": transparent, "bg-white": !transparent },
     ]}
   >
@@ -109,6 +110,9 @@ const desktopItems = menuItems.filter(
     const header = document.getElementById("site-header");
 
     if (header) {
+      const nav = header.querySelector("nav");
+      const isTransparent = header.dataset.transparent === "true";
+
       const handleScroll = () => {
         const currentScrollPos = window.scrollY;
         if (prevScrollPos > currentScrollPos || currentScrollPos <= 0) {
@@ -118,8 +122,15 @@ const desktopItems = menuItems.filter(
           // Scrolling down
           header.style.transform = "translateY(-100%)";
         }
+        if (isTransparent && nav) {
+          const atTop = currentScrollPos <= 8;
+          nav.classList.toggle("bg-transparent", atTop);
+          nav.classList.toggle("bg-white", !atTop);
+        }
         prevScrollPos = currentScrollPos;
       };
+
+      handleScroll();
 
       window.addEventListener("scroll", handleScroll);
     }

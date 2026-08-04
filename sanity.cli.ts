@@ -16,5 +16,5 @@ export default defineCliConfig({
 		dataset,
 	},
 	studioHost: process.env.SANITY_STUDIO_STUDIO_HOST || 'themechanic',
-	autoUpdates: true,
+	deployment: { autoUpdates: true },
 });
