@@ -72,6 +72,21 @@ const carJsonLd = {
 		seller: { '@type': 'AutoDealer', name: 'The Mechanic' },
 	},
 };
+
+const pageUrl = new URL(`/voorraad/${item.slug?.current ?? ''}`, Astro.site).href;
+
+const shares = [
+	{
+		label: 'Deel op Facebook',
+		icon: 'facebook' as const,
+		href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`,
+	},
+	{
+		label: 'Deel op LinkedIn',
+		icon: 'linkedIn' as const,
+		href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(pageUrl)}`,
+	},
+];
 ---
 
 <style>
@@ -286,9 +301,19 @@ const carJsonLd = {
             {item.merk?.naam}{" "}{item.titel}
           </h1>
           <div class="flex gap-1">
-            <Icon name="linkedIn" class="size-9" />
-            <Icon name="facebook" class="size-9" />
-            <Icon name="instagram" class="size-9" />
+            {
+              shares.map((share) => (
+                <a
+                  href={share.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={share.label}
+                  title={share.label}
+                >
+                  <Icon name={share.icon} class="size-9" />
+                </a>
+              ))
+            }
           </div>
         </div>
         {

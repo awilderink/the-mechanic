@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import Button from '../components/Button.astro';
 import Icon from './Icon.astro';
+import { socials } from '../socials';
 ---
 
 <footer class="bg-gray-700 px-4 py-10 text-white md:py-16 font-light">
@@ -20,15 +21,18 @@ import Icon from './Icon.astro';
         2277 AW Voorburg
       </div>
       <div class="mt-6 space-x-1 [&>*]:inline-block">
-        <a href="https://www.linkedin.com">
-          <Icon name="linkedIn" class="size-7" />
-        </a>
-        <a href="https://www.facebook.com">
-          <Icon name="facebook" class="size-7" />
-        </a>
-        <a href="https://www.instagram.com">
-          <Icon name="instagram" class="size-7" />
-        </a>
+        {
+          socials.map((social) => (
+            <a
+              href={social.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={social.label}
+            >
+              <Icon name={social.icon} class="size-7" />
+            </a>
+          ))
+        }
       </div>
       <div class="mt-12 flex flex-col gap-2">
         <a href="tel:+31708209890">
