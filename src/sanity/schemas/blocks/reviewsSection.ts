@@ -51,12 +51,11 @@ export default defineType({
 	],
 	preview: {
 		select: {
-			title: 'title',
 			reviews: 'reviews',
 		},
-		prepare({ title, reviews = [] }) {
+		prepare({ reviews = [] }) {
 			return {
-				title: `Reviews: ${title || 'Untitled'}`,
+				title: 'Testimonials',
 				subtitle: `${reviews.length} review${reviews.length === 1 ? '' : 's'}`,
 			};
 		},

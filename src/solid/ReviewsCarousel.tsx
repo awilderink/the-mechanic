@@ -17,7 +17,7 @@ export default function ReviewsCarousel(
 	props: ReviewsCarouselProps,
 ): JSX.Element {
 	const [emblaRef, emblaApi] = createEmblaCarousel(
-		() => ({ slidesToScroll: 'auto' }),
+		() => ({ slidesToScroll: 'auto', loop: true }),
 		() => [Autoplay({ delay: 3000 })],
 	);
 

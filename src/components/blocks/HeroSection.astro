@@ -1,12 +1,12 @@
 ---
-import type { HeroSection } from '../../sanity/types'
-import Button from "../Button.astro";
-import Icon from "../Icon.astro";
-import SanityImage from "../SanityImage.astro";
-import Title from "../Title.astro";
+import type { HeroSection } from '../../sanity/types';
+import Button from '../Button.astro';
+import Icon from '../Icon.astro';
+import SanityImage from '../SanityImage.astro';
+import Title from '../Title.astro';
 
 interface Props {
-  block: HeroSection
+	block: HeroSection;
 }
 
 const { block } = Astro.props;
@@ -37,11 +37,7 @@ const { block } = Astro.props;
       />
     ) : null
   }
-  <div
-    class="absolute top-0 right-0 bottom-0 left-0 bg-gradient-to-b from-black/0 to-black/50"
-  >
-  </div>
-  <div class="relative container mx-auto flex max-w-6xl">
+  <div class="relative container mx-auto flex max-w-6xl [text-shadow:0_2px_16px_rgb(0_0_0/0.55)]">
     <div class="space-y-2 md:basis-1/2">
       {
         block.title && (
