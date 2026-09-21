@@ -1,0 +1,43 @@
+---
+import type { InstagramSection } from '../../sanity/types';
+import { socials } from '../../socials';
+import InstagramFeed from '../../solid/InstagramFeed';
+import Button from '../Button.astro';
+import Icon from '../Icon.astro';
+import Title from '../Title.astro';
+
+interface Props {
+	block: InstagramSection;
+}
+
+const { block } = Astro.props;
+const posts = (block.posts ?? []).filter((url): url is string => !!url);
+const profileUrl =
+	socials.find((social) => social.icon === 'instagram')?.href ??
+	'https://www.instagram.com/';
+---
+
+<section class="bg-sand px-4 py-14">
+  <div class="container mx-auto max-w-6xl">
+    <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+      <div>
+        <Title variant="tertiary" class="text-gray-400">Instagram</Title>
+        {block.title && <div class="mt-2 text-2xl">{block.title}</div>}
+        {block.intro && <p class="mt-2 max-w-xl font-light">{block.intro}</p>}
+      </div>
+      <a href={profileUrl} target="_blank" rel="noopener noreferrer">
+        <Button size="sm" variant="primary" class="flex items-center gap-2">
+          <Icon name="instagram" class="size-6" />
+          Volg ons
+        </Button>
+      </a>
+    </div>
+    {
+      posts.length > 0 && (
+        <div class="mt-8">
+          <InstagramFeed client:visible posts={posts} profileUrl={profileUrl} />
+        </div>
+      )
+    }
+  </div>
+</section>

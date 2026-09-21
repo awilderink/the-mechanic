@@ -40,7 +40,8 @@ export const page = defineType({
 				{ type: 'cardSection' },
 				{ type: 'reviewsSection' },
 				{ type: 'featuredVoorraadSection' },
-			]
+				{ type: 'instagramSection' },
+			],
 		}),
 	],
 	preview: {

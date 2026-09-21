@@ -4,6 +4,7 @@ import featuredVoorraadSection from './featuredVoorraadSection';
 import heroImageSection from './heroImageSection';
 import heroSection from './heroSection';
 import imageSection from './imageSection';
+import instagramSection from './instagramSection';
 import reviewsSection from './reviewsSection';
 import teamSection from './teamSection';
 import textContent from './textContent';
@@ -18,4 +19,5 @@ export const blockTypes = [
 	cardSection,
 	reviewsSection,
 	featuredVoorraadSection,
+	instagramSection,
 ];
