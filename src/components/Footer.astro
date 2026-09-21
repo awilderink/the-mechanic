@@ -1,8 +1,25 @@
 ---
 import { Image } from 'astro:assets';
 import Button from '../components/Button.astro';
-import Icon from './Icon.astro';
 import { socials } from '../socials';
+import Icon from './Icon.astro';
+
+const directLinks = [
+	{ label: 'Werkplaats', href: '/werkplaats' },
+	{ label: 'Diensten', href: '/diensten' },
+	{ label: 'Aanbod', href: '/voorraad' },
+	{ label: 'Over ons', href: '/wie-we-zijn' },
+];
+
+const legalLinks = [
+	{
+		label: 'Algemene voorwaarden',
+		href: '/algemene-voorwaarden-bovag.pdf',
+		external: true,
+	},
+	{ label: 'Disclaimer', href: '/disclaimer' },
+	{ label: 'Privacyverklaring', href: '/privacyverklaring' },
+];
 ---
 
 <footer class="bg-gray-700 px-4 py-10 text-white md:py-16 font-light">
@@ -52,13 +69,11 @@ import { socials } from '../socials';
     <div>
       <div class="font-semibold">Direct naar</div>
       <div class="mt-4 space-y-2 [&>*]:block">
-        <a href="#">Diensten</a>
-        <a href="#">Collectie</a>
-        <a href="#">Over ons</a>
+        {directLinks.map((link) => <a href={link.href}>{link.label}</a>)}
       </div>
     </div>
     <div>
-      <div class="font-semibold">Openinstijden</div>
+      <div class="font-semibold">Openingstijden</div>
       <table class="mt-4 [&_td]:py-1 [&_td+td]:pl-4">
         <tr id="monday">
           <td>Maandag</td>
@@ -89,18 +104,34 @@ import { socials } from '../socials';
           <td>Gesloten</td>
         </tr>
       </table>
-
     </div>
     <div class="mt-auto space-y-4">
-      <img src="/rdw.svg" alt="RDW" height="1" width="100" class="grayscale" />
-      <img
-        src="/bovag.svg"
-        alt="Bovag"
-        height="1"
-        width="100"
-        class="grayscale"
-      />
+      <img src="/rdw.svg" alt="RDW" height="1" width="100" />
+      <img src="/bovag.svg" alt="Bovag" height="1" width="100" />
     </div>
+  </div>
+  <div
+    class="container mx-auto mt-12 flex max-w-6xl flex-col gap-2 border-t border-white/20 pt-6 text-sm text-white/80 md:flex-row md:flex-wrap md:gap-x-6"
+  >
+    {
+      legalLinks.map((link) => (
+        <a
+          href={link.href}
+          class="hover:text-white"
+          target={link.external ? '_blank' : undefined}
+          rel={link.external ? 'noopener noreferrer' : undefined}
+        >
+          {link.label}
+        </a>
+      ))
+    }
+    <button
+      type="button"
+      class="cursor-pointer text-left hover:text-white"
+      onclick="document.dispatchEvent(new CustomEvent('cookie-preferences:open'))"
+    >
+      Cookievoorkeuren
+    </button>
   </div>
 </footer>
 <script>

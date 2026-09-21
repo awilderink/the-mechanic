@@ -1,19 +1,52 @@
-import { createSignal, type JSX, onMount, Show } from 'solid-js';
+import { createSignal, type JSX, onCleanup, onMount, Show } from 'solid-js';
+
+export const COOKIE_CONSENT_KEY = 'cookieConsent';
+export const COOKIE_CONSENT_CHANGED = 'cookie-consent:changed';
+export const COOKIE_PREFERENCES_OPEN = 'cookie-preferences:open';
+
+export type CookieConsent = 'all' | 'necessary';
+
+export function readCookieConsent(): CookieConsent | null {
+	try {
+		const value = localStorage.getItem(COOKIE_CONSENT_KEY);
+		return value === 'all' || value === 'necessary' ? value : null;
+	} catch {
+		return null;
+	}
+}
+
+export function writeCookieConsent(value: CookieConsent): void {
+	try {
+		localStorage.setItem(COOKIE_CONSENT_KEY, value);
+	} catch {}
+	document.dispatchEvent(
+		new CustomEvent<CookieConsent>(COOKIE_CONSENT_CHANGED, { detail: value }),
+	);
+}
 
 /** Cookie consent bar. Hidden until mount confirms no stored consent. */
 export default function CookieBanner(): JSX.Element {
 	const [show, setShow] = createSignal(false);
 	const [entered, setEntered] = createSignal(false);
 
-	onMount(() => {
-		if (localStorage.getItem('cookieConsent')) return;
+	const open = () => {
 		setShow(true);
 		requestAnimationFrame(() => setEntered(true));
+	};
+
+	onMount(() => {
+		document.addEventListener(COOKIE_PREFERENCES_OPEN, open);
+		onCleanup(() =>
+			document.removeEventListener(COOKIE_PREFERENCES_OPEN, open),
+		);
+		if (readCookieConsent()) return;
+		open();
 	});
 
-	const consent = (value: 'all' | 'necessary') => {
-		localStorage.setItem('cookieConsent', value);
+	const consent = (value: CookieConsent) => {
+		writeCookieConsent(value);
 		setShow(false);
+		setEntered(false);
 	};
 
 	return (
