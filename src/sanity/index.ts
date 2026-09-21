@@ -21,6 +21,7 @@ export const getGlobal = async () => {
     description,
     defaultSeo,
     voorraadSeo,
+    voorraadHero,
     mainMenu[]{
       title,
       slug,

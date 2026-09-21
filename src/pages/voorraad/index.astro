@@ -1,24 +1,25 @@
 ---
-import Button from "../../components/Button.astro";
-import SanityImage from "../../components/SanityImage.astro";
-import Title from "../../components/Title.astro";
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import { getGlobal, getMerken, getVoorraad } from "../../sanity";
-import VoorraadFilters from "../../solid/VoorraadFilters";
+import Button from '../../components/Button.astro';
+import HeroImageSection from '../../components/blocks/HeroImageSection.astro';
+import SanityImage from '../../components/SanityImage.astro';
+import Title from '../../components/Title.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getGlobal, getMerken, getVoorraad } from '../../sanity';
+import VoorraadFilters from '../../solid/VoorraadFilters';
 
 const { searchParams } = Astro.url;
 
-const selectedMerk = searchParams.get("merk");
-const selectedVerkocht = searchParams.get("verkocht") ?? "false";
+const selectedMerk = searchParams.get('merk');
+const selectedVerkocht = searchParams.get('verkocht') ?? 'false';
 const merken = await getMerken();
 const global = await getGlobal();
 const merkOpties = merken
-  .filter((merk) => merk.naam)
-  .map((merk) => ({ value: merk.naam!, label: merk.naam! }));
+	.filter((merk) => merk.naam)
+	.map((merk) => ({ value: merk.naam!, label: merk.naam! }));
 
 const voorraadItems = await getVoorraad({
-  ...(selectedMerk && { merk: selectedMerk }),
-  verkocht: selectedVerkocht === "true",
+	...(selectedMerk && { merk: selectedMerk }),
+	verkocht: selectedVerkocht === 'true',
 });
 ---
 
@@ -26,10 +27,20 @@ const voorraadItems = await getVoorraad({
   title="Voorraad"
   description="De voorraad van de The Mechanic"
   seo={global?.voorraadSeo}
-  transparentHeader
 >
-  <div class="bg-sand min-h-dvh p-4 pt-60">
-    <div class="container mx-auto max-w-6xl">
+  <div class="bg-sand min-h-dvh pb-4 pt-20 md:pt-28">
+    {
+      global?.voorraadHero && (
+        <HeroImageSection
+          block={{
+            _type: "heroImageSection",
+            image: global.voorraadHero,
+            alt: "Aanbod van The Mechanic",
+          }}
+        />
+      )
+    }
+    <div class="container mx-auto max-w-6xl px-4">
       <VoorraadFilters
         client:load
         merken={merkOpties}

@@ -127,14 +127,19 @@ export const voorraad = defineType({
 	preview: {
 		select: {
 			title: 'titel',
-			subtitle: 'merk.naam',
+			merk: 'merk.naam',
+			verkocht: 'verkocht',
+			uitgelicht: 'uitgelicht',
 			media: 'fotos.0',
 		},
-		prepare(selection) {
-			const { title, subtitle, media } = selection;
+		prepare({ title, merk, verkocht, uitgelicht, media }) {
+			const status = [
+				verkocht ? 'Verkocht' : 'Te koop',
+				uitgelicht ? 'Uitgelicht' : null,
+			].filter(Boolean);
 			return {
-				title,
-				subtitle: subtitle || 'Geen merk',
+				title: merk ? `${merk} ${title}` : title,
+				subtitle: status.join(' · '),
 				media,
 			};
 		},
