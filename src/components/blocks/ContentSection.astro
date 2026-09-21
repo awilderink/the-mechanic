@@ -1,11 +1,11 @@
 ---
-import { PortableText } from "astro-portabletext";
-import type { ContentSection } from "../../sanity/types";
-import Button from "../Button.astro";
-import Title from "../Title.astro";
+import { PortableText } from 'astro-portabletext';
+import type { ContentSection } from '../../sanity/types';
+import Button from '../Button.astro';
+import Title from '../Title.astro';
 
 interface Props {
-  block: ContentSection;
+	block: ContentSection;
 }
 
 const { block } = Astro.props;
@@ -30,7 +30,11 @@ const { block } = Astro.props;
       }
     </div>
     <div class="basis-2/5 self-end">
-      {block.body && <PortableText value={block.body} />}
+      {block.body && (
+        <div class="rich-text">
+          <PortableText value={block.body} />
+        </div>
+      )}
       {
         block.buttonText && block.buttonUrl && (
           <a href={block.buttonUrl}>

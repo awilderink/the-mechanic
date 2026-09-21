@@ -1,26 +1,24 @@
 ---
-import CardSection from "./blocks/CardSection.astro";
-import ContentSection from "./blocks/ContentSection.astro";
-import FeaturedVoorraadSection from "./blocks/FeaturedVoorraadSection.astro";
-import HeroImageSection from "./blocks/HeroImageSection.astro";
-import HeroSection from "./blocks/HeroSection.astro";
-import ImageSection from "./blocks/ImageSection.astro";
-import ReviewsSection from "./blocks/ReviewsSection.astro";
-import TeamSection from "./blocks/TeamSection.astro";
-import TextContent from "./blocks/TextContent.astro";
+import CardSection from './blocks/CardSection.astro';
+import ContentSection from './blocks/ContentSection.astro';
+import FeaturedVoorraadSection from './blocks/FeaturedVoorraadSection.astro';
+import HeroImageSection from './blocks/HeroImageSection.astro';
+import HeroSection from './blocks/HeroSection.astro';
+import ImageSection from './blocks/ImageSection.astro';
+import InstagramSection from './blocks/InstagramSection.astro';
+import ReviewsSection from './blocks/ReviewsSection.astro';
+import TeamSection from './blocks/TeamSection.astro';
+import TextContent from './blocks/TextContent.astro';
 
 interface Props {
-  blocks: any[];
+	blocks: any[];
 }
 
 const { blocks } = Astro.props;
 
-// De header staat fixed (88px op desktop) en heeft alleen bij een hero een
-// beeld om over te liggen. Zonder hero dus zelf ruimte maken.
-const firstType = blocks?.[0]?._type;
-const startsWithHero = firstType === 'heroSection' || firstType === 'heroImageSection';
+const startsWithFullscreenHero = blocks?.[0]?._type === 'heroSection';
 ---
-{!startsWithHero && <div class="h-20 md:h-28" />}
+{!startsWithFullscreenHero && <div class="h-20 md:h-28" />}
 {
   blocks?.map((block) => {
     switch (block._type) {
@@ -42,6 +40,8 @@ const startsWithHero = firstType === 'heroSection' || firstType === 'heroImageSe
         return <ReviewsSection block={block} />;
       case "featuredVoorraadSection":
         return <FeaturedVoorraadSection block={block} />;
+      case "instagramSection":
+        return <InstagramSection block={block} />;
       default:
         return null;
     }
