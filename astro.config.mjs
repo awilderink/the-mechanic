@@ -21,6 +21,7 @@ const dataset =
 export default defineConfig({
 	output: 'server',
 	site: 'https://themechanic.starvin.dev',
+	session: false,
 	integrations: [
 		sanity({
 			projectId,
