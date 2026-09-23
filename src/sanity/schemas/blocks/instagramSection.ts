@@ -4,6 +4,8 @@ export default defineType({
 	name: 'instagramSection',
 	title: 'Instagram',
 	type: 'object',
+	description:
+		'Toont automatisch de nieuwste berichten van @the_mechanic.nl. Nieuwe berichten verschijnen binnen een uur.',
 	fields: [
 		defineField({
 			name: 'title',
@@ -18,36 +20,22 @@ export default defineType({
 			rows: 2,
 		}),
 		defineField({
-			name: 'posts',
-			title: 'Instagram-berichten',
-			description:
-				'Plak de link van een bericht of reel, bijv. https://www.instagram.com/reel/ABC123/. Berichten worden in deze volgorde getoond.',
-			type: 'array',
-			of: [
-				{
-					type: 'url',
-					validation: (Rule) =>
-						Rule.uri({ scheme: ['https'] }).custom((value?: string) =>
-							!value ||
-							/^https:\/\/(www\.)?instagram\.com\/(p|reel|tv)\/[\w-]+\/?/.test(
-								value,
-							)
-								? true
-								: 'Gebruik een link naar een Instagram-bericht of -reel.',
-						),
-				},
-			],
+			name: 'limit',
+			title: 'Aantal berichten',
+			type: 'number',
+			initialValue: 6,
+			validation: (Rule) => Rule.required().integer().min(1).max(12),
 		}),
 	],
 	preview: {
 		select: {
 			title: 'title',
-			posts: 'posts',
+			limit: 'limit',
 		},
-		prepare({ title, posts = [] }) {
+		prepare({ title, limit }) {
 			return {
 				title: `Instagram: ${title || 'Volg ons'}`,
-				subtitle: `${posts.length} bericht${posts.length === 1 ? '' : 'en'}`,
+				subtitle: `Nieuwste ${limit ?? 6} berichten`,
 			};
 		},
 	},

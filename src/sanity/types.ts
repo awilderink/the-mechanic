@@ -16,779 +16,779 @@ export declare const internalGroqTypeReferenceTo: unique symbol;
 
 // Source: schema.json
 export type SanityImageAssetReference = {
-	_ref: string;
-	_type: 'reference';
-	_weak?: boolean;
-	[internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
 };
 
 export type ObjectImage = {
-	asset?: SanityImageAssetReference;
-	media?: unknown; // Unable to locate the referenced type "object.image.media" in schema
-	hotspot?: SanityImageHotspot;
-	crop?: SanityImageCrop;
-	_type: 'image';
+  asset?: SanityImageAssetReference;
+  media?: unknown; // Unable to locate the referenced type "object.image.media" in schema
+  hotspot?: SanityImageHotspot;
+  crop?: SanityImageCrop;
+  _type: "image";
 };
 
 export type Icoon = {
-	asset?: SanityImageAssetReference;
-	media?: unknown; // Unable to locate the referenced type "icoon.media" in schema
-	hotspot?: SanityImageHotspot;
-	crop?: SanityImageCrop;
-	_type: 'image';
+  asset?: SanityImageAssetReference;
+  media?: unknown; // Unable to locate the referenced type "icoon.media" in schema
+  hotspot?: SanityImageHotspot;
+  crop?: SanityImageCrop;
+  _type: "image";
 };
 
 export type InstagramSection = {
-	_type: 'instagramSection';
-	title?: string;
-	intro?: string;
-	posts?: Array<string>;
+  _type: "instagramSection";
+  title?: string;
+  intro?: string;
+  limit?: number;
 };
 
 export type FeaturedVoorraadSection = {
-	_type: 'featuredVoorraadSection';
-	title?: string;
+  _type: "featuredVoorraadSection";
+  title?: string;
 };
 
 export type ReviewsSection = {
-	_type: 'reviewsSection';
-	image?: {
-		asset?: SanityImageAssetReference;
-		media?: unknown;
-		hotspot?: SanityImageHotspot;
-		crop?: SanityImageCrop;
-		_type: 'image';
-	};
-	reviews?: Array<{
-		naam?: string;
-		body?: string;
-		_key: string;
-	}>;
+  _type: "reviewsSection";
+  image?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  reviews?: Array<{
+    naam?: string;
+    body?: string;
+    _key: string;
+  }>;
 };
 
 export type CardSection = {
-	_type: 'cardSection';
-	title?: string;
-	cards?: Array<{
-		icoon?: Icoon;
-		titel?: string;
-		body?: BlockContent;
-		link?: string;
-		_key: string;
-	}>;
+  _type: "cardSection";
+  title?: string;
+  cards?: Array<{
+    icoon?: Icoon;
+    titel?: string;
+    body?: BlockContent;
+    link?: string;
+    _key: string;
+  }>;
 };
 
 export type ContentSection = {
-	_type: 'contentSection';
-	sectionTitle?: string;
-	mainTitle?: string;
-	body?: BlockContent;
-	buttonText?: string;
-	buttonUrl?: string;
+  _type: "contentSection";
+  sectionTitle?: string;
+  mainTitle?: string;
+  body?: BlockContent;
+  buttonText?: string;
+  buttonUrl?: string;
 };
 
 export type TeamMemberReference = {
-	_ref: string;
-	_type: 'reference';
-	_weak?: boolean;
-	[internalGroqTypeReferenceTo]?: 'teamMember';
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "teamMember";
 };
 
 export type TeamSection = {
-	_type: 'teamSection';
-	title?: string;
-	members?: Array<
-		{
-			_key: string;
-		} & TeamMemberReference
-	>;
+  _type: "teamSection";
+  title?: string;
+  members?: Array<
+    {
+      _key: string;
+    } & TeamMemberReference
+  >;
 };
 
 export type ImageSection = {
-	_type: 'imageSection';
-	images?: Array<{
-		image?: ObjectImage;
-		alt?: string;
-		_key: string;
-	}>;
+  _type: "imageSection";
+  images?: Array<{
+    image?: ObjectImage;
+    alt?: string;
+    _key: string;
+  }>;
 };
 
 export type TextContent = {
-	_type: 'textContent';
-	content?: BlockContent;
+  _type: "textContent";
+  content?: BlockContent;
 };
 
 export type HeroImageSection = {
-	_type: 'heroImageSection';
-	image?: {
-		asset?: SanityImageAssetReference;
-		media?: unknown;
-		hotspot?: SanityImageHotspot;
-		crop?: SanityImageCrop;
-		_type: 'image';
-	};
-	alt?: string;
+  _type: "heroImageSection";
+  image?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  alt?: string;
 };
 
 export type SanityFileAssetReference = {
-	_ref: string;
-	_type: 'reference';
-	_weak?: boolean;
-	[internalGroqTypeReferenceTo]?: 'sanity.fileAsset';
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "sanity.fileAsset";
 };
 
 export type HeroSection = {
-	_type: 'heroSection';
-	title?: string;
-	subtitle?: string;
-	description?: string;
-	image?: {
-		asset?: SanityImageAssetReference;
-		media?: unknown;
-		hotspot?: SanityImageHotspot;
-		crop?: SanityImageCrop;
-		_type: 'image';
-	};
-	video?: {
-		asset?: SanityFileAssetReference;
-		media?: unknown;
-		_type: 'file';
-	};
-	buttons?: Array<{
-		text?: string;
-		slug?: Slug;
-		style?: 'primary' | 'secondary' | 'tertiary' | 'outline';
-		_key: string;
-	}>;
+  _type: "heroSection";
+  title?: string;
+  subtitle?: string;
+  description?: string;
+  image?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  video?: {
+    asset?: SanityFileAssetReference;
+    media?: unknown;
+    _type: "file";
+  };
+  buttons?: Array<{
+    text?: string;
+    slug?: Slug;
+    style?: "primary" | "secondary" | "tertiary" | "outline";
+    _key: string;
+  }>;
 };
 
 export type BlockContent = Array<
-	| {
-			children?: Array<{
-				marks?: Array<string>;
-				text?: string;
-				_type: 'span';
-				_key: string;
-			}>;
-			style?: 'normal' | 'h1' | 'h2' | 'h3' | 'blockquote';
-			listItem?: 'bullet' | 'number';
-			markDefs?: Array<{
-				href?: string;
-				_type: 'link';
-				_key: string;
-			}>;
-			level?: number;
-			_type: 'block';
-			_key: string;
-	  }
-	| {
-			asset?: SanityImageAssetReference;
-			media?: unknown;
-			hotspot?: SanityImageHotspot;
-			crop?: SanityImageCrop;
-			_type: 'image';
-			_key: string;
-	  }
+  | {
+      children?: Array<{
+        marks?: Array<string>;
+        text?: string;
+        _type: "span";
+        _key: string;
+      }>;
+      style?: "normal" | "h1" | "h2" | "h3" | "blockquote";
+      listItem?: "bullet" | "number";
+      markDefs?: Array<{
+        href?: string;
+        _type: "link";
+        _key: string;
+      }>;
+      level?: number;
+      _type: "block";
+      _key: string;
+    }
+  | {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+      _key: string;
+    }
 >;
 
 export type Seo = {
-	_type: 'seo';
-	metaTitle?: string;
-	metaDescription?: string;
-	ogImage?: {
-		asset?: SanityImageAssetReference;
-		media?: unknown;
-		hotspot?: SanityImageHotspot;
-		crop?: SanityImageCrop;
-		_type: 'image';
-	};
-	canonicalUrl?: string;
-	noIndex?: boolean;
-	aiSummary?: string;
-	geoPlacename?: string;
-	geoRegion?: string;
-	geoPosition?: Geopoint;
-	serviceAreas?: Array<string>;
+  _type: "seo";
+  metaTitle?: string;
+  metaDescription?: string;
+  ogImage?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  canonicalUrl?: string;
+  noIndex?: boolean;
+  aiSummary?: string;
+  geoPlacename?: string;
+  geoRegion?: string;
+  geoPosition?: Geopoint;
+  serviceAreas?: Array<string>;
 };
 
 export type MerkReference = {
-	_ref: string;
-	_type: 'reference';
-	_weak?: boolean;
-	[internalGroqTypeReferenceTo]?: 'merk';
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "merk";
 };
 
 export type Voorraad = {
-	_id: string;
-	_type: 'voorraad';
-	_createdAt: string;
-	_updatedAt: string;
-	_rev: string;
-	titel?: string;
-	merk?: MerkReference;
-	slug?: Slug;
-	prijs?: number;
-	bouwjaar?: number;
-	kilometerstand?: number;
-	brandstof?: 'benzine' | 'diesel' | 'elektrisch' | 'hybride';
-	transmissie?: 'handgeschakeld' | 'automaat';
-	verkocht?: boolean;
-	uitgelicht?: boolean;
-	fotos?: Array<{
-		asset?: SanityImageAssetReference;
-		media?: unknown;
-		hotspot?: SanityImageHotspot;
-		crop?: SanityImageCrop;
-		_type: 'image';
-		_key: string;
-	}>;
-	beschrijving?: BlockContent;
-	specificaties?: Array<{
-		label?: string;
-		waarde?: string;
-		_key: string;
-	}>;
-	seo?: Seo;
+  _id: string;
+  _type: "voorraad";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  titel?: string;
+  merk?: MerkReference;
+  slug?: Slug;
+  prijs?: number;
+  bouwjaar?: number;
+  kilometerstand?: number;
+  brandstof?: "benzine" | "diesel" | "elektrisch" | "hybride";
+  transmissie?: "handgeschakeld" | "automaat";
+  verkocht?: boolean;
+  uitgelicht?: boolean;
+  fotos?: Array<{
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+    _key: string;
+  }>;
+  beschrijving?: BlockContent;
+  specificaties?: Array<{
+    label?: string;
+    waarde?: string;
+    _key: string;
+  }>;
+  seo?: Seo;
 };
 
 export type SanityImageCrop = {
-	_type: 'sanity.imageCrop';
-	top?: number;
-	bottom?: number;
-	left?: number;
-	right?: number;
+  _type: "sanity.imageCrop";
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
 };
 
 export type SanityImageHotspot = {
-	_type: 'sanity.imageHotspot';
-	x?: number;
-	y?: number;
-	height?: number;
-	width?: number;
+  _type: "sanity.imageHotspot";
+  x?: number;
+  y?: number;
+  height?: number;
+  width?: number;
 };
 
 export type Slug = {
-	_type: 'slug';
-	current?: string;
-	source?: string;
+  _type: "slug";
+  current?: string;
+  source?: string;
 };
 
 export type Merk = {
-	_id: string;
-	_type: 'merk';
-	_createdAt: string;
-	_updatedAt: string;
-	_rev: string;
-	naam?: string;
-	logo?: {
-		asset?: SanityImageAssetReference;
-		media?: unknown;
-		hotspot?: SanityImageHotspot;
-		crop?: SanityImageCrop;
-		_type: 'image';
-	};
+  _id: string;
+  _type: "merk";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  naam?: string;
+  logo?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
 };
 
 export type TeamMember = {
-	_id: string;
-	_type: 'teamMember';
-	_createdAt: string;
-	_updatedAt: string;
-	_rev: string;
-	naam?: string;
-	functie?: string;
-	afbeelding?: {
-		asset?: SanityImageAssetReference;
-		media?: unknown;
-		hotspot?: SanityImageHotspot;
-		crop?: SanityImageCrop;
-		_type: 'image';
-	};
-	bio?: string;
+  _id: string;
+  _type: "teamMember";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  naam?: string;
+  functie?: string;
+  afbeelding?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  bio?: string;
 };
 
 export type Page = {
-	_id: string;
-	_type: 'page';
-	_createdAt: string;
-	_updatedAt: string;
-	_rev: string;
-	title?: string;
-	slug?: Slug;
-	seo?: Seo;
-	blocks?: Array<
-		| ({
-				_key: string;
-		  } & HeroSection)
-		| ({
-				_key: string;
-		  } & HeroImageSection)
-		| ({
-				_key: string;
-		  } & TextContent)
-		| ({
-				_key: string;
-		  } & ImageSection)
-		| ({
-				_key: string;
-		  } & TeamSection)
-		| ({
-				_key: string;
-		  } & ContentSection)
-		| ({
-				_key: string;
-		  } & CardSection)
-		| ({
-				_key: string;
-		  } & ReviewsSection)
-		| ({
-				_key: string;
-		  } & FeaturedVoorraadSection)
-		| ({
-				_key: string;
-		  } & InstagramSection)
-	>;
+  _id: string;
+  _type: "page";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  slug?: Slug;
+  seo?: Seo;
+  blocks?: Array<
+    | ({
+        _key: string;
+      } & HeroSection)
+    | ({
+        _key: string;
+      } & HeroImageSection)
+    | ({
+        _key: string;
+      } & TextContent)
+    | ({
+        _key: string;
+      } & ImageSection)
+    | ({
+        _key: string;
+      } & TeamSection)
+    | ({
+        _key: string;
+      } & ContentSection)
+    | ({
+        _key: string;
+      } & CardSection)
+    | ({
+        _key: string;
+      } & ReviewsSection)
+    | ({
+        _key: string;
+      } & FeaturedVoorraadSection)
+    | ({
+        _key: string;
+      } & InstagramSection)
+  >;
 };
 
 export type Home = {
-	_id: string;
-	_type: 'home';
-	_createdAt: string;
-	_updatedAt: string;
-	_rev: string;
-	seo?: Seo;
-	blocks?: Array<
-		| ({
-				_key: string;
-		  } & HeroSection)
-		| ({
-				_key: string;
-		  } & HeroImageSection)
-		| ({
-				_key: string;
-		  } & TextContent)
-		| ({
-				_key: string;
-		  } & ImageSection)
-		| ({
-				_key: string;
-		  } & TeamSection)
-		| ({
-				_key: string;
-		  } & ContentSection)
-		| ({
-				_key: string;
-		  } & CardSection)
-		| ({
-				_key: string;
-		  } & ReviewsSection)
-		| ({
-				_key: string;
-		  } & FeaturedVoorraadSection)
-		| ({
-				_key: string;
-		  } & InstagramSection)
-	>;
+  _id: string;
+  _type: "home";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  seo?: Seo;
+  blocks?: Array<
+    | ({
+        _key: string;
+      } & HeroSection)
+    | ({
+        _key: string;
+      } & HeroImageSection)
+    | ({
+        _key: string;
+      } & TextContent)
+    | ({
+        _key: string;
+      } & ImageSection)
+    | ({
+        _key: string;
+      } & TeamSection)
+    | ({
+        _key: string;
+      } & ContentSection)
+    | ({
+        _key: string;
+      } & CardSection)
+    | ({
+        _key: string;
+      } & ReviewsSection)
+    | ({
+        _key: string;
+      } & FeaturedVoorraadSection)
+    | ({
+        _key: string;
+      } & InstagramSection)
+  >;
 };
 
 export type Global = {
-	_id: string;
-	_type: 'global';
-	_createdAt: string;
-	_updatedAt: string;
-	_rev: string;
-	title?: string;
-	description?: string;
-	defaultSeo?: Seo;
-	voorraadSeo?: Seo;
-	voorraadHero?: {
-		asset?: SanityImageAssetReference;
-		media?: unknown;
-		hotspot?: SanityImageHotspot;
-		crop?: SanityImageCrop;
-		_type: 'image';
-	};
-	mainMenu?: Array<{
-		title?: string;
-		slug?: Slug;
-		children?: Array<{
-			title?: string;
-			slug?: Slug;
-			_type: 'subMenuItem';
-			_key: string;
-		}>;
-		_type: 'menuItem';
-		_key: string;
-	}>;
+  _id: string;
+  _type: "global";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  description?: string;
+  defaultSeo?: Seo;
+  voorraadSeo?: Seo;
+  voorraadHero?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  mainMenu?: Array<{
+    title?: string;
+    slug?: Slug;
+    children?: Array<{
+      title?: string;
+      slug?: Slug;
+      _type: "subMenuItem";
+      _key: string;
+    }>;
+    _type: "menuItem";
+    _key: string;
+  }>;
 };
 
 export type Geopoint = {
-	_type: 'geopoint';
-	lat?: number;
-	lng?: number;
-	alt?: number;
+  _type: "geopoint";
+  lat?: number;
+  lng?: number;
+  alt?: number;
 };
 
 export type SanityImagePaletteSwatch = {
-	_type: 'sanity.imagePaletteSwatch';
-	background?: string;
-	foreground?: string;
-	population?: number;
-	title?: string;
+  _type: "sanity.imagePaletteSwatch";
+  background?: string;
+  foreground?: string;
+  population?: number;
+  title?: string;
 };
 
 export type SanityImagePalette = {
-	_type: 'sanity.imagePalette';
-	darkMuted?: SanityImagePaletteSwatch;
-	lightVibrant?: SanityImagePaletteSwatch;
-	darkVibrant?: SanityImagePaletteSwatch;
-	vibrant?: SanityImagePaletteSwatch;
-	dominant?: SanityImagePaletteSwatch;
-	lightMuted?: SanityImagePaletteSwatch;
-	muted?: SanityImagePaletteSwatch;
+  _type: "sanity.imagePalette";
+  darkMuted?: SanityImagePaletteSwatch;
+  lightVibrant?: SanityImagePaletteSwatch;
+  darkVibrant?: SanityImagePaletteSwatch;
+  vibrant?: SanityImagePaletteSwatch;
+  dominant?: SanityImagePaletteSwatch;
+  lightMuted?: SanityImagePaletteSwatch;
+  muted?: SanityImagePaletteSwatch;
 };
 
 export type SanityImageDimensions = {
-	_type: 'sanity.imageDimensions';
-	height?: number;
-	width?: number;
-	aspectRatio?: number;
+  _type: "sanity.imageDimensions";
+  height?: number;
+  width?: number;
+  aspectRatio?: number;
 };
 
 export type SanityImageMetadata = {
-	_type: 'sanity.imageMetadata';
-	location?: Geopoint;
-	dimensions?: SanityImageDimensions;
-	palette?: SanityImagePalette;
-	lqip?: string;
-	blurHash?: string;
-	thumbHash?: string;
-	hasAlpha?: boolean;
-	isOpaque?: boolean;
+  _type: "sanity.imageMetadata";
+  location?: Geopoint;
+  dimensions?: SanityImageDimensions;
+  palette?: SanityImagePalette;
+  lqip?: string;
+  blurHash?: string;
+  thumbHash?: string;
+  hasAlpha?: boolean;
+  isOpaque?: boolean;
 };
 
 export type SanityFileAsset = {
-	_id: string;
-	_type: 'sanity.fileAsset';
-	_createdAt: string;
-	_updatedAt: string;
-	_rev: string;
-	originalFilename?: string;
-	label?: string;
-	title?: string;
-	description?: string;
-	altText?: string;
-	sha1hash?: string;
-	extension?: string;
-	mimeType?: string;
-	size?: number;
-	assetId?: string;
-	uploadId?: string;
-	path?: string;
-	url?: string;
-	source?: SanityAssetSourceData;
+  _id: string;
+  _type: "sanity.fileAsset";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  originalFilename?: string;
+  label?: string;
+  title?: string;
+  description?: string;
+  altText?: string;
+  sha1hash?: string;
+  extension?: string;
+  mimeType?: string;
+  size?: number;
+  assetId?: string;
+  uploadId?: string;
+  path?: string;
+  url?: string;
+  source?: SanityAssetSourceData;
 };
 
 export type SanityAssetSourceData = {
-	_type: 'sanity.assetSourceData';
-	name?: string;
-	id?: string;
-	url?: string;
+  _type: "sanity.assetSourceData";
+  name?: string;
+  id?: string;
+  url?: string;
 };
 
 export type SanityImageAsset = {
-	_id: string;
-	_type: 'sanity.imageAsset';
-	_createdAt: string;
-	_updatedAt: string;
-	_rev: string;
-	originalFilename?: string;
-	label?: string;
-	title?: string;
-	description?: string;
-	altText?: string;
-	sha1hash?: string;
-	extension?: string;
-	mimeType?: string;
-	size?: number;
-	assetId?: string;
-	uploadId?: string;
-	path?: string;
-	url?: string;
-	metadata?: SanityImageMetadata;
-	source?: SanityAssetSourceData;
+  _id: string;
+  _type: "sanity.imageAsset";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  originalFilename?: string;
+  label?: string;
+  title?: string;
+  description?: string;
+  altText?: string;
+  sha1hash?: string;
+  extension?: string;
+  mimeType?: string;
+  size?: number;
+  assetId?: string;
+  uploadId?: string;
+  path?: string;
+  url?: string;
+  metadata?: SanityImageMetadata;
+  source?: SanityAssetSourceData;
 };
 
 export type AllSanitySchemaTypes =
-	| SanityImageAssetReference
-	| ObjectImage
-	| Icoon
-	| InstagramSection
-	| FeaturedVoorraadSection
-	| ReviewsSection
-	| CardSection
-	| ContentSection
-	| TeamMemberReference
-	| TeamSection
-	| ImageSection
-	| TextContent
-	| HeroImageSection
-	| SanityFileAssetReference
-	| HeroSection
-	| BlockContent
-	| Seo
-	| MerkReference
-	| Voorraad
-	| SanityImageCrop
-	| SanityImageHotspot
-	| Slug
-	| Merk
-	| TeamMember
-	| Page
-	| Home
-	| Global
-	| Geopoint
-	| SanityImagePaletteSwatch
-	| SanityImagePalette
-	| SanityImageDimensions
-	| SanityImageMetadata
-	| SanityFileAsset
-	| SanityAssetSourceData
-	| SanityImageAsset;
+  | SanityImageAssetReference
+  | ObjectImage
+  | Icoon
+  | InstagramSection
+  | FeaturedVoorraadSection
+  | ReviewsSection
+  | CardSection
+  | ContentSection
+  | TeamMemberReference
+  | TeamSection
+  | ImageSection
+  | TextContent
+  | HeroImageSection
+  | SanityFileAssetReference
+  | HeroSection
+  | BlockContent
+  | Seo
+  | MerkReference
+  | Voorraad
+  | SanityImageCrop
+  | SanityImageHotspot
+  | Slug
+  | Merk
+  | TeamMember
+  | Page
+  | Home
+  | Global
+  | Geopoint
+  | SanityImagePaletteSwatch
+  | SanityImagePalette
+  | SanityImageDimensions
+  | SanityImageMetadata
+  | SanityFileAsset
+  | SanityAssetSourceData
+  | SanityImageAsset;
 
 // Source: src/sanity/index.ts
 // Variable: globalQuery
 // Query: *[_type == "global"][0]{    _id,    title,    description,    defaultSeo,    voorraadSeo,    voorraadHero,    mainMenu[]{      title,      slug,      children[]{        title,        slug      }    }  }
 export type GlobalQueryResult = {
-	_id: string;
-	title: string | null;
-	description: string | null;
-	defaultSeo: Seo | null;
-	voorraadSeo: Seo | null;
-	voorraadHero: {
-		asset?: SanityImageAssetReference;
-		media?: unknown;
-		hotspot?: SanityImageHotspot;
-		crop?: SanityImageCrop;
-		_type: 'image';
-	} | null;
-	mainMenu: Array<{
-		title: string | null;
-		slug: Slug | null;
-		children: Array<{
-			title: string | null;
-			slug: Slug | null;
-		}> | null;
-	}> | null;
+  _id: string;
+  title: string | null;
+  description: string | null;
+  defaultSeo: Seo | null;
+  voorraadSeo: Seo | null;
+  voorraadHero: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  } | null;
+  mainMenu: Array<{
+    title: string | null;
+    slug: Slug | null;
+    children: Array<{
+      title: string | null;
+      slug: Slug | null;
+    }> | null;
+  }> | null;
 } | null;
 
 // Source: src/sanity/index.ts
 // Variable: homeQuery
 // Query: *[_type == "home"][0]{    _id,    seo,    blocks  }
 export type HomeQueryResult = {
-	_id: string;
-	seo: Seo | null;
-	blocks: Array<
-		| ({
-				_key: string;
-		  } & CardSection)
-		| ({
-				_key: string;
-		  } & ContentSection)
-		| ({
-				_key: string;
-		  } & FeaturedVoorraadSection)
-		| ({
-				_key: string;
-		  } & HeroImageSection)
-		| ({
-				_key: string;
-		  } & HeroSection)
-		| ({
-				_key: string;
-		  } & ImageSection)
-		| ({
-				_key: string;
-		  } & InstagramSection)
-		| ({
-				_key: string;
-		  } & ReviewsSection)
-		| ({
-				_key: string;
-		  } & TeamSection)
-		| ({
-				_key: string;
-		  } & TextContent)
-	> | null;
+  _id: string;
+  seo: Seo | null;
+  blocks: Array<
+    | ({
+        _key: string;
+      } & CardSection)
+    | ({
+        _key: string;
+      } & ContentSection)
+    | ({
+        _key: string;
+      } & FeaturedVoorraadSection)
+    | ({
+        _key: string;
+      } & HeroImageSection)
+    | ({
+        _key: string;
+      } & HeroSection)
+    | ({
+        _key: string;
+      } & ImageSection)
+    | ({
+        _key: string;
+      } & InstagramSection)
+    | ({
+        _key: string;
+      } & ReviewsSection)
+    | ({
+        _key: string;
+      } & TeamSection)
+    | ({
+        _key: string;
+      } & TextContent)
+  > | null;
 } | null;
 
 // Source: src/sanity/index.ts
 // Variable: merkenQuery
 // Query: *[_type == "merk"]{    _id,    naam,    logo  }
 export type MerkenQueryResult = Array<{
-	_id: string;
-	naam: string | null;
-	logo: {
-		asset?: SanityImageAssetReference;
-		media?: unknown;
-		hotspot?: SanityImageHotspot;
-		crop?: SanityImageCrop;
-		_type: 'image';
-	} | null;
+  _id: string;
+  naam: string | null;
+  logo: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  } | null;
 }>;
 
 // Source: src/sanity/index.ts
 // Variable: voorraadQuery
 // Query: *[_type == "voorraad" 		&& (!defined($merk) || merk->naam == $merk)		&& (!defined($verkocht) || verkocht == $verkocht)		&& (!defined($uitgelicht) || uitgelicht == $uitgelicht)	]{    _id,    titel,    slug,    merk->{      _id,      naam,      logo    },    prijs,    bouwjaar,    kilometerstand,    brandstof,    transmissie,    verkocht,    uitgelicht,    fotos,    beschrijving,    specificaties  }
 export type VoorraadQueryResult = Array<{
-	_id: string;
-	titel: string | null;
-	slug: Slug | null;
-	merk: {
-		_id: string;
-		naam: string | null;
-		logo: {
-			asset?: SanityImageAssetReference;
-			media?: unknown;
-			hotspot?: SanityImageHotspot;
-			crop?: SanityImageCrop;
-			_type: 'image';
-		} | null;
-	} | null;
-	prijs: number | null;
-	bouwjaar: number | null;
-	kilometerstand: number | null;
-	brandstof: 'benzine' | 'diesel' | 'elektrisch' | 'hybride' | null;
-	transmissie: 'automaat' | 'handgeschakeld' | null;
-	verkocht: boolean | null;
-	uitgelicht: boolean | null;
-	fotos: Array<{
-		asset?: SanityImageAssetReference;
-		media?: unknown;
-		hotspot?: SanityImageHotspot;
-		crop?: SanityImageCrop;
-		_type: 'image';
-		_key: string;
-	}> | null;
-	beschrijving: BlockContent | null;
-	specificaties: Array<{
-		label?: string;
-		waarde?: string;
-		_key: string;
-	}> | null;
+  _id: string;
+  titel: string | null;
+  slug: Slug | null;
+  merk: {
+    _id: string;
+    naam: string | null;
+    logo: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    } | null;
+  } | null;
+  prijs: number | null;
+  bouwjaar: number | null;
+  kilometerstand: number | null;
+  brandstof: "benzine" | "diesel" | "elektrisch" | "hybride" | null;
+  transmissie: "automaat" | "handgeschakeld" | null;
+  verkocht: boolean | null;
+  uitgelicht: boolean | null;
+  fotos: Array<{
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+    _key: string;
+  }> | null;
+  beschrijving: BlockContent | null;
+  specificaties: Array<{
+    label?: string;
+    waarde?: string;
+    _key: string;
+  }> | null;
 }>;
 
 // Source: src/sanity/index.ts
 // Variable: voorraadItemQuery
 // Query: *[_type == "voorraad" && slug.current == $slug][0]{    _id,    titel,    slug,    merk->{      _id,      naam,      logo    },    prijs,    bouwjaar,    kilometerstand,    brandstof,    transmissie,    verkocht,    uitgelicht,    fotos,    beschrijving,    specificaties,    seo  }
 export type VoorraadItemQueryResult = {
-	_id: string;
-	titel: string | null;
-	slug: Slug | null;
-	merk: {
-		_id: string;
-		naam: string | null;
-		logo: {
-			asset?: SanityImageAssetReference;
-			media?: unknown;
-			hotspot?: SanityImageHotspot;
-			crop?: SanityImageCrop;
-			_type: 'image';
-		} | null;
-	} | null;
-	prijs: number | null;
-	bouwjaar: number | null;
-	kilometerstand: number | null;
-	brandstof: 'benzine' | 'diesel' | 'elektrisch' | 'hybride' | null;
-	transmissie: 'automaat' | 'handgeschakeld' | null;
-	verkocht: boolean | null;
-	uitgelicht: boolean | null;
-	fotos: Array<{
-		asset?: SanityImageAssetReference;
-		media?: unknown;
-		hotspot?: SanityImageHotspot;
-		crop?: SanityImageCrop;
-		_type: 'image';
-		_key: string;
-	}> | null;
-	beschrijving: BlockContent | null;
-	specificaties: Array<{
-		label?: string;
-		waarde?: string;
-		_key: string;
-	}> | null;
-	seo: Seo | null;
+  _id: string;
+  titel: string | null;
+  slug: Slug | null;
+  merk: {
+    _id: string;
+    naam: string | null;
+    logo: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    } | null;
+  } | null;
+  prijs: number | null;
+  bouwjaar: number | null;
+  kilometerstand: number | null;
+  brandstof: "benzine" | "diesel" | "elektrisch" | "hybride" | null;
+  transmissie: "automaat" | "handgeschakeld" | null;
+  verkocht: boolean | null;
+  uitgelicht: boolean | null;
+  fotos: Array<{
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+    _key: string;
+  }> | null;
+  beschrijving: BlockContent | null;
+  specificaties: Array<{
+    label?: string;
+    waarde?: string;
+    _key: string;
+  }> | null;
+  seo: Seo | null;
 } | null;
 
 // Source: src/sanity/index.ts
 // Variable: pageQuery
 // Query: *[_type == "page" && slug.current == $slug][0]{    _id,    title,    slug,    seo,    blocks  }
 export type PageQueryResult = {
-	_id: string;
-	title: string | null;
-	slug: Slug | null;
-	seo: Seo | null;
-	blocks: Array<
-		| ({
-				_key: string;
-		  } & CardSection)
-		| ({
-				_key: string;
-		  } & ContentSection)
-		| ({
-				_key: string;
-		  } & FeaturedVoorraadSection)
-		| ({
-				_key: string;
-		  } & HeroImageSection)
-		| ({
-				_key: string;
-		  } & HeroSection)
-		| ({
-				_key: string;
-		  } & ImageSection)
-		| ({
-				_key: string;
-		  } & InstagramSection)
-		| ({
-				_key: string;
-		  } & ReviewsSection)
-		| ({
-				_key: string;
-		  } & TeamSection)
-		| ({
-				_key: string;
-		  } & TextContent)
-	> | null;
+  _id: string;
+  title: string | null;
+  slug: Slug | null;
+  seo: Seo | null;
+  blocks: Array<
+    | ({
+        _key: string;
+      } & CardSection)
+    | ({
+        _key: string;
+      } & ContentSection)
+    | ({
+        _key: string;
+      } & FeaturedVoorraadSection)
+    | ({
+        _key: string;
+      } & HeroImageSection)
+    | ({
+        _key: string;
+      } & HeroSection)
+    | ({
+        _key: string;
+      } & ImageSection)
+    | ({
+        _key: string;
+      } & InstagramSection)
+    | ({
+        _key: string;
+      } & ReviewsSection)
+    | ({
+        _key: string;
+      } & TeamSection)
+    | ({
+        _key: string;
+      } & TextContent)
+  > | null;
 } | null;
 
 // Source: src/sanity/index.ts
 // Variable: teamMembersQuery
 // Query: *[_type == "teamMember"] | order(_createdAt asc) {    _id,    naam,    functie,    afbeelding,    bio  }
 export type TeamMembersQueryResult = Array<{
-	_id: string;
-	naam: string | null;
-	functie: string | null;
-	afbeelding: {
-		asset?: SanityImageAssetReference;
-		media?: unknown;
-		hotspot?: SanityImageHotspot;
-		crop?: SanityImageCrop;
-		_type: 'image';
-	} | null;
-	bio: string | null;
+  _id: string;
+  naam: string | null;
+  functie: string | null;
+  afbeelding: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  } | null;
+  bio: string | null;
 }>;
 
 // Query TypeMap
-import '@sanity/client';
-declare module '@sanity/client' {
-	interface SanityQueries {
-		'*[_type == "global"][0]{\n    _id,\n    title,\n    description,\n    defaultSeo,\n    voorraadSeo,\n    voorraadHero,\n    mainMenu[]{\n      title,\n      slug,\n      children[]{\n        title,\n        slug\n      }\n    }\n  }': GlobalQueryResult;
-		'*[_type == "home"][0]{\n    _id,\n    seo,\n    blocks\n  }': HomeQueryResult;
-		'*[_type == "merk"]{\n    _id,\n    naam,\n    logo\n  }': MerkenQueryResult;
-		'*[_type == "voorraad" \n\t\t&& (!defined($merk) || merk->naam == $merk)\n\t\t&& (!defined($verkocht) || verkocht == $verkocht)\n\t\t&& (!defined($uitgelicht) || uitgelicht == $uitgelicht)\n\t]{\n    _id,\n    titel,\n    slug,\n    merk->{\n      _id,\n      naam,\n      logo\n    },\n    prijs,\n    bouwjaar,\n    kilometerstand,\n    brandstof,\n    transmissie,\n    verkocht,\n    uitgelicht,\n    fotos,\n    beschrijving,\n    specificaties\n  }': VoorraadQueryResult;
-		'*[_type == "voorraad" && slug.current == $slug][0]{\n    _id,\n    titel,\n    slug,\n    merk->{\n      _id,\n      naam,\n      logo\n    },\n    prijs,\n    bouwjaar,\n    kilometerstand,\n    brandstof,\n    transmissie,\n    verkocht,\n    uitgelicht,\n    fotos,\n    beschrijving,\n    specificaties,\n    seo\n  }': VoorraadItemQueryResult;
-		'*[_type == "page" && slug.current == $slug][0]{\n    _id,\n    title,\n    slug,\n    seo,\n    blocks\n  }': PageQueryResult;
-		'*[_type == "teamMember"] | order(_createdAt asc) {\n    _id,\n    naam,\n    functie,\n    afbeelding,\n    bio\n  }': TeamMembersQueryResult;
-	}
+import "@sanity/client";
+declare module "@sanity/client" {
+  interface SanityQueries {
+    '*[_type == "global"][0]{\n    _id,\n    title,\n    description,\n    defaultSeo,\n    voorraadSeo,\n    voorraadHero,\n    mainMenu[]{\n      title,\n      slug,\n      children[]{\n        title,\n        slug\n      }\n    }\n  }': GlobalQueryResult;
+    '*[_type == "home"][0]{\n    _id,\n    seo,\n    blocks\n  }': HomeQueryResult;
+    '*[_type == "merk"]{\n    _id,\n    naam,\n    logo\n  }': MerkenQueryResult;
+    '*[_type == "voorraad" \n\t\t&& (!defined($merk) || merk->naam == $merk)\n\t\t&& (!defined($verkocht) || verkocht == $verkocht)\n\t\t&& (!defined($uitgelicht) || uitgelicht == $uitgelicht)\n\t]{\n    _id,\n    titel,\n    slug,\n    merk->{\n      _id,\n      naam,\n      logo\n    },\n    prijs,\n    bouwjaar,\n    kilometerstand,\n    brandstof,\n    transmissie,\n    verkocht,\n    uitgelicht,\n    fotos,\n    beschrijving,\n    specificaties\n  }': VoorraadQueryResult;
+    '*[_type == "voorraad" && slug.current == $slug][0]{\n    _id,\n    titel,\n    slug,\n    merk->{\n      _id,\n      naam,\n      logo\n    },\n    prijs,\n    bouwjaar,\n    kilometerstand,\n    brandstof,\n    transmissie,\n    verkocht,\n    uitgelicht,\n    fotos,\n    beschrijving,\n    specificaties,\n    seo\n  }': VoorraadItemQueryResult;
+    '*[_type == "page" && slug.current == $slug][0]{\n    _id,\n    title,\n    slug,\n    seo,\n    blocks\n  }': PageQueryResult;
+    '*[_type == "teamMember"] | order(_createdAt asc) {\n    _id,\n    naam,\n    functie,\n    afbeelding,\n    bio\n  }': TeamMembersQueryResult;
+  }
 }

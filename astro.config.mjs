@@ -3,7 +3,7 @@ import react from '@astrojs/react';
 import solid from '@astrojs/solid-js';
 import sanity from '@sanity/astro';
 import tailwindcss from '@tailwindcss/vite';
-import { defineConfig } from 'astro/config';
+import { defineConfig, envField } from 'astro/config';
 import { loadEnv } from 'vite';
 
 const {
@@ -33,6 +33,20 @@ export default defineConfig({
 		solid({ include: ['**/src/solid/**'] }),
 		react({ exclude: ['**/src/solid/**'] }),
 	],
+	env: {
+		schema: {
+			SANITY_WRITE_TOKEN: envField.string({
+				context: 'server',
+				access: 'secret',
+				optional: true,
+			}),
+			INSTAGRAM_ACCESS_TOKEN: envField.string({
+				context: 'server',
+				access: 'secret',
+				optional: true,
+			}),
+		},
+	},
 	vite: {
 		plugins: [tailwindcss()],
 	},
