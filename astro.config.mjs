@@ -20,7 +20,7 @@ const dataset =
 
 export default defineConfig({
 	output: 'server',
-	site: 'https://themechanic.starvin.dev',
+	site: 'https://themechanic.nl',
 	session: false,
 	integrations: [
 		sanity({
