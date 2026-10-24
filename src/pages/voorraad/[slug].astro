@@ -1,27 +1,16 @@
 ---
 import { PortableText } from 'astro-portabletext';
-import type { GetStaticPaths } from 'astro';
 import Button from '../../components/Button.astro';
 import FeaturedVoorraad from '../../components/FeaturedVoorraad.astro';
 import Icon from '../../components/Icon.astro';
 import Title from '../../components/Title.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getVoorraad, getVoorraadItem, urlFor } from '../../sanity/index.ts';
+import { getVoorraadItem, urlFor } from '../../sanity/index.ts';
 import GalleryMain from '../../solid/GalleryMain';
 import GalleryThumbs from '../../solid/GalleryThumbs';
 import type { Img } from '../../solid/types';
 
-export const prerender = true;
-
 const { slug } = Astro.params;
-
-export const getStaticPaths: GetStaticPaths = async () => {
-	const voorraadItems = await getVoorraad();
-	return voorraadItems.map((item) => ({
-		params: { slug: item.slug?.current },
-		props: { item },
-	}));
-};
 
 const item = await getVoorraadItem(String(slug));
 
