@@ -46,7 +46,7 @@ export const getHome = async () => {
 };
 
 export const getMerken = async () => {
-	const merkenQuery = defineQuery(`*[_type == "merk"]{
+	const merkenQuery = defineQuery(`*[_type == "merk"] | order(lower(naam) asc) {
     _id,
     naam,
     logo

@@ -624,7 +624,7 @@ export type HomeQueryResult = {
 
 // Source: src/sanity/index.ts
 // Variable: merkenQuery
-// Query: *[_type == "merk"]{    _id,    naam,    logo  }
+// Query: *[_type == "merk"] | order(lower(naam) asc) {    _id,    naam,    logo  }
 export type MerkenQueryResult = Array<{
   _id: string;
   naam: string | null;
@@ -785,7 +785,7 @@ declare module "@sanity/client" {
   interface SanityQueries {
     '*[_type == "global"][0]{\n    _id,\n    title,\n    description,\n    defaultSeo,\n    voorraadSeo,\n    voorraadHero,\n    mainMenu[]{\n      title,\n      slug,\n      children[]{\n        title,\n        slug\n      }\n    }\n  }': GlobalQueryResult;
     '*[_type == "home"][0]{\n    _id,\n    seo,\n    blocks\n  }': HomeQueryResult;
-    '*[_type == "merk"]{\n    _id,\n    naam,\n    logo\n  }': MerkenQueryResult;
+    '*[_type == "merk"] | order(lower(naam) asc) {\n    _id,\n    naam,\n    logo\n  }': MerkenQueryResult;
     '*[_type == "voorraad" \n\t\t&& (!defined($merk) || merk->naam == $merk)\n\t\t&& (!defined($verkocht) || verkocht == $verkocht)\n\t\t&& (!defined($uitgelicht) || uitgelicht == $uitgelicht)\n\t]{\n    _id,\n    titel,\n    slug,\n    merk->{\n      _id,\n      naam,\n      logo\n    },\n    prijs,\n    bouwjaar,\n    kilometerstand,\n    brandstof,\n    transmissie,\n    verkocht,\n    uitgelicht,\n    fotos,\n    beschrijving,\n    specificaties\n  }': VoorraadQueryResult;
     '*[_type == "voorraad" && slug.current == $slug][0]{\n    _id,\n    titel,\n    slug,\n    merk->{\n      _id,\n      naam,\n      logo\n    },\n    prijs,\n    bouwjaar,\n    kilometerstand,\n    brandstof,\n    transmissie,\n    verkocht,\n    uitgelicht,\n    fotos,\n    beschrijving,\n    specificaties,\n    seo\n  }': VoorraadItemQueryResult;
     '*[_type == "page" && slug.current == $slug][0]{\n    _id,\n    title,\n    slug,\n    seo,\n    blocks\n  }': PageQueryResult;
