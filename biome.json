@@ -1,5 +1,5 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.1.3/schema.json",
+	"$schema": "https://biomejs.dev/schemas/2.6.3/schema.json",
 	"vcs": {
 		"enabled": false,
 		"clientKind": "git",
@@ -15,17 +15,13 @@
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"recommended": true,
+			"preset": "recommended",
 			"suspicious": {
 				"noExplicitAny": "off"
 			},
 			"nursery": {
-				"useSortedClasses": {
-					"level": "error",
-					"options": {
-						"attributes": ["class", "class:list"],
-						"functions": ["twMerge"]
-					}
+				"useTailwindSortedClasses": {
+					"level": "error"
 				}
 			}
 		}
@@ -59,5 +55,10 @@
 				}
 			}
 		}
-	]
+	],
+	"tailwind": {
+		"attributes": ["class", "className", "class:list"],
+		"mergeFunctions": ["twMerge"],
+		"stylesheet": "./src/styles/global.css"
+	}
 }

@@ -58,13 +58,13 @@ export default function TeamCarousel(props: TeamCarouselProps): JSX.Element {
 				</div>
 				<div class="flex min-h-80 flex-1/2 flex-col-reverse gap-4 md:flex-col md:justify-between">
 					<div class="transition-opacity duration-300 ease-in-out">
-						<h3 class="mb-2 font-regular text-gray-900 text-xl">
+						<h3 class="font-regular mb-2 text-xl text-gray-900">
 							{selected()?.naam}
 						</h3>
-						<p class="mb-4 font-thin text-gray-600 text-sm">
+						<p class="mb-4 text-sm font-thin text-gray-600">
 							{selected()?.functie}
 						</p>
-						<p class="font-thin text-gray-700 text-sm leading-relaxed">
+						<p class="text-sm leading-relaxed font-thin text-gray-700">
 							{selected()?.bio}
 						</p>
 					</div>

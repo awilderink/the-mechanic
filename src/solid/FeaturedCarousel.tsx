@@ -73,7 +73,7 @@ export default function FeaturedCarousel(
 											/>
 										</div>
 										<div>{item.merk}</div>
-										<div class="text-neutral-400 leading-loose">
+										<div class="leading-loose text-neutral-400">
 											{item.titel}
 										</div>
 										<div class="mt-8 flex items-end justify-between text-sm">
@@ -109,7 +109,7 @@ export default function FeaturedCarousel(
 				<a href="/voorraad">
 					<button
 						type="button"
-						class="cursor-pointer rounded-full bg-primary px-8 py-4 font-neutral text-sm text-white transition-transform duration-200 hover:translate-y-[-1px] hover:bg-primary/90 active:translate-y-0"
+						class="font-neutral cursor-pointer rounded-full bg-primary px-8 py-4 text-sm text-white transition-transform duration-200 hover:translate-y-[-1px] hover:bg-primary/90 active:translate-y-0"
 					>
 						Bekijk alles
 					</button>

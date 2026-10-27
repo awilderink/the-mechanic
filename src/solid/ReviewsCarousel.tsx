@@ -38,7 +38,7 @@ export default function ReviewsCarousel(
 						<For each={props.reviews}>
 							{(review) => (
 								<div class="min-w-0 shrink-0 grow-0 basis-full pl-4">
-									<div class="mt-4 font-light text-2xl italic">
+									<div class="mt-4 text-2xl font-light italic">
 										&ldquo;{review.body}&rdquo;
 									</div>
 								</div>
