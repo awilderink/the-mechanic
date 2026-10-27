@@ -81,7 +81,12 @@ export const voorraad = defineType({
 		defineField({
 			name: 'fotos',
 			title: "Foto's",
+			description:
+				"Sleep meerdere foto's tegelijk hierheen om ze in één keer te uploaden.",
 			type: 'array',
+			options: {
+				layout: 'grid',
+			},
 			of: [
 				{
 					type: 'image',
