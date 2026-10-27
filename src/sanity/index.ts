@@ -1,6 +1,8 @@
 import { createClient } from '@sanity/client';
-import imageUrlBuilder from '@sanity/image-url';
-import type { SanityImageSource } from '@sanity/image-url/lib/types/types';
+import {
+	createImageUrlBuilder,
+	type SanityImageSource,
+} from '@sanity/image-url';
 import { defineQuery } from 'groq';
 
 const client = createClient({
@@ -10,7 +12,7 @@ const client = createClient({
 	apiVersion: '2024-01-01',
 });
 
-const builder = imageUrlBuilder(client);
+const builder = createImageUrlBuilder(client);
 
 export const urlFor = (source: SanityImageSource) => builder.image(source);
 
